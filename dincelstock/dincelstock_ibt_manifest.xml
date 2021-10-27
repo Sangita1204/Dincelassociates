@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+			 <record id="dincelstock_ibt_manifest_form_view" model="ir.ui.view" >
+			<field name="name">dincelstock.ibt.manifest.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelstock.ibt.manifest</field>
+			<field name="arch" type="xml">
+				<form string="IBT Manifest" version="7.0">
+					<header>
+						 <button name="button_print" type="object"   string="Print Manifest" />  
+						 <button name="button_print_docket" type="object"   string="Print Dockets" />  
+						 <button name="button_mark_sent" type="object" states="draft" string="Validate as Sent" />  
+						 <button name="button_mark_received" type="object" states="sent" string="Validate as Received" />  
+						 
+						 
+						 <field name="state" widget="statusbar" statusbar_visible="draft,sent,done"/>
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+							
+								<field name="name" readonly="1"/>
+								
+							 
+                    
+							<field name="date"  string="Date" readonly="1"/>
+							<field name="source_warehouse_id"  invisible="1" />
+							<field name="source_location_id" invisible="1" />
+							
+							
+							
+							<field name="destination_warehouse_id" invisible="1" />
+							<field name="destination_location_id"  invisible="1"/>
+							
+							<field name="date_received"  />
+							
+							</group>
+							
+						    <group>
+								<field name="print_transport"  />
+  								 
+								  <field name="partner_id"  required="1" domain="[('x_is_project','=',True)]"  />
+							 <field name="contact_id" domain="[('x_is_project','=',False)]"  />
+							 <field name="note"  />
+							</group>
+						</group>
+						 
+						
+						<group>
+						 <field name="ibt_ids"   readonly="1"  nolabel="1"  >
+							  <tree  >
+								
+								  <field name="name" readonly="1" />
+							    <field name="date" readonly="1" />
+							   <field name="type"  readonly="1"/>
+							   <field name="project_id" readonly="1" />
+							   <field name="partner_id"  readonly="1"/>
+							   <field name="source_location_id" readonly="1"/>
+							   <field name="destination_location_id" readonly="1"/>
+							    <field name="state" readonly="1" />
+							  </tree>
+							  </field>
+						 
+						
+						</group>
+                     </sheet>      
+					 
+					 <div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		
+	 	   
+		
+		
+	 <record id="dincelstock_ibt_manifest_tree_view" model="ir.ui.view" >
+			<field name="name">dincelstock.ibt.manifest.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelstock.ibt.manifest</field>
+			<field name="arch" type="xml">
+			
+				<tree  colors="grey:state == 'cancel'; blue:state == 'sent';green:state == 'done';">
+					<field name="name"/>
+                    
+					<field name="date"  string="Date"/>
+					<field name="source_warehouse_id"   />
+					<field name="source_location_id" />
+					
+				
+					
+					<field name="destination_warehouse_id" />
+					<field name="destination_location_id"  />
+                    <field name="state"/>
+                    
+                </tree>
+				
+			</field>
+			
+		</record>	
+		
+		
+	 		
+	</data>
+</openerp>	

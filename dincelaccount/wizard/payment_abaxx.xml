@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_payment_abafile_dcs" model="ir.ui.view">
+            <field name="name">Payment ABA File</field>
+            <field name="model">dincelpayment.abafile</field>
+            <field name="arch" type="xml">
+                <form string="Payment ABA File">
+                    
+                    <group>
+                        
+                    
+						<field name="pay_lines">
+						<tree create="false" editable="bottom"	>
+							<field name="invoice_id" readonly="1"/>
+							<field name="invoice_number" readonly="1"/>
+							
+							<field name="partner_id" readonly="1" />
+							<field name="amount_original" readonly="1" />
+							
+							<field name="amount" string="Allocation"  sum="Total Allocation" />
+							
+						</tree>
+						</field>
+                    </group>
+					
+					 <group>
+						<field name="date"/>
+                        
+						<field name="qty" on_change="on_change_qty(qty, pay_lines, context)" invisible="1"/>
+						
+						 <field name="amount" readonly="1"/>
+						 <field name="reference" readonly="1"/>
+						 <field name="company_id" readonly="1"/>
+						 
+					  </group>
+                    <footer>
+					<button name="make_payment_dcs" type="object"  class="oe_highlight" string="Make Payment"/>
+                        
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_payment_abafile_dcs" model="ir.actions.act_window">
+            <field name="name">Payment ABA File</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelpayment.abafile</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_payment_abafile_dcs"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+		
+         
+			
+        <record model="ir.values" id="payment_abafile_dcs">
+			<field name="model_id" ref="account.model_account_voucher" />
+            <field name="name">Payment ABA File</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_payment_abafile_dcs'))" />
+            <field name="key">action</field>
+            <field name="model">account.voucher</field>
+        </record>
+    </data>
+</openerp> 

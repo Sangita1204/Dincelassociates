@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	 <!-- CRM /Sale Menus -->	
+	 <menuitem id="dincelcrm_sale_menu" name="Sales" sequence="3"/>		
+	 <menuitem id="dincelcrm_sale_menu_sub" name="Sales"  parent="dincelcrm_sale_menu"/>
+	 
+	 
+	<menuitem id="dincelcrm_sale_menu_sub_project" 
+				name="Projects / Sites" 
+				parent="dincelcrm_sale_menu_sub" 
+				action="dincelcrm_project_site_action" 
+				sequence="1"
+				/>	
+ 
+
+	<menuitem id="dincelcrm_sale_menu_sub_client" 
+				name="Contacts" 
+				parent="dincelcrm_sale_menu_sub" 
+				action="dincelcrm_customers_action" 
+				sequence="2"
+				/>			
+
+
+	<menuitem id="dincelcrm_sale_menu_sub_client_quote" 
+				name="Quotations" 
+				parent="dincelcrm_sale_menu_sub" 
+				action="dincelcrm_contractquote_action" 
+				sequence="3"
+				/>				
+	
+		<menuitem id="dincelcrm_sale_act_menu_sub" name="Sales Activities"  parent="dincelcrm_sale_menu"/>
+ 
+	 
+		<menuitem id="dincelcrm_sale_act_all_menu" 
+					name="All Sales Activities Report" 
+					parent="dincelcrm_sale_act_menu_sub" 
+					action="dincelreport_allcalls_action"
+					sequence="1" 
+					/>	
+
+					
+		<menuitem id="dincelcrm_sale_act_fw_pending_menu" 
+					name="Pending Follow-ups" 
+					parent="dincelcrm_sale_act_menu_sub" 
+					action="dincelreport_phonecall_fw_pending_action"
+					sequence="2" 
+					/>	
+								
+		<menuitem id="dincelcrm_sale_all_dotreport_menu" 
+					name="All DOT Reports" 
+					parent="dincelcrm_sale_act_menu_sub" 
+					action="dincelcrm_allweeklyreport_action"
+					sequence="3" 
+					/>	
+					
+		 <menuitem id="dincelcrm_sale_allcomplaints_menu" 
+					name="All Complaints" 
+					parent="dincelcrm_sale_act_menu_sub" 
+					action="dincelcrm_allcomplaints_action"
+					sequence="4" 
+					/>		
+					
+	</data>
+</openerp>	

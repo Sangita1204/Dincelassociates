@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	
+	<record id="dincelproduct_inventory_stock_move_tree_view" model="ir.ui.view" >
+			<field name="name">dincelproduct.inventory.stock.move.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">stock.move.tmp</field>
+			<field name="arch" type="xml">
+			
+				<tree string="Stock Moves" version="7.0" create="false" colors="blue:state=='delivered';green:state=='produced';red:state=='reserve'">
+					<field name="date"/>
+					<field name="origin"/>
+					 
+					<field name="product_id"/> 
+					
+					<field name="product_uom"/> 
+					
+					<field name="product_qty"/> 
+					
+					<field name="state"/>  
+					
+				</tree>
+				
+			</field>
+			
+		</record>	
+		
+		<record id="dincelproduct_inventory_tree_view" model="ir.ui.view" >
+			<field name="name">dincelproduct.inventory.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelproduct.product</field>
+			<field name="arch" type="xml">
+			
+				<tree string="Inventory" version="7.0" create="false">
+					
+					<field name="name"/>
+					 
+					<field name="product_id"/> 
+					
+					<field name="product_len"/> 
+					
+					<field name="qty_available"/> 
+					
+					<field name="is_custom"/>  
+					
+				</tree>
+				
+			</field>
+			
+		</record>	
+		
+		<record id="dincelproduct_inventory_form_view" model="ir.ui.view" >
+			<field name="name">dincelproduct.inventory.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelproduct.product</field>
+			<field name="arch" type="xml">
+				 
+				<form string="Order Form" version="7.0" create="false" edit="false">	
+					<sheet>
+						<group> 
+							<field name="name"/>
+							 
+							<field name="product_id"/> 
+							
+							<field name="product_len"/> 
+							<field name="qty_available"/> 
+							<field name="is_custom"/>  
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>	
+		
+		<record id="dincelproduct_inventory_stock_move_action" model="ir.actions.act_window" >
+			<field name="name">Inventory</field>
+			<field name="res_model">stock.move.tmp</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincelproduct_inventory_stock_move_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelproduct_inventory_stock_move_action"/>
+			<field name="view_id" ref="dincelproduct_inventory_stock_move_tree_view"/>
+		</record>
+		
+		<record id="dincelproduct_inventory_action" model="ir.actions.act_window" >
+			<field name="name">Inventory</field>
+			<field name="res_model">dincelproduct.product</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelproduct_inventory_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelproduct_inventory_action"/>
+			<field name="view_id" ref="dincelproduct_inventory_tree_view"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelproduct_inventory_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelproduct_inventory_form_view"/>
+			<field name="act_window_id" ref="dincelproduct_inventory_action"/>
+		</record>
+		
+		<menuitem id="dincelproduct_inventory_menu" 
+					name="Inventory Test" 
+					parent="stock.menu_stock_inventory_control" 
+					action="dincelproduct_inventory_action" 
+					/>	
+					
+		
+		<menuitem id="dincelproduct_inventory_stock_move_menu" 
+					name="Stock Moves" 
+					parent="stock.menu_stock_inventory_control" 
+					action="dincelproduct_inventory_stock_move_action" 
+					/>				
+	</data>
+</openerp>	

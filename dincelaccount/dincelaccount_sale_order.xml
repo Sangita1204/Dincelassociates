@@ -1,0 +1,764 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<template id="assets_backend" name="dincelaccount assets" inherit_id="web.assets_backend">
+			<xpath expr="." position="inside">
+				<script type="text/javascript" src="/dincelaccount/static/src/js/colorwidget.js"></script>
+			</xpath>
+		  </template>
+  
+	
+		<record id="view_dincelaccount_make_invoice" model="ir.ui.view">
+            <field name="name">view.dincelaccount.make.invoice.form</field>
+            <field name="model">dincelaccount.make_invoice</field>
+            <field name="arch" type="xml">
+                <form string="Make Invoice" version="7.0">
+                   
+                    <group>
+                       <field name="date_invoice" />
+					   <field name="sale_order_id" readonly="1"/>
+					   <field name="partner_id" invisible="1"/>
+					   <field name="order_line" invisible="1" >
+					   
+					    <form string="Sales Order Lines">
+                                    <header groups="base.group_user">
+                                      
+                                        <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done" statusbar_colors='{"exception":"red","cancel":"red"}'/>
+                                    </header>
+                                    <group>
+                                        <group>
+                                            <field name="product_id"
+                                                context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                                groups="base.group_user"
+                                                on_change="product_id_change(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False, context)"/>
+                                            <label for="product_uom_qty"/>
+                                            <div>
+                                                <field
+                                                    context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                                    name="product_uom_qty" class="oe_inline"
+                                                    on_change="product_id_change(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, context)"/>
+                                                <field name="product_uom" groups="product.group_uom" class="oe_inline oe_no_button"
+
+                                                    on_change="product_uom_change(parent.pricelist_id,product_id,product_uom_qty,product_uom,product_uos_qty,product_uos,name,parent.partner_id, False, False, parent.date_order, context)"/>
+                                            </div>
+                                            <label for="product_uos_qty" groups="product.group_uos"/>
+                                            <div groups="product.group_uos">
+                                                <field name="product_uos_qty" class="oe_inline"/>
+                                                <field name="product_uos" options='{"no_open": True}' class="oe_inline"/>
+                                            </div>
+                                            <field name="price_unit"/>
+                                            <label for="discount" groups="sale.group_discount_per_so_line"/>
+                                            <div name="discount" groups="sale.group_discount_per_so_line">
+                                                <field name="discount" class="oe_inline"/> %%
+                                            </div>
+                                        </group>
+                                        <group>
+                                            <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]"/>
+                                            <field name="th_weight"/>
+                                            <!-- we should put a config wizard for these two fields -->
+                                            <field name="address_allotment_id"/>
+                                        </group>
+                                    </group>
+                                    <label for="name"/>
+                                    <field name="name"/>
+                                    <div groups="base.group_no_one">
+                                        <label for="invoice_lines"/>
+                                        <field name="invoice_lines"/>
+                                    </div>
+                                </form>
+                                <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="th_weight" invisible="1"/>
+                                    <field name="product_id"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                        groups="base.group_user"
+                                        on_change="product_id_change(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False, context)"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_qty"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                        on_change="product_id_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, False, parent.fiscal_position, True, context)"/>
+                                    <field name="product_uom"
+                                        on_change="product_uom_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, context)"
+                                        groups="product.group_uom" options='{"no_open": True}'/>
+                                    <field name="product_uos_qty" groups="product.group_uos" invisible="1"/>
+                                    <field name="product_uos" string="UoS" groups="product.group_uos" invisible="1"/>
+                                    <field name="price_unit"/>
+                                    <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+					   </field>
+		            </group>
+					
+                    <footer>
+						 <button name="create_invoices" string="Create and View Invoice" type="object"
+                            context="{'open_invoices': True}" class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+ 
+                </form>
+            </field>
+        </record>
+		
+		<record id="action_dincelaccount_make_invoice" model="ir.actions.act_window">
+            <field name="name">Make Invoice TEST</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelaccount.make_invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+        </record>
+		
+	   
+		<record id="dincelaccount_sale_order_form" model="ir.ui.view">
+            <field name="name">dincelaccount.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <form string="Sales Order">
+                    <header>
+						<!--<button string="Pdf Test" class="oe_read_only"  name="download_invoice_pdf" type="object" /> -->
+						
+						<button string="DCS Update" name="updatelink_order_dcs" type="object"/>
+						
+						<button string="Create and Preview Invoice" name="open_invoice_preview" type="object" invisible="1" />
+						
+						<button string="Order Preview" invisible="1" name="open_order_preview" type="object" />
+						<!-- <button string="Mark as Sent" name="markas_send_email" type="object" attrs="{'invisible': [('state','not in',('draft'))]}"/> -->
+						<button string="Send Email" name="send_invoice_email" type="object"/>
+						<!-- <button string="Create Invoice TEST"  name="%(action_dincelaccount_make_invoice)d"   type="action"  invisible="1" /> -->
+						
+						<button string="Create Deposit Inv." attrs="{'invisible': ['|',('state','=','cancel'),('x_create_deposit','=',False)]}" name="create_deposit_invoice" type="object"/>
+						
+						<button string="Create Balance Inv." attrs="{'invisible': ['|',('state','=','cancel'),('x_create_bal_inv','=',False)]}" name="create_balance_invoice" type="object"/>
+						
+						<button string="Create Balance 1" attrs="{'invisible': ['|',('state','=','cancel'),('x_create_bal_inv','=',False)]}" name="create_balance_one_invoice" type="object"/>
+						
+						<!-- <button string="Create Balance Invoice" attrs="{'invisible': [('x_tot_balance','&lt;','0.001')]}" name="create_balance_invoice" type="object"/> -->
+						<button string="Revise" name="open_order_revise"  type="object" attrs="{'invisible': [('x_has_invoice','=',False)]}"/>
+						
+						<!-- <button string="Create Delivery Docket" name="confirm_delivery_sales_order" type="object"/> -->
+						<button string="All Orders" invisible="1" name="button_sales_orders" type="object"/> 
+						<!-- <button string="Open Customer Form" name="button_open_partner_form" type="object"/>  -->
+						<!-- <button name="create_mo_order_dcs" type="object" string="Validate Sale Order For Manufacture"/>  -->
+						
+						
+						<button string="Make Payment" invisible="1" name="make_invoice_payment" attrs="{'invisible': [('state','=','cancel')]}" type="object"/>
+						
+						<button string="Load Sheet" name="print_pdf_load_sheet_dcs" attrs="{'invisible': [('state','=','cancel')]}" type="object"/>
+						
+						
+						
+						<button string="Cancel Order" attrs="{'invisible': [('state','=','cancel')]}" confirm="Are you sure you want to cancel?"  name="button_cancel" type="object"/>
+						
+						<button string="Mark as Draft" name="button_mark_as_draft" confirm="Are you sure you want to do this?" attrs="{'invisible': [('state','in',('cancel','done','draft')),('x_edit_master','=', False)]}" groups="base.customer_service" type="object"/>
+                        <field name="state" widget="statusbar" statusbar_visible="draft,sent,cancel,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
+						
+						<button string="IBT Loadsheet" class="oe_read_only" type="object" name="button_print_loadsheet_ibt" />
+						<button string="Book Delivery" class="oe_read_only" type="object" name="button_book_delivery" />
+					</header>
+				
+                   <div style="clear:both;">
+                         <label string=" " /><br />
+                       
+				   </div>
+				   <h1 style="clear:both;">
+				   <br />
+						<label string="Sales Order" attrs="{'invisible': [('state','=','cancel')]}"/>
+                        <field name="x_ref_name" readonly="1" class="oe_inline" attrs="{'invisible': [('state','=','cancel')]}"/>
+						<field name="name" class="oe_inline" readonly="1" invisible="1"/>
+							
+						<button string="Close Order / Mark as Done" name="button_mark_as_done" confirm="Are you sure you want to do this?" attrs="{'invisible': [('state','in',('cancel','done'))]}" type="object" groups="base.user_close_order"/>
+						
+						<label string="CANCELLED ORDER" style="color:red; border:2px solid red; padding:10px;"	states="cancel"/>	
+						
+						</h1>
+					
+					
+				    <label string=" " /><br />
+					<!--
+					<label string="Credit Limit Exceeded" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_cr_limit_over','=',False)]}"/>
+					-->
+					<label string="Overdue A/C" style="color:red; border:1px solid red; padding:10px;" attrs="{'invisible': [('x_due_date_over','=',False)]}"/>
+						<field name="x_due_date_over" string="Overdue Account" invisible="1" readonly="1"/>  
+						
+					<label string="Deposit Invoice Not Required" style="color:green; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_deposit_exmpt','=',False)]}"/>
+					<label string="Stop Supply" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_stop_supply','=',False)]}"/>
+					<label string="Hold Supply" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_hold_supply','=',False)]}"/>
+					
+				 
+					
+                    <group>
+					
+                        <group>
+							<field name="x_has_invoice" invisible="1"/>
+							<field name="x_create_bal_inv" invisible="1"/>
+							<field name="x_revise_sn" invisible="1"/>
+							<field name="x_revision" invisible="1"/>
+						
+							
+							<field name="x_type" readonly="1" />
+							<field name="x_origin_id" invisible="1"/>
+							
+							<field name="x_email_attachs" invisible="1"/>
+							<field name="date_order" string="Order Date" attrs="{'readonly':[('state','not in',['sent','draft'])]}" />
+							<field name="x_type_request" string="Type Request" help="eg. ASAP /Date" required="1" attrs="{'readonly':[('state','not in',['sent','draft'])]}" />	
+							<field name="x_dt_request" style="width: 25%%"  attrs="{'required': [('x_type_request','=','dt')],'readonly':[('state','not in',['sent','draft'])]}"  /><field string="Note" help="Note for requested date" name="x_note_request"  attrs="{'required': [('x_type_request','=','asap'),('x_dt_request','!=',False)],'readonly':[('state','not in',['sent','draft'])]}" placeholder="Note for requested date" />
+							<field name="x_dt_process" string="Entry Date" invisible="1"/>
+							<field name="x_type_actual" string="Date"  invisible="1"/>
+							<field name="x_dt_anticipate" string="Anticipate Date"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+							<field name="x_type_anticipate"  string="Anticipate Date" invisible="1"/>	 
+							<field name="x_dt_actual" string="Actual Date" readonly="1" help="This will be auto populated according as delivery schedule."/>
+							
+							<field name="partner_id"  required="1" on_change="onchange_partner_id_v2(partner_id, x_project_id, context)"  context="{'search_default_customer':1,'default_x_is_client':1, 'show_address': 1}"  domain="['&amp;', ('customer','=',True),'&amp;', ('x_is_project','=',False),'|',('is_company', '=', True),('x_is_client', '=', True),('x_is_not_active', '!=', True)]"  options="{'limit': 30, 'no_quick_create': True, 'no_create_edit': False,'m2o_dialog':false,'always_reload': True}" widget="dincelcrm.dincelcrm_contact_form_new_view">
+							 
+							
+							</field>
+							
+                           
+							
+							<field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
+                            
+							<field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
+							
+							<field name="x_project_id" required="1" domain="[('x_is_project', '=', True),('x_is_not_active', '!=', True)]" on_change="onchange_projectsite(x_project_id, partner_id, context)" context="{'default_x_is_project': True,'default_x_dcs_clientid': partner_id,'default_x_likely_sale_dt':date_order}" options="{'limit':30}" />
+                           
+						   
+							<label string=" " attrs="{'invisible': [('x_site_mismatch','=', False)]}"/>	<label string="^Site DCS ID does not match with client DCS ID." attrs="{'invisible': [('x_site_mismatch','=', False)]}"  style="color:red;" />
+							
+							<field name="x_coststate_id" attrs="{'readonly':[('state','not in',['sent','draft'])]}" required="1" on_change="change_pickup_state(x_coststate_id,x_pudel,context)"  />
+							<field name="project_id" invisible="1"  />
+							
+							<field name="x_has_custom" invisible="1" />
+							
+							<field name="x_contact_id" required="1"  options="{'limit':30}" domain="['&amp;', ('x_is_project','=',False),'|',('parent_id', '=', partner_id),('parent_id', '=', x_project_id)]" context="{'default_parent_id': partner_id,'default_x_hide_parent': True}"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+							
+								
+                            <field name="client_order_ref" string="Customer Reference No." attrs="{'required': [('x_has_custref','=', True)],'readonly':[('state','not in',['sent','draft'])]}"/>
+							
+							<field name="origin" string="DCS Order No."  attrs="{'readonly': [('x_edit_master','=', False)]}" />
+							<label for="btn_delete_origin" string="" /><button name="btn_delete_origin" type="object"  string="Clear/Delete DCS Order No.^"  attrs="{'invisible': [('x_edit_master','=',False)]}" invisible="1" confirm="Are you sure you want to do this?"/>
+							
+							<field name="x_colorcode" widget="color"  string="Colour" readonly="1" />
+							<field name="x_colorname" invisible="1"  readonly="1" />
+							<field name="x_quote_id"  required="1" domain="['|',('id','=',1),'&amp;',('x_project_id', '=', x_project_id),('partner_id','=',partner_id)]"   options='{"no_create": 1, "no_create_edit": 1}' attrs="{'readonly':[('state','not in',['sent','draft'])]}" />
+                           <field name="x_location_id" widget="selection"  domain="[('x_holdyard', '=', True)]" attrs="{'readonly':[('state','not in',['sent','draft'])]}" />
+						   <field name="x_date_location" invisible="1" />
+						   
+						   <field name="x_authorise_len"  attrs="{'invisible': [('x_edit_master','=', False)]}" />	
+						   <field name="x_site_mismatch" invisible="1" readonly="1" nolabel="1"/>
+						   <field name="x_has_custref" invisible="1" />
+						   
+						   <!-- 
+						   <div class="oe_right oe_button_box" name="buttons"> 
+								<div><strong></strong><br/>Credit Limit*
+								 </div>
+								</div> -->
+                        </group>
+						
+                        <group>
+							<field name="x_credit_limit" widget="monetary" readonly="1"/>
+							<label string="Statement"  /> <button string="Download" name="dcs_partner_statement_pdf" class="oe_highlight" type="object" />
+							<field name="x_region_id" invisible="1" string="Cost Centre" widget="selection"/>
+							<field name="payment_term" required="1" on_change="change_payment_term(x_warehouse_id,partner_id, payment_term,date_order,order_line,context)" options="{'no_create': True}" attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+						<!--	<field name="x_credit_limit" string="Credit Limit*" readonly="1" />	 -->
+							<field name="x_rate_note"  string="Rate Note*"  readonly="1" />	
+							<!--	<field name="x_cr_limit_over" string="Over Credit Limit" readonly="1"/>  -->
+							<field name="x_deposit_exmpt"  attrs="{'invisible': [('x_edit_master','=', False),('state','not in',['sent','draft'])]}" />	
+							
+							<!--  attrs="{'invisible': [('x_has_custom','=','0')]}" -->
+							<field name="x_create_deposit" invisible="1"/>	
+							<field name="x_edit_master" invisible="1"/>	
+							<field name="x_stop_supply" invisible="1" />
+							<field name="x_hold_supply" invisible="1" />
+							<field name="x_edit_rate" invisible="1" />
+							<field name="x_is_pudel_state" invisible="1" />
+							
+							<field name="user_id" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice', 'base.group_sale_salesman_all_leads']}"  attrs="{'invisible': [('x_edit_master','=', False)],'readonly':[('state','not in',['sent','draft'])]}"/>
+							<field name="x_salesperson" readonly="1"   attrs="{'invisible': [('x_edit_master','=', True)]}"/>
+									
+							<field name="section_id" invisible="1" options="{'no_create': True}" groups="base.group_multi_salesteams"/>
+							<field name="x_pudel" required="1" on_change="change_pickup_state(x_coststate_id,x_pudel,context)" attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>	
+							
+							<field name="carrier_id" widget="selection"  invisible="1"/>
+							
+							<field name="x_warehouse_id" widget="selection"  required="1" on_change="change_payment_term(x_warehouse_id,partner_id, payment_term,date_order,order_line,context)"   attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+							
+							
+							<div colspan="2"  attrs="{'invisible': [('x_is_pudel_state','=',True)]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px; width:50%%;">
+								Mismatch dispatch location found.
+								</div>
+								
+							<group colspan="2"  attrs="{'invisible': [('x_pudel','!=','del')]}">
+							<group>
+								<field name="x_street"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+								<field name="x_postcode"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+								<field name="x_suburb"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+							</group>
+							<group>
+								<field name="x_state_id" domain="[('country_id', '=', x_country_id)]" widget="selection"  attrs="{'readonly':[('state','not in',['sent','draft'])]}"/>
+								<field name="x_country_id" widget="selection" attrs="{'readonly':[('state','not in',['sent','draft'])]}" />
+								
+								<field name="fiscal_position" options="{'no_create': True}"
+									on_change="onchange_fiscal_position(fiscal_position, order_line, context)" invisible="1"/>
+									
+								<field name="company_id" widget="selection" groups="base.group_multi_company" invisible="1"/>
+								
+								 
+								
+								<field name="invoiced" invisible="1"/>
+								
+								<field name="invoice_exists" invisible="1"/>
+							 
+								
+								<field name="currency_id" invisible="1"/>
+								 
+								
+								  
+								<field domain="[('type','=','sale')]" invisible="1" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
+								
+								</group>
+							  </group>
+							  
+							 <group colspan="2" >
+								<group>
+									<!--<field name="x_dt_actual" attrs="{'invisible': [('x_type_actual','in',['tba','na'])]}"/> -->
+									<field name="x_pending" />	
+									 
+									 <field string="Deposit Paid" name="x_dep_paid"  readonly="1"   />	
+									 <field string="Production"  name="x_prod_status"  readonly="1"   />				 
+									 <field string="Delivery"  name="x_del_status"  readonly="1"   />			
+									 <field name="x_bal_paid" invisible="1" readonly="1"/>
+							    </group>
+								 <group > 
+								
+								 <!-- <label string="DCS Order Forms" invisible="1" /><br /> -->
+									<button name="btn_open_outstanding" type="object"  string="Open Outstanding Orders" />
+									<button name="button_attach_110" type="object"  string="110mm"  attrs="{'invisible': [('x_attach_110_found','=',False)]}"/>
+									<button name="button_attach_155" type="object" string="155mm"  attrs="{'invisible': [('x_attach_155_found','=',False)]}"/>
+									<button name="button_attach_200" type="object" string="200mm"  attrs="{'invisible': [('x_attach_200_found','=',False)]}"/>
+									<button name="button_attach_275" type="object" string="275mm"  attrs="{'invisible': [('x_attach_275_found','=',False)]}"/>
+									
+								    
+									<field name="x_attach_110_found" invisible="1"/>	
+									<field name="x_attach_155_found" invisible="1"/>	
+									<field name="x_attach_200_found" invisible="1"/>	
+									<field name="x_attach_275_found" invisible="1"/>	
+									<field name="x_attach_110" invisible="1"/>	
+									<field name="x_attach_155" invisible="1"/>	
+									<field name="x_attach_200" invisible="1"/>	
+									<field name="x_attach_275" invisible="1"/>	
+									<field name="x_mrp_missing" invisible="1"/>	
+									<div colspan="2" style="border:1px solid #f00; padding:5px;" attrs="{'invisible': [('x_prod_status','not in',('complete','part','printed','confirmed'))]}">
+								<label string="This order has 'Complete' or 'Partial' or 'Printed' or 'Confirmed' MRP / Schedules." style="color:red;" /> </div>
+								
+								<div colspan="2"  attrs="{'invisible': [('x_mrp_missing','=',False)]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px;">
+								Missing or mismatch MRP/reserve quantity found.
+								</div>
+								
+								<div colspan="2"  attrs="{'invisible': [('x_trucks_mismatch','=',False)]}" style="margin-top:10px;color:blue;border:1px solid #f00;padding:5px;">
+								Missing or mismatch delivery quantity found.
+								</div>
+								  </group>
+							    </group>
+								 <group colspan="2" >
+								  <group > 
+									<field name="x_ok2cancel"  invisible="1" readonly="1" />
+									<field name="x_admin_super" invisible="1"/>		
+									<field name="x_authorise_cancel" attrs="{'invisible': [('x_admin_super','=',False)]}"  />	
+									<field name="x_cancel_comments" attrs="{'readonly': [('x_admin_super','=',False)]}"    />	
+									
+									 </group>
+									 
+									  <group > 
+									 
+									<field name="x_authorise_discount" invisible="1"  />	
+									<field name="x_discount_comments" invisible="1"  />	
+									<field name="x_has_approvals" invisible="1" />
+									<field name="x_has_valid_rate" invisible="1"/>
+									<field name="x_trucks_mismatch" invisible="1"/>
+									
+									 </group>
+									 <div colspan="2"  attrs="{'invisible': [('x_has_valid_rate','=',True)]}" style="margin-top:10px;color:red;border:2px dotted #f00;padding:5px;">
+								Missing a valid default rate in the customer card. 
+								</div>
+								<div colspan="2"  attrs="{'invisible': [('state','!=','progress')]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px;">
+								This order cannot be amended due to status as 'progress'. Contact account team to mark this order as draft and continue amending/editing.
+								</div>
+							    </group>
+                        </group>
+						
+                    </group>
+
+                    <notebook>
+                        <page string="Order Lines">
+                            <field name="order_line" on_change="onchange_order_line_dcs(order_line, x_region_id, context)" context="{'default_x_coststate_id' : x_coststate_id ,'default_x_edit_rate' : x_edit_rate }">  <!--  
+                                </form> -->
+                                <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="th_weight" invisible="1"/>
+									<field name="x_region_id"  invisible="1" string="Cost Centre1" widget="selection" />
+									<field name="x_coststate_id" required="1" string="Cost Centre" widget="selection" />
+                                    <field name="product_id"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                        groups="base.group_user"
+                                        on_change="product_id_change_v2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False, parent.x_warehouse_id,context)"/>
+                                    
+									<field name="name" invisible="1" />
+									
+									
+									
+									<field name="x_order_length"  string="Length" on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"/>
+									
+									<field name="x_order_qty" string="Qty" on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"/>
+									
+									<field name="x_total_lm"/>
+                                    <field name="product_uom_qty" string="M2/Unit"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                           
+						   on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"  />
+									   
+                                    <field name="product_uom"
+                                        on_change="product_uom_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, context)"
+                                        groups="product.group_uom" options='{"no_open": True}' invisible="1"  />
+										
+                                    <field name="product_uos_qty" groups="product.group_uos" invisible="1"/>
+									
+                                    <field name="product_uos" string="UoS" groups="product.group_uos" invisible="1"/>
+                                    <field name="price_unit" string="Rate" attrs="{'invisible': [('x_edit_rate','=',False)]}" />
+									<field name="x_rate_readonly" string="Rate Read" attrs="{'invisible': [('x_edit_rate','=',True)]}"  />
+									
+                                    <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="price_subtotal"/>
+									<field name="x_rate_src" invisible="1"/> 
+									<field name="x_qty_m2"   />
+									<field name="x_edit_rate" invisible="1" />									
+									
+                                </tree>
+                            </field>
+							 <group colspan="2" >
+							 <group class="oe_left"   >
+							 <p>  *275P-1 custom available from 1800mm to 6000mm in increments of 75mm only. </p>
+							    <div class="oe_clear"/>
+                            <field nolabel="1" name="note" class="oe_inline" placeholder="Notes..."/>
+							 </group>
+							  <group>
+								<group class="oe_subtotal_footer oe_right" colspan="2"  name="sale_total">
+									<field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+									<field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+									<div class="oe_subtotal_footer_separator oe_inline">
+										<label for="amount_total" />
+										<button name="button_dummy"
+											states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+									</div>
+									<field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+								</group>
+								
+								<group class="oe_subtotal_footer oe_right" colspan="2" >
+										<field name="x_tot_invoiced" widget='monetary' options="{'currency_field': 'currency_id'}"/> 
+										<field name="x_tot_balance" widget='monetary' options="{'currency_field': 'currency_id'}"/> 
+								</group>
+							</group>
+							</group>
+                           
+                        </page>
+						
+                         <page string="Revision History" groups="base.group_user"  attrs="{'invisible': [('x_revise_sn','=',0)]}">
+						  <div>
+						   <field name="x_revision_bak_ids" readonly="1"/>
+						  </div>
+						</page>
+						
+						<page string="Approvals" groups="base.group_user"  attrs="{'invisible': [('x_has_approvals','=',False)]}">
+						  <div>
+						   <field name="x_approve_ids" readonly="1"/>
+						  </div>
+						</page>
+						
+						<page string="Invoices" groups="base.group_user">
+							<div>
+							<button string="All Pending Invoices"  name="open_invoices_all" type="object"/>
+							</div>
+						  <div>
+						   <field name="x_account_ids"  readonly="1"/>
+						  </div>
+						</page>
+						 
+						<page string="IBT" groups="base.group_user">
+						  <div><field name="x_ibt_ids"  readonly="1"/>
+						  
+						  </div>
+						</page>
+						<page string="Deliveries" groups="base.group_user">
+						  <div>
+						  
+						  <field name="x_pickinglist_ids"  readonly="1"/>
+						  
+						  </div>
+						</page>
+						
+                    </notebook>
+					
+               
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+		
+		
+		<record id="dincelaccount_sale_order_bak_form" model="ir.ui.view">
+            <field name="name">dincelaccount.sale.order.bak.form</field>
+            <field name="model">sale.order.bak</field>
+            <field name="arch" type="xml">
+                <form string="Sales Order">
+                    <header>
+						
+					
+                        <field name="status" widget="statusbar" />
+						
+					</header>
+              
+                   <h1>
+                         
+                        <label string="Sales Order" />
+                        
+						<field name="name" class="oe_inline" readonly="1"/>
+							
+						
+				   </h1>
+				    
+					
+                    <group>
+					
+                        <group>
+							
+						
+							<field name="revise_sn" />
+							
+							<field name="origin_id" />
+							
+							
+							<field name="date_order" string="Order Date"/>
+							<field name="dt_process" string="Entry Date"/>
+								 
+							<field name="partner_id" >
+							 
+							
+							</field>
+							
+                            <field name="region_id" invisible="1"/>
+							
+							
+                            
+							
+							<field name="project_id"/>
+                            
+							
+							
+						
+							
+							<field name="contact_id"  domain="['&amp;', ('x_is_project','=',False),'|',('parent_id', '=', partner_id),('parent_id', '=', project_id)]" />
+							
+								
+                            
+							<field name="currency_id" invisible="1"/>
+							
+							
+							<field name="quote_id" domain="[('x_project_id', '=', project_id)]" options='{"no_create": 1, "no_create_edit": 1}'/>
+                           
+                        </group>
+						
+                        <group>
+						
+ 						
+							<field name="payment_term" on_change="change_payment_term(partner_id, payment_term,date_order,context)" options="{'no_create': True}"/>
+							
+							
+							<field name="user_id" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice', 'base.group_sale_salesman_all_leads']}"/>
+							
+									
+							
+							<field name="pudel" required="1" />	
+							<field name="dt_request" />	
+							
+							
+							<field name="warehouse_id" widget="selection"  required="1"  />
+							
+							<group colspan="2"  attrs="{'invisible': [('pudel','!=','del')]}">
+							<group>
+								<field name="street" />
+								<field name="postcode" />
+								<field name="suburb" />
+							</group>
+							<group>
+								<field name="state_id" domain="[('country_id', '=', country_id)]" widget="selection" />
+								<field name="country_id" widget="selection" />
+								
+								
+								</group>
+							  </group>
+                        </group>
+						
+                    </group>
+					
+					 
+							
+                    <notebook>
+                        <page string="Order Lines">
+                            <field name="item_lines" >   
+                                <tree string="Sales Order Lines" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    
+									<field name="region_id" required="1" string="Cost Centre" widget="selection" />
+                                    <field name="product_id" />
+                                    <field name="name" invisible="1"/>
+									
+									
+									
+									<field name="order_length"  string="Length" />
+									<field name="order_qty" string="Qty" />
+									
+                                    <field name="product_uom_qty" string="M2/Unit" />
+									   
+                                    <field name="product_uom" />
+										
+                                    
+									
+                                    
+                                    <field name="price_unit" string="Rate"/>
+                                    <field name="tax_id" />
+                                    
+                                    <field name="price_subtotal"/>
+									 
+                                </tree>
+                            </field>
+							
+							 <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total1">
+                                <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                               
+                                <field name="amount_total"   class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            </group>
+							
+							 
+							 
+                            <div class="oe_clear"/>
+							
+                            <field name="note" class="oe_inline"/>
+							
+                        </page>
+						
+                        
+						 
+                    </notebook>
+					
+               
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+		
+		
+		<record id="dincelaccount_sale_order_bak_form_view" model="ir.ui.view" >
+			<field name="name">Dincel Sale Order Revise</field>
+			<field name="model">sale.order.bak</field>
+			<field name="arch" type="xml">
+                <tree>
+                     
+                    <field name="name" />
+					<field name="revise_sn" string="SN" />
+					<field name="origin_id" invisible="1"/>
+					<field name="date_order" string="Order Date"/>
+					<field name="dt_process" string="Entry Date"/>
+					<field name="partner_id" />
+					 
+                </tree>
+            </field>
+		</record>
+		
+		<record id="dincelaccount_product_template_form_view" model="ir.ui.view" >
+			<field name="name">Dincel Account Prodcut Template Inherit</field>
+			<field name="model">product.template</field>
+			<field name="inherit_id" ref="product.product_template_only_form_view" />
+			<field name="arch" type="xml">
+					<field name="list_price" position="after">
+						<field name="x_price_account" />
+					</field>
+					
+					<field name="ean13" position="after">
+						<field name="x_is_calcrate" invisible="1"/>
+						<field name="x_prod_cat" />
+						<field name="x_stock_length" string="Stock Length (mm)"/>
+						<field name="x_stock_width" string="Face Width (mm)"/>
+						<field name="x_stock_height" string="Thickness (mm)"/>
+						<field name="x_bom_cat" />
+						<field name="x_pick_journal" />
+					</field>
+
+					<field name="seller_ids" position="replace">
+						<field name="seller_ids" >
+							 <tree>
+								<field name="name"/>
+								<field name="x_cost_price"  groups="base.cost_price_view"/>
+							</tree>
+						</field>
+					</field>
+			</field>
+		</record>
+		
+		<record id="dincelaccount_sale_order_tree_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelaccount.sale.order.tree.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+					<field name="date_order" position="after">
+						 
+						<field name="origin"/> 
+						<field name="x_colorcode" widget="color"  string="Colour" />
+					</field>
+					<field name="partner_id" position="after">
+					 
+						<field name="x_project_id"/>
+					   
+				</field>  
+				
+				<field name="amount_total" position="after">
+					<field name="x_dep_paid" />
+					<field name="x_prod_status" />
+					<field name="x_del_status" />
+					<field name="x_bal_paid" invisible="1"/>
+					<field name="x_over_due" invisible="1" />
+					
+				</field>
+				
+			</field>
+		</record>
+	 
+		
+		<record id="dincelaccount_payment_terms_form_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.payment.terms.form.inherit</field>
+			<field name="model">account.payment.term</field>
+			<field name="inherit_id" ref="account.view_payment_term_form" />
+			<field name="arch" type="xml">
+				<field name="name" position="after">
+					<field name="x_payterm_code" />
+					<field name="x_eom" />
+					<field name="x_days" />
+				</field>
+			</field>
+		</record>
+	 
+					
+        </data>
+	
+</openerp>

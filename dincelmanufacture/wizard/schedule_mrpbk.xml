@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelcrm_schedule_mrp_form" model="ir.ui.view">
+            <field name="name">Schedule MO</field>
+            <field name="model">dincelmrp.schedule.mrp</field>
+            <field name="arch" type="xml">
+                <form string="Schedule MO">
+                     
+                    <group>
+                        <field name="order_id" readonly="1"/>
+                        <field name="date" string="Scheduled Date"/>
+						<field name="mo_exists" invisible="1"/>
+						<label string="Overwrite MO" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('mo_exists','=',False)]}"/>
+						<field name="qty" on_change="on_change_qty(qty, mrp_lines, context)" invisible="1"/> 
+					</group>
+					<group>
+						<field name="mrp_lines" nolabel="1">
+							<tree create="false" editable="bottom"	colors="red:read_only == True" >
+								<field name="product_id" readonly="1"/>
+								<field name="product_qty" invisible="1" string="Qty ordered"/>
+								<field name="qty2produce" readonly="1" string="Qty"/>
+								
+								<field name="qty_original"  invisible="1"/>
+								<field name="qty_available" readonly="1" string="Qty in stock"/>
+								<field name="qty_reserve" string="Qty reserve"    />
+								<field name="full_mo"  on_change="onchange_full_mo(full_mo, qty2produce, qty_reserve, context)"/>
+								<field name="qty_produce" string="Qty to be made"    />
+								<field name="order_length" readonly="1" string="Length"/>
+								<field name="order_id" readonly="1" string="Order" invisible="1"/>
+								<field name="product_uom" readonly="1" string="Unit" invisible="1"/>
+								<field name="region_id"  invisible="1"/>
+								<field name="read_only"  readonly="1" invisible="1"/>
+							</tree>
+						
+						</field>
+						
+                    </group>
+					
+                    <footer>
+                        <button  string="Schedule MO" class="oe_highlight" name="schedule_mrp" type="object" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		
+    </data>
+</openerp>

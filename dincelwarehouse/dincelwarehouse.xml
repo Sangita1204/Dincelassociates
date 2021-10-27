@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		
+		
+		<record id="dincelwarehouse_saleorder_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelwarehouse.saleorder.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="dincelaccount.dincelaccount_sale_order_form" />
+			<field name="arch" type="xml">
+			 
+				 <xpath expr="//page[@string='Deliveries']" position="before">
+					<page string="Delivery Schedule" groups="base.group_user">
+					  <div>
+						<field name="x_delivery_booking_ids">
+						<tree create="false" >
+							<field name="name" invisible="1"/>
+							<field name="date_actual" />
+							<field name="packs" invisible="1" />
+							<field name="dockets"/>
+							<field name="pudel"/>
+							<field name="scheduled_by" />
+							<field name="state"/>
+						</tree>
+						</field>
+						
+					  </div>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		
+		<record id="view_dincelwarehouse_deli_schedule_filter" model="ir.ui.view">
+			<field name="name">Delivery Schedule Search</field>
+			<field name="model">dincelwarehouse.sale.order.delivery</field>
+			<field name="arch" type="xml">
+				<search string="Search ">
+					
+					<field name="partner_id" string="Customer"/>
+					<field name="project_id"/>
+					<field name="project_suburb_id"/>
+					<field name="name"/>
+					<field name="order_code"/> 
+					<field name="warehouse_id"/> 
+					<field name="state_id"/> 
+					<field name="date_actual"/> 
+					<field name="state" string="Status"/> 
+					<separator/>
+					<group expand="0" string="Group By...">
+						<filter name="warehouseid"  string="Dispatch Location" domain="[]" context="{'group_by':'warehouse_id'}"/>
+						<filter name="stateid"  string="Project/Site State" domain="[]" context="{'group_by':'state_id'}"/>
+						<filter name="dateactual"  string="Date Delivery"  domain="[]" context="{'group_by':'date_actual:day'}"/> 
+					    <filter name="partner_id"  string="Customer"  domain="[]" context="{'group_by':'partner_id'}"/>
+					   
+					   <filter name="state"  string="Status"  domain="[]" context="{'group_by':'state'}"/>
+				   </group>
+					 
+					 
+			   </search>
+			</field>
+		</record>
+		
+		
+	 <record id="dincelwarehouse_deli_schedule_tree_view" model="ir.ui.view" >
+		<field name="name">Delivery Schedule</field>
+		<field name="model">dincelwarehouse.sale.order.delivery</field>
+		<field name="arch" type="xml">
+			<tree create="false"  colors="blue:state in ('draft');green:state =='done';orange:state=='partial'">
+				<field name="name" invisible="1" />
+				
+				<field name="internal_notes"/>
+				<field name="order_id"/>
+				<field name="order_code"/>
+				<field name="color_code" widget="color" string="Colour" readonly="1"/>
+				<field name="partner_id" string="Customer"/>
+				<field name="project_id"/>
+				<field name="warehouse_id"/> 
+				<field name="state_id"/>
+				<field name="project_state" invisible="1"/>
+				<field name="project_suburb_id"/>
+				 
+				<field name="date_actual" />
+				<field name="packs" invisible="1" />
+				<field name="dockets" sum="Dockets"/>
+				<field name="rem_dockets" invisible="1"/>
+				<field name="dockets_remain" readonly="1"  sum="Remaining"/>
+				<field name="pudel"/>
+				
+				<field name="pending_invoice" />
+				<field name="authorize_docket"  />
+				<field name="stop_supply"  />
+				<field name="authorize_blacklist"   />	 
+				<field name="hold_supply"   />
+							
+					
+				
+				
+				<field name="authorize_hold" />
+				
+				<field name="mrp_missing" string="MRP Mismatch" />
+				 <field name="authorize_mrp_deli" string="Authorise MRP"/>
+				 
+				<field name="deposit_paid"/>
+				<field name="balance_paid"/>
+				<field name="balance_due" />
+				<field name="scheduled_by" />
+				<field name="x_acs_status" />
+				<field name="state" />
+			</tree>
+		</field>
+	</record>
+	
+	<record id="dincelwarehouse_deli_schedule_form_view" model="ir.ui.view" >
+		<field name="name">dincelwarehouse.deli.schedule.form.view</field>
+		<field name="view_type">form</field>
+		<field name="model">dincelwarehouse.sale.order.delivery</field>
+		<field name="arch" type="xml">
+			 <form string="Delivery Schedule" create="false" >
+				<header>
+					<button name="%(action_create_deli_docket)d" string="Create Docket" type="action"  class="oe_highlight"  attrs="{'invisible': ['|',('has_pending_docket','=',False),('mrp_missing','=',True)]}" invisible="1"/>
+					
+					
+					<button name="button_create_docket_dcs" string="Create Docket" type="object"  class="oe_highlight"  attrs="{'invisible': [('has_pending_docket','=',False)]}"/>
+					
+					<button name="print_loadsheet_docket"  type="object"  string="Print Loadsheet" />
+					
+					<button name="btn_delivered_outstanding" invisible="1"  type="object"  string="Outstanding Orders" />
+					
+				</header>
+			    <sheet>
+				   <group>
+                        <group>
+							<field name="name" invisible="1" />
+							<field name="mrp_missing" invisible="1" />
+							<field name="order_code" readonly="1" />
+							<field name="color_code"  widget="color"  string="Colour" readonly="1" />
+							<field name="order_id" readonly="1" />
+							<field name="partner_id" readonly="1" context="{'search_default_customer':1, 'show_address': 1}"/>
+							<field name="project_id" readonly="1" />
+							<field name="warehouse_id" readonly="1"/> 
+							<field name="contact_id" readonly="1" />
+							<field name="date_entry" readonly="1" invisible="1" />
+							
+							<field name="has_pending_docket" invisible="1" />
+							<field name="pending_invoice" readonly="1"/>
+							<field name="stop_supply" readonly="1" />
+							<field name="hold_supply" readonly="1" />
+							<label string="Customer Statement" style="font-weight:bold;" /> <button string="Download" name="dcs_partner_statement_pdf" class="oe_highlight" type="object" />	
+							
+							
+						</group>
+					
+						<group>
+					 
+						<field name="date_actual" />
+						<field name="packs" invisible="1"/>
+						<field name="dockets"/>
+						<field name="dockets_remain" readonly="1"/>
+						
+						<field name="rem_dockets" invisible="1"/>
+						<field name="pudel"/>
+						<field name="comments" />
+						<field name="x_acs_status" readonly="1"/>
+						<field name="state"  help="Select 'CONFIRM' after confirming with customers and 'DONE' after everything finished." attrs="{'readonly':[('state', 'in', ('partial','done'))]}"/>
+						
+						<field name="authorize_docket" string="Authorise COD Invoice" help="Required to tick to allow creation of docket if not all COD invoice/s has been cleared." attrs="{'invisible': [('x_admin_master','=', False)]}" />	 
+						 	
+						<field name="authorize_blacklist" help="Required to tick to allow creation of docket if stop supply flag has been cleared." attrs="{'invisible': [('x_admin_super','=', False)]}" />	 
+						
+						<field name="authorize_hold" help="Required to tick to allow creation of docket if hold supply/legal flag has been cleared." attrs="{'invisible': [('x_admin_super','=', False)]}" />	
+						 
+						<field name="authorize_mrp_deli" help="Authorise delivery on MRP missing/mismatch" attrs="{'invisible': [('x_admin_super','=', False)]}" />	
+							
+						<field name="x_admin_master" invisible="1"/>	
+						<field name="x_admin_super" invisible="1"/>		
+						
+						
+						<div colspan="2"  attrs="{'invisible': [('mrp_missing','=',False)]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px;">
+							Missing or mismatch MRP/reserve quantity found.
+							<p  attrs="{'invisible': [('authorize_mrp_deli','=',True)]}">***Pending MRP Authorise</p>
+							</div>
+							
+					 </group>
+					</group>
+					
+						<group colspan="2" nolabel="1"  attrs="{'invisible': [('hold_supply','=',False)]}">
+						
+						 <label string="Warning!! hold supply enabled for this customer. Contact account team or admin manager." style="color:red; border:2px solid red; padding:10px;" /> 	
+						 
+						 </group>
+						 
+						 <group nolabel="1">
+							<label string="" />  
+						 </group>
+						
+						<group colspan="2" nolabel="1"  attrs="{'invisible': [('stop_supply','=',False)]}">
+						
+						 <label string="Warning!! stop supply enabled for this customer. Contact account team or admin manager." style="color:red; border:2px solid red; padding:10px;" /> 	
+						 
+						 </group>
+						 
+						<group nolabel="1">
+						
+						 <field nolabel="1" name="authorize_comments" placeholder="Authorised Comments" attrs="{'readonly': [('x_admin_master','=', False)],'required': ['|',('authorize_docket','=', True),('authorize_blacklist','=', True)]}" />		
+						 
+						 </group>
+						 <group nolabel="1">
+							<label string="" />  
+						 </group>
+					<group nolabel="1"  attrs="{'invisible': [('pending_invoice','=',False)]}">
+						
+						<label string="Pending COD invoice/s found, please contact account team or admin manager to continue !!" style="color:red; border:2px solid red; padding:10px;" /> 
+					</group>
+					
+					 <group nolabel="1">
+							<label string="" />  
+						 </group>
+					<group attrs="{'invisible': [('x_admin_master','=',False)]}">
+					<field name="fw_done" attrs="{'invisible': [('state','!=','done')]}"/>
+					<field name="fw_comments" attrs="{'required': [('fw_done','=',True)],'invisible': [('state','!=','done')]}"/>
+					</group>		
+					<group >
+						<field nolabel="1" name="docket_ids" create="false" readonly="1"/>
+					</group>
+					<group>
+						<field name="stop_supply_over" invisible="1" />
+						<group nolabel="1"  attrs="{'invisible': [('stop_supply_over','=',False)]}">
+							 
+						<label string="Warning!! This delivery pushes the customer over their credit limit (stop supply), please contact account to authorise and continue!!" style="color:red; border:2px solid red; padding:10px;" /> 
+						</group>
+						
+						
+						
+					</group>
+					<group>
+					<field name="internal_notes"/>
+					<field name="scheduled_by" readonly="1" />
+					</group>
+				</sheet>	
+				<div class="oe_chatter">
+					<field name="message_follower_ids" widget="mail_followers"/>
+					<field name="message_ids" widget="mail_thread"/>
+				</div>
+			</form>
+		</field>
+	</record>	 
+			 
+	 <record id="dincelwarehouse_stock_warehouse_form_view" model="ir.ui.view" >
+		<field name="name">Stock Warehouse Inherit</field>
+		<field name="model">stock.warehouse</field>
+		<field name="inherit_id" ref="stock.view_warehouse" />
+		<field name="arch" type="xml">
+			<field name="code" position="after">
+				<field name="x_cost_xtra"  />
+				<field name="x_master"/>
+			</field>
+		</field>
+	</record>
+
+	
+					
+	</data>
+</openerp>	

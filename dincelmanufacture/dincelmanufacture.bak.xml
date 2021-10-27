@@ -1,0 +1,668 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	 <record id="dincelmrp_production_produce_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelmrp.production.produce.form.inherit</field>
+			<field name="model">mrp.product.produce</field>
+			<field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard" />
+			<field name="arch" type="xml">
+					<button name="do_produce" position="replace">
+						<button name="do_produce_dcs"  type="object"  string="Produce" />
+					</button>
+					<field name="product_qty" position="after" >
+						<field name="x_product_uom" readonly="1"/>
+						<field name="x_produce_qty" invisible="1"/>
+						<field name="x_order_qty" invisible="1"/>
+						<field name="x_order_length" invisible="1"/>
+					</field>
+			</field>
+		</record>
+		
+		
+		 <record id="view_dincelmrp_production_filter" model="ir.ui.view">
+			<field name="name">MRP Search</field>
+			<field name="model">mrp.production</field>
+			<field name="arch" type="xml">
+				<search string="MRP Search">
+					 
+					 <field name="x_order_code" />
+					 <field name="x_project_id" string="Site" />
+					 <field name="x_partner_id" string="Customer" />
+					 <field name="name" />
+					 <field name="x_sale_order_id" />
+					 
+					 
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesorder"  string="Sales Order" icon="terp-personal" domain="[]" context="{'group_by':'origin'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+	  <record id="dincelmrp_bom_form" model="ir.ui.view" >
+			<field name="name">dincelmrp.bom.view</field>
+			<field name="view_type">form</field>
+			<field name="model">mrp.bom</field>
+			<field name="arch" type="xml">
+				<form string="Bill of Material" version="7.0">
+				   <header>
+                     <button name="button_update_cost" string="Update Product Standard Cost" type="object"   />
+               
+                </header>
+                    <group>
+                        <group>
+                            <field name="product_tmpl_id" on_change="onchange_product_tmpl_id(product_tmpl_id, product_qty, context)"/>
+                            <field name="product_id" required="1"/>
+							<field name="x_cost_price" readonly="1" />
+                            <label for="product_qty" string="Quantity"/>
+                            <div>
+                                <field name="product_qty" class="oe_inline" on_change="onchange_product_tmpl_id(product_tmpl_id, product_qty, context)"/>
+                                <field name="product_uom" class="oe_inline" on_change="onchange_uom(product_tmpl_id, product_uom)" groups="product.group_uom"/>
+                            </div>
+                            <label for="routing_id" class="oe_inline" groups="mrp.group_mrp_routings"/>
+                            <div groups="mrp.group_mrp_routings">
+                                <field name="routing_id" class="oe_inline"/>
+                            </div>
+                        </group>
+                        <group>
+                            <field name="name" groups="product.group_mrp_properties"/>
+                            <field name="code" string="Reference"/>
+                            <field name="type"/>
+                            <p colspan="2" class="oe_grey" attrs="{'invisible': [('type','=','normal')]}">
+                                When processing a sales order for this product, the delivery order
+                                will contain the raw materials, instead of the finished product.
+                            </p>
+                            <field name="company_id" groups="base.group_multi_company" widget="selection"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Components">
+                            <field name="bom_line_ids" widget="one2many_list">
+                                <tree string="Components" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" on_change="onchange_product_id_dcs(product_id, product_qty)"/>
+                                    <field name="type"/>
+                                    <field name="product_qty"/>
+                                    <field name="product_uom" on_change="onchange_uom(product_id, product_uom)" groups="product.group_uom"/>
+                                    <field name="product_rounding"  invisible="1"/>
+                                    <field name="product_efficiency"  invisible="1"/>
+                                    <field name="date_start"  invisible="1"/>
+                                    <field name="date_stop" invisible="1"/>
+									<field name="x_cost_price" readonly="1" />
+                                    <field name="attribute_value_ids"  invisible="1" widget="many2many_tags" domain="[('product_ids.product_tmpl_id', '=', parent.product_tmpl_id)]"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Properties" groups="product.group_mrp_properties">
+                            <group>
+                                <group>
+                                    <field name="position"/>
+                                    <field name="sequence"/>
+                                    <field name="active"/>
+                                </group>
+                                <group>
+                                    <field name="date_start"/>
+                                    <field name="date_stop"/>
+                                    <field name="product_rounding"/>
+                                    <field name="product_efficiency"/>
+                                </group>
+                            </group>
+                            <separator string="Properties"/>
+                            <field name="property_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                    <div class="oe_chatter">
+                         <field name="message_follower_ids" widget="mail_followers"/>
+                         <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+                    </div>
+                </form>
+            
+					 
+					 
+				 
+			</field>
+		</record>	
+		
+	 
+		
+		<record id="dincelmrp_order_form" model="ir.ui.view" >
+			<field name="name">dincelmrp.order.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelmrp.production</field>
+			<field name="arch" type="xml">
+				<form string="Manufacturing Orders" version="7.0"  >
+				  <header>
+                 		 <button string="Preview PQ" name="pqreport_print_dcs" type="object"  /> 
+						 <button string="PQ Pdf" name="pqreport_print_pdf_dcs" type="object"  /> 
+						 
+						 <button string="Preview Accessories" name="acsreport_print_dcs" type="object"  /> 
+						 <button string="Accessories Pdf" name="acsreport_print_pdf_dcs" type="object"  /> 
+						 <!-- <button string="Production" name="production_start" type="object"  />  -->
+						 <button string="DCS Production Update"  name="updatelink_production_dcs" type="object"/>
+						 <button string="Load Sheet" name="print_pdf_load_sheet_dcs" type="object"/>
+						 <button string="Book Delivery"  name="button_schedule_delivery" type="object"/>
+						 
+				  </header>
+					 
+					  
+					  <group> 
+					   <group> 
+							<field name="state" invisible="1"/>
+							
+							<field name="order_id" on_change="onchange_order_id(order_id)" readonly="1"/>
+							<field name="order_code" readonly="1"/>   
+							<field name="name" readonly="1"/>
+							<field name="fullpart" invisible="1" />
+							<field name="part_no" attrs="{'invisible': [('fullpart','=','full')]}" />
+							<field name="dcs_refcode" readonly="1"/>
+							
+							 <field name="has_110" readonly="1" invisible="1"/>
+							 <field name="has_155" readonly="1" invisible="1"/>
+							 <field name="has_200" readonly="1" invisible="1"/>
+							 <field name="has_275" readonly="1" invisible="1"/>
+						</group> 	
+						
+						 <group> 
+							 <field name="partner_id" readonly="1"/>
+							 <field name="project_id" readonly="1"/>
+							 <field name="user_id" string="Salesperson" readonly="1"/>
+							 <field name="color_code" widget="color"  readonly="1" />
+							 <field name="color_name"    readonly="1" />
+							 <field name="has_res_110" readonly="1" invisible="1"/>
+							 <field name="has_res_155" readonly="1" invisible="1"/>
+							 <field name="has_res_200" readonly="1" invisible="1"/>
+							 <field name="has_res_275" readonly="1" invisible="1"/>
+						 </group> 	
+						
+						</group> 		
+				 
+						<group string="Production"> 
+						<field name="production_line" on_change="onchange_product_line(production_line, context)" nolabel="1">
+							<tree create="false"   editable="bottom">
+								 <field name="state" readonly="1" invisible="1"/>
+								 <field name="name" readonly="1" invisible="1"/>
+								 <field name="product_id" readonly="1" />
+								 <field name="x_order_length" string="Length" readonly="1"/>
+								 <field name="x_order_qty" string="Qty" readonly="1"/>
+								 <field name="product_qty" invisible="1"/>
+								 <field name="x_pack_10" on_change="onchange_pack_qty(x_order_qty,x_pack_10,x_pack_12,x_pack_14,x_pack_20)" string="10L" attrs="{'readonly': [('x_pack10a','=',False)]}" sum="Tot 10L"/>
+								 <field name="x_pack_12" on_change="onchange_pack_qty(x_order_qty,x_pack_10,x_pack_12,x_pack_14,x_pack_20)" string="12L" attrs="{'readonly': [('x_pack12a','=',False)]}" sum="Tot 12L"/>
+								 <field name="x_pack_14" on_change="onchange_pack_qty(x_order_qty,x_pack_10,x_pack_12,x_pack_14,x_pack_20)" string="14L" attrs="{'readonly': [('x_pack14a','=',False)]}" sum="Tot 14L"/>
+								 <field name="x_pack_20" on_change="onchange_pack_qty(x_order_qty,x_pack_10,x_pack_12,x_pack_14,x_pack_20)" string="20L" attrs="{'readonly': [('x_pack20a','=',False)]}" sum="Tot 20L"/>
+								 <field name="x_pack_xtra" string="Extra" sum="Tot Extra" />
+								 <field name="x_tot_lm" string="L/M" sum="Tot L/M"/>
+								 
+								 <field name="x_pack10a" invisible="1" />
+								 <field name="x_pack12a" invisible="1" />
+								 <field name="x_pack14a" invisible="1" />
+								 <field name="x_pack20a" invisible="1" />
+								 <field name="x_full_mo" invisible="1" on_change="onchange_full_mo(x_full_mo, x_remain_qty, context)"/>
+								 
+								 <field name="x_start_mo"  invisible="1" />
+								 <field name="date_start"  attrs="{'readonly': [('x_start_mo','=',False)]}"   invisible="1"/>
+								 <field name="routing_id" invisible="1" />
+								 <field name="x_remain_qty"   invisible="1" />
+								 <field name="x_curr_produced_qty"  attrs="{'readonly': [('x_start_mo','=',False)]}" invisible="1"/>
+								 <field name="x_produced_qty" string="Produced YTD" readonly="1" invisible="1"/>
+							</tree>
+						</field>
+						 </group> 
+						 
+						 <group> 
+						
+							<group>
+									<field name="packs" invisible="1"/>  
+									 <field name="pack_200" attrs="{'invisible': [('has_200','=',False)]}" />
+							 <field name="note_200" attrs="{'invisible': [('has_200','=',False)]}" />
+									<field name="pack_110" attrs="{'invisible': [('has_110','=',False)]}" />
+										<field name="note_110" attrs="{'invisible': [('has_110','=',False)]}" />
+										
+									<field name="trucks" required="1" />  
+							 <field name="product_id" invisible="1" options='{"no_create": 1, "no_create_edit": 1}' string="Delivery" domain="[('x_prod_cat', '=', 'freight')]" />  
+							 </group> 
+							 <group>
+							 
+								 <field name="pack_155" attrs="{'invisible': [('has_155','=',False)]}" />
+								<field name="note_155" attrs="{'invisible': [('has_155','=',False)]}" />
+								
+								 <field name="pack_275" attrs="{'invisible': [('has_275','=',False)]}" />
+								<field name="note_275" attrs="{'invisible': [('has_275','=',False)]}" />
+							 </group> 
+							 
+							 </group> 
+							 <group string="Reserves"> 
+							 
+							 <field name="reserve_line" nolabel="1"  >
+									<tree create="false" editable="bottom" >
+										<field name="product_id" readonly="1"/>
+										<field name="order_length" readonly="1"/>
+										<field name="reserve_qty" readonly="1"/>
+										<field name="pack_10" on_change="onchange_pack_qty(reserve_qty,pack_10,pack_12,pack_14,pack_20)" string="10L" attrs="{'readonly': [('pack10a','=',False)]}" sum="Tot 10L"/>
+										<field name="pack_12" on_change="onchange_pack_qty(reserve_qty,pack_10,pack_12,pack_14,pack_20)" string="12L" attrs="{'readonly': [('pack12a','=',False)]}" sum="Tot 12L"/>
+										<field name="pack_14" on_change="onchange_pack_qty(reserve_qty,pack_10,pack_12,pack_14,pack_20)" string="14L" attrs="{'readonly': [('pack14a','=',False)]}" sum="Tot 14L"/>
+										<field name="pack_20" on_change="onchange_pack_qty(reserve_qty,pack_10,pack_12,pack_14,pack_20)" string="20L" attrs="{'readonly': [('pack20a','=',False)]}" sum="Tot 20L"/>
+										<field name="pack_xtra" string="Extra" sum="Tot Extra" />
+										<field name="packed_by" invisible="1"/>
+										<field name="packed_dt" invisible="1"/>
+										<field name="checked_by" invisible="1"/>
+										<field name="checked_dt" invisible="1"/>
+										<field name="pack10a" invisible="1" />
+										<field name="pack12a" invisible="1" />
+										<field name="pack14a" invisible="1" />
+										<field name="pack20a" invisible="1" />
+										<field name="prod_group" invisible="1"/>
+										
+									</tree>
+								</field>
+							  </group> 
+							<group attrs="{'invisible': [('has_res_110','=',False)]}"> 
+								<group> 
+								<field name="packby_110"  string="110mm Packed By"  />
+								<field name="note_reserve" invisible="1"/>
+								 </group> 
+								 <group> 
+								  <group> 
+									<field name="packdt_110"  string="Date" />
+								 	</group> 
+									 <group> 
+									<field name="checkby_110" string="Checked By"   />
+								 	</group> 
+								 	</group> 
+							 </group> 
+							 
+							<group attrs="{'invisible': [('has_res_155','=',False)]}"> 
+								<group> 
+								<field name="packby_155"  string="155mm Packed By"  />
+								 </group> 
+								 <group> 
+								  <group> 
+									<field name="packdt_155"   string="Date" />
+								 	</group> 
+									 <group> 
+									<field name="checkby_155"  string="Checked By" />
+								 	</group> 
+								 	</group> 
+							 </group> 
+						 
+							<group attrs="{'invisible': [('has_res_200','=',False)]}"> 
+								<group> 
+								<field name="packby_200"  string="200mm Packed By" />
+								 </group> 
+								 <group> 
+								  <group> 
+									<field name="packdt_200" string="Date"  />
+								 	</group> 
+									 <group> 
+									<field name="checkby_200"  string="Checked By" />
+								 	</group> 
+								 	</group> 
+							 </group> 
+				
+					 
+							<group attrs="{'invisible': [('has_res_275','=',False)]}"> 
+								<group> 
+								<field name="packby_275" string="275mm Packed By"  />
+								 </group> 
+								 <group> 
+								  <group> 
+									<field name="packdt_275"  string="Date" />
+								 	</group> 
+									 <group> 
+									<field name="checkby_275" string="Checked By"  />
+								 	</group> 
+								 	</group> 
+							 </group> 
+				
+				
+					 
+				</form>
+			</field>
+		</record>	
+		
+		 <record id="view_dincelmrp_order_filter" model="ir.ui.view">
+			<field name="name">Production Qty Search</field>
+			<field name="model">dincelmrp.production</field>
+			<field name="arch" type="xml">
+				<search string="Production Qty Search">
+					 
+					<field name="order_code" />
+					 <field name="project_id" string="Site" />
+					 <field name="partner_id" string="Customer" />
+					 <field name="name" />
+					 <field name="order_id" />
+					 
+				 
+					 
+			   </search>
+			</field>
+		</record>
+		
+		 <record model="ir.ui.view" id="dincelmrp_order_tree">
+            <field name="name">Manufacturing Orders</field>
+            <field name="model">dincelmrp.production</field>
+            <field name="arch" type="xml">
+                <tree string="Manufacturing Orders" create="false">
+                    <field name="order_id" />
+					<field name="order_code" />
+					
+					<field name="color_code" widget="color"/>
+					
+                    <field name="name" invisible="1" />
+                    <field name="partner_id" />
+					<field name="project_id" />
+					
+					<field name="user_id" string="Salesperson" />
+					<field name="deposit_paid" />
+					<field name="balance_paid" />
+					<field name="balance_due" />
+					
+					 <field name="trucks" />  
+					 <field name="trk_booked" string="Booked"/>  
+					 <field name="trk_delivered" string="Delivered"/>  
+					 <field name="pack_tot" />  
+					 <field name="pudel" />  
+					<field name="product_id" invisible="1"/>
+					<field name="prod_status" /> 
+					
+                </tree>
+            </field>
+        </record>
+		
+		
+		<record model="ir.ui.view" id="dincelmrp_mo_order_tree">
+            <field name="name">Manufacturing Orders Tree</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <tree fonts="bold:message_unread==True" colors="blue:state in ('draft','confirmed');red:date_planned&lt;current_date and state not in ('done','cancel');black:date_planned&gt;=current_date;gray:state in ('done','cancel') " string="Manufacturing Orders"  default_order='id desc'>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name"/>
+                    <field name="date_planned"/>
+					<field name="x_partner_id" />
+					<field name="x_project_id" />
+                    <field name="product_id"/>
+                    <field name="product_qty" sum="Total Qty" invisible="1"/>
+					<field name="x_order_qty"/>
+					<field name="x_order_length"/>
+					<field name="x_est_hrs"  sum="Total Hours"/>
+                    <field name="product_uom" groups="product.group_uom" invisible="1"/>
+                    <field name="routing_id" groups="mrp.group_mrp_routings"/>
+                    <field name="hour_total" sum="Total Hours" invisible="1"/>
+                    <field name="cycle_total" sum="Total Cycles" invisible="1"/>
+                    <field name="origin"/>
+                    <field name="state"/>
+					 
+                </tree>
+            </field>
+        </record>
+	
+		<record model="ir.ui.view" id="dincelmrp_mo_order_edit_tree">
+            <field name="name">Manufacturing Orders Edit Tree</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <tree fonts="bold:message_unread==True"    colors="blue:state in ('draft','confirmed');red:date_planned&lt;current_date and state not in ('done','cancel');black:date_planned&gt;=current_date;gray:state in ('done','cancel') " string="Manufacturing Orders"  default_order='id desc'>
+                    <field name="message_unread" invisible="1"/>
+                    <field name="name" readonly="1"/>
+					<field name="origin"  readonly="1"/>
+					<field name="x_order_code"/>
+                    <field name="state"  readonly="1"/>
+                    <field name="date_planned"/>
+					
+					
+					<field name="x_partner_id"  string="Customer" readonly="1"/>
+					<field name="x_project_id"  readonly="1"/>
+                    <field name="product_id"  readonly="1"/>
+                    <field name="product_qty" sum="Total Qty" invisible="1"  readonly="1"/>
+					<field name="x_order_qty"  sum="Total Qty"  readonly="1"/>
+					<field name="x_order_length"  readonly="1"/>
+					<field name="x_est_hrs"  sum="Total Hours"  readonly="1"/>
+                    <field name="product_uom" groups="product.group_uom" invisible="1"/>
+                    <field name="routing_id" groups="mrp.group_mrp_routings"/>
+                    <field name="hour_total" sum="Total Hours" invisible="1"/>
+                    <field name="cycle_total" sum="Total Cycles" invisible="1"/>
+                    <field name="x_full_mo" invisible="1" on_change="onchange_full_mo(x_full_mo, x_remain_qty, context)"/>
+					  
+					 <field name="x_start_mo"   />
+					 <field name="date_start"  attrs="{'readonly': [('x_start_mo','=',False)]}" invisible="1"  />
+					 <field name="x_remain_qty" sum="Remain Qty"  readonly="1"  />
+					 <field name="x_remain_hrs" sum="Remain Hours"  readonly="1"  />
+					 
+					 <field name="x_curr_produced_qty"  attrs="{'readonly': [('x_start_mo','=',False)]}" />
+					 <field name="x_produced_qty" string="Produced YTD" readonly="1" />
+					 
+					  
+                </tree>
+            </field>
+        </record>
+	
+	
+		
+		<record model="ir.ui.view" id="dincelmrp_sale_order_tree">
+            <field name="name">Sales Orders Tree</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <tree string="Sales Orders">
+				 
+					<field name="message_unread" invisible="1"/>
+                    <field name="name" string="Number"/>
+					<field name="origin" string="Order#" />
+					<field name="x_colorcode" widget="color"  string="Colour" readonly="1" />
+                    <field name="date_order"/>
+                    <field name="partner_id"/>
+					<field name="x_project_id"/>
+                    <field name="user_id"/>
+                    <field name="amount_total" sum="Total Tax Included"/>
+					<field name="state" invisible="1"/> 
+					<field name="x_ac_status" invisible="1"/>
+					<field name="x_dep_paid"/>
+					<field name="x_bal_paid"/>
+					<field name="x_deposit_paid" invisible="1"/>
+					<field name="x_balance_paid" invisible="1"/>
+					<field name="x_over_due" />
+                    <field name="x_prod_status"/>
+                    <field name="x_del_status"/> 
+					
+                </tree>
+            </field>
+        </record>
+		<!--
+		<record id="dincelmrp_order_action" model="ir.actions.act_window" >
+			<field name="name">Incoming Manufacturing Orders</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			 
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmrp_order_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelmrp_order_action"/>
+			<field name="view_id" ref="dincelmrp_sale_order_tree" />
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmrp_order_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			
+			<field name="act_window_id" ref="dincelmrp_order_action"/>
+		</record>
+	-->
+	
+			
+	<record id="dincelmrp_mo_done_order_action" model="ir.actions.act_window" >
+		<field name="name">MRP Orders Done</field>
+		<field name="res_model">mrp.production</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state','=','done')]</field> 
+		<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+		<field name="context" eval="{'search_default_salesorder': 1}"></field>
+	</record>
+		
+	<record id="dincelmrp_mo_order_action" model="ir.actions.act_window" >
+		<field name="name">MRP Orders</field>
+		<field name="res_model">mrp.production</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state','not in',('done','cancel'))]</field> 
+		<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+		<field name="context" eval="{'search_default_salesorder': 1}"></field>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_mo_order_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelmrp_mo_order_action"/>
+		<field name="view_id" ref="dincelmrp_mo_order_tree"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_mo_order_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelmrp_mrp_order_form" />
+		<field name="act_window_id" ref="dincelmrp_mo_order_action"/>
+	</record>
+	
+	
+	
+	
+	<record id="dincelmrp_bom_action" model="ir.actions.act_window" >
+		<field name="name">BOM</field>
+		<field name="res_model">mrp.bom</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_bom_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelmrp_bom_action"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_bom_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelmrp_bom_form"/>
+		<field name="act_window_id" ref="dincelmrp_bom_action"/>
+	</record>	
+		
+	<record id="dincelmrp_sales_order_action" model="ir.actions.act_window" >
+		<field name="name">Sales Orders</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'cancel')]</field>
+	</record>
+	 <!-- <field name="domain"></field> criteria removed [('state', 'not in', ('sent', 'cancel'))],  as at Nov 15,2016 -->
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_sales_order_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="view_id" ref="dincelmrp_sale_order_tree"/>
+		<field name="act_window_id" ref="dincelmrp_sales_order_action"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_sales_order_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelaccount.dincelaccount_sale_order_form"/>
+		<field name="act_window_id" ref="dincelmrp_sales_order_action"/>
+	</record>
+	
+	<record id="dincelmrp_sales_order_pending_mo_action" model="ir.actions.act_window" >
+		<field name="name">Sales Orders for Produce/Pickup</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'cancel')]</field>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_sales_order_pending_mo_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="view_id" ref="dincelmrp_sale_order_tree"/>
+		<field name="act_window_id" ref="dincelmrp_sales_order_pending_mo_action"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_sales_order_pending_mo_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelaccount.dincelaccount_sale_order_form"/>
+		<field name="act_window_id" ref="dincelmrp_sales_order_pending_mo_action"/>
+	</record>
+	
+	<report
+            id="action_report_mo_pqreport"
+            model="dincelmrp.production"
+            report_type="qweb-html"
+            string="MO Production"
+            name="production.report_mo_pqreport"
+            file="production.report_mo_pqreport"
+        />	
+		
+	<report
+            id="action_report_mo_pqreport_pdf"
+            model="dincelmrp.production"
+            report_type="qweb-pdf"
+            string="MO Production"
+            name="production.report_mo_pqreport_pdf"
+            file="production.report_mo_pqreport"
+        />			
+		
+		 
+	<menuitem id="dincelmrp_sales_order_menu" 
+				name="Sales Orders" 
+				parent="base.menu_sales" 
+				action="dincelmrp_sales_order_action" 
+				sequence="2"
+				/>	
+	<menuitem id="dincelmrp_sales_order_pending_mo_menu" 
+				name="Sales Orders for Produce/Pickup" 
+				parent="mrp.menu_mrp_manufacturing" 
+				action="dincelmrp_sales_order_pending_mo_action" 
+				sequence="3"
+				/>	
+				
+	<menuitem id="dincelmrp_mo_order_menu" 
+			name="MRP Orders" 
+			parent="mrp.menu_mrp_manufacturing" 
+			action="dincelmrp_mo_order_action" 
+			sequence="1"
+			/>	
+					
+	<menuitem id="dincelmrp_mo_done_order_menu" 
+					name="MRP Orders Done" 
+					parent="mrp.menu_mrp_manufacturing" 
+					action="dincelmrp_mo_done_order_action" 
+					 
+					/>	
+					
+	<menuitem id="dincelmrp_bom_menu" 
+					name="BOM" 
+					parent="mrp.menu_mrp_bom" 
+					action="dincelmrp_bom_action" 
+					 
+					/>			
+
+			
+	<menuitem id="dincelcrm_sales_order_menu" 
+				name="Sales Orders" 
+				parent="dincelcrm.dincelcrm_sale_menu_sub" 
+				action="dincelmrp_sales_order_action" 
+				sequence="4"
+				/>	
+				<!-- 
+	<menuitem id="dincelcrm_sales_order_pending_mo_menu" 
+				name="Sales Orders for Produce/Pickup" 
+				parent="dincelcrm.dincelcrm_sale_menu_sub" 
+				action="dincelmrp_sales_order_pending_mo_action" 
+				sequence="5"
+				/>	 -->
+				
+					
+	</data>
+</openerp>	

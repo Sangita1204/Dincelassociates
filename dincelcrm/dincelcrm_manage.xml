@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+	<record id="dincelcrm_newcontacts_rpt_view" model="ir.ui.view">
+            <field name="name">New Contacts Report</field>
+            <field name="model">dcsreport.contact.report</field>
+            <field name="arch" type="xml">
+            <form string="New Contacts Report">
+                  <group>
+                    <field name="date"   />
+					
+                </group>
+ 
+							 
+                <footer>
+                    <button name="print_report"  type="object"  string="Print "  class="oe_highlight"/>
+					 
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+                </footer>
+            </form>
+            </field>
+        </record>
+		
+		  
+		  
+		  
+		
+			<record id="dincelcrm_newcontacts_rpt_action" model="ir.actions.act_window">
+             <field name="name">New Contacts Report</field>
+             <field name="res_model">dcsreport.contact.report</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_newcontacts_rpt_view"/>
+             <field name="target">new</field>
+           
+        </record>
+	  
+	  	
+		<report
+            id="action_report_newcontact"
+            model="res.partner"
+            report_type="qweb-html"
+            string="New Contacts Report"
+            name="dincelcrm.report_newcontact"
+            file="dincelcrm.report_newcontact"
+        />	
+		
+		<menuitem id="dincelcrm_newcontacts_rpt_menu"
+					name="New Contacts Report" 
+					parent="base.next_id_64" 
+					action="dincelcrm_newcontacts_rpt_action" 
+					/> 
+					
+ 
+    </data>
+</openerp>

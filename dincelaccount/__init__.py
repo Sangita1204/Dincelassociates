@@ -1,0 +1,17 @@
+import dincelaccount
+import report
+import res_config
+import dincelaccount_refund_invoice
+import dincelaccount_make_invoice
+import dincel_journal
+import dincelaccount_purchase
+import dincelaccount_tax
+import dincelaccount_voucher
+import wizard
+import controllers
+import dincelaccount_aba
+import dincelaccount_reconcile
+import dincelsale
+import edi
+import dincelaccount_mail
+import dincelsaleorder_product

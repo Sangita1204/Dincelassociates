@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelmrp_mrp_produce_form" model="ir.ui.view">
+            <field name="name">Schedule MO</field>
+            <field name="model">dincelmrp.produce</field>
+            <field name="arch" type="xml">
+                <form string="MO">
+                     
+                    <group>
+                        <field name="production_id" readonly="1"/>
+                        <field name="date"/>
+						<field name="qty" on_change="on_change_qty(qty, item_lines, context)" invisible="1"/> 
+						<field name="item_lines">
+							<tree create="false" editable="bottom"	 >
+								<field name="mrp_id"  readonly="1"/>
+								<field name="product_id" readonly="1"/>
+								<field name="qty_order"  readonly="1"  />
+								<field name="order_length" readonly="1" />
+								<field name="qty_actual"  invisible="1" />
+								<field name="product_uom" invisible="1" />
+								<field name="region_id" invisible="1" />
+								<field name="order_id" invisible="1" />
+								<field name="qty_remain"  readonly="1" />
+								<field name="full_mo"  on_change="onchange_full_mo(full_mo, qty_remain, context)"/>
+								<field name="qty_produce"  />	
+								
+								
+								
+							</tree>  
+							
+						
+						</field>
+						
+                    </group>
+					
+                    <footer>
+                        <button  string="Save MO11"  class="oe_highlight" name="save_production" type="object"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		
+    </data>
+</openerp>

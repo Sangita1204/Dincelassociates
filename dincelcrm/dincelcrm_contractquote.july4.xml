@@ -1,0 +1,517 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		 
+	 <record id="dincelcrm_contractquote_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.contractquote.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<tree string="Contacts">
+					<field name="x_date_quote" /> 
+					<field name="name" string="Quote #"/>
+					<field name="partner_id"  /> 
+					<field name="x_project_id" invisible="1"  /> 
+					<field name="x_proj_name" string="Project / Site" /> 
+					<field name="x_phone_partner"   /> 
+					<field name="x_phone"  invisible="1"/> 
+					<field name="x_mobile"  /> 
+					<field name="x_quote_total" sum="Total"/>
+					<field name="x_rate3" string="Rate COD"/>
+					<field name="x_quote_est_amt" sum="Total"/>
+					<field name="x_likely_sale_dt"/>
+					<field name="x_probability" string="Likely (%%)"/> 
+					<field name="x_proj_state" />
+					<field name="x_source_id" />
+					<field name="x_status"/>
+					<field name="user_id" string="Salesperson"/>
+				  
+					 
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_contractquote_form_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.contractquote.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<form string="Quotations" version="7.0">
+				 <header>
+					<button name="print_quotation" string="Print" type="object" attrs="{'invisible': [('x_quote_converted','=', False)]}" />
+					<button name="confirm_sale" string="Confirm Sale" type="object" invisible="1"/>
+					<button name="convert2opportunity"  type="object" string="Convert to Opportunity"  attrs="{'invisible': ['|',('x_has_lead_oppr','=', '1'),('x_quote_converted','=', True)]}" />
+					<button name="convert2quotation"   type="object" string="Make Quotation" attrs="{'invisible': ['|',('x_quote_converted','=', True),('x_has_lead_oppr','=', '0')]}" />
+					<field name="x_stage_id" widget="statusbar" clickable="True" domain="['|',('id', '=', 1),'|',('id', '=', 3),('id', '=', 5)]" on_change="onchange_stage_id(x_stage_id)" invisible="1" />
+					
+                  </header>
+				   <sheet>
+                    <h1>
+						<field name="x_is_quote" invisible="1"/>
+						
+                        <field name="name" class="oe_inline"  attrs="{'readonly': [('x_quote_converted','=', True)],'invisible': [('x_quote_converted','=', False)]}"/>
+                    </h1>
+                    <group>
+                        <group>
+							<field name="type" invisible="1"/>
+							<field name="x_date_quote" attrs="{'invisible': [('x_quote_converted','=', False)]}"/>
+							<field name="x_project_id" required="1" domain="[('x_is_project', '=', True)]" context="{'default_x_is_project': True,'default_user_id':user_id}" on_change="onchange_lead_name(x_project_id)" options="{'limit': 10,'no_quick_create':True,'m2o_dialog':false}" /> 
+							<field name="x_proj_state" readonly="1" /> 
+							
+							<field name="partner_id" domain="[('is_company', '=', True)]"  string="Customer" options="{'limit': 10, 'no_quick_create': True, 'create_edit': false,'m2o_dialog':false}" context="{'default_is_company': True,'default_user_id':user_id}"/>
+							<field name="x_phone_partner"  readonly="1" /> 
+							<field name="x_contact_id" domain="[('parent_id', '=', partner_id),('x_is_project', '=', False)]" on_change="onchange_contact(x_contact_id,partner_id)" options="{'limit': 10, 'no_quick_create': True, 'create_edit': False,'m2o_dialog':False}"/>
+							<field name="x_phone"  readonly="1" /> 
+							<field name="x_mobile"   readonly="1"/> 
+							<field name="x_email"  readonly="1" /> 
+							<!--
+							<field name="partner_id" required="1"   domain="[('customer','=',True)]"/>
+							<field name="x_project_id"  required="1" domain="[('parent_id', '=', partner_id),('x_is_project', '=', True)]"  on_change="onchange_project(x_project_id,partner_id)"/>
+							<field name="x_contact_id"  required="1" domain="[('parent_id', '=', partner_id),('x_is_project', '=', False)]" on_change="onchange_contact(x_contact_id,x_project_id)"/> -->
+							<field name="date" string="Date" invisible="1"/>
+							
+							<field name="state" invisible="1"/>
+							<field name="pricelist_id" invisible="1"/>
+				   
+							<field name="user_id"  string="Salesperson"/>
+							<field name="x_prepared_by"  string="Prepared By"/>
+							<field name="x_likely_sale_dt"  attrs="{'invisible': [('x_quote_converted','=', False)]}"/>
+							<field name="x_probability"/> 
+							<field name="x_payment_term" invisible="1"/>
+							<field name="x_estimate_csv" invisible="1"/>
+							<field name="x_quote_converted" invisible="1" />
+							<field name="x_has_lead_oppr" invisible="1"  />
+							<field name="x_stage"/> 
+						</group>
+		 
+					</group>
+					 
+					<notebook>
+				  
+					   <page string="Quote Information" groups="base.group_user" attrs="{'invisible': [('x_quote_converted','=', False)]}">
+					 
+							<h3> 
+							<label string="DINCEL MAIN PROFILE &amp; P-3 CORNER QTY. IN SQ. MTRS. " /> </h3>
+								<label string="As per plans and information supplied" /> 
+							
+									<group>
+								
+										<group>
+										
+										<group>
+											
+											<div class="quote_lbl"><br/><br/>
+											 <field name="x_wall_type_id1" options="{'limit': 10, 'create': false, 'create_edit': false}" />
+											 <field name="x_wall_type_id2" options="{'limit': 10, 'create': false, 'create_edit': false}" />
+											 <field name="x_wall_type_id3" options="{'limit': 10, 'create': false, 'create_edit': false}" />
+											 <field name="x_wall_type_id4" options="{'limit': 10, 'create': false, 'create_edit': false}" />
+											 <field name="x_wall_type_id5" options="{'limit': 10, 'create': false, 'create_edit': false}" />
+											<!--
+												<field name="x_quote_base_lbl"  placeholder="eg. Basement Walls"  />
+												<field name="x_quote_party_lbl" placeholder="eg. Party Walls" />
+												<field name="x_quote_lift_lbl" placeholder="eg. Lift/Stair Walls"/>
+												<field name="x_quote_facade_lbl" placeholder="eg. Facade Walls"/>
+												
+												<h4 invisible="1">Total </h4>  -->
+											</div>
+										</group>
+										<group>
+									<group>
+										<div class="quote_110">
+										<h4>110mm (m2)</h4>
+										
+										<field name="x_quote_base_110" string="Basement Walls  (Sq.Mtrs.)"    on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+											 
+										<field name="x_quote_party_110" string="Party Walls  (Sq.Mtrs.)"   on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+								 
+								
+										<field name="x_quote_lift_110" string="Lift/Stair Walls  (Sq.Mtrs.)"  on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										<field name="x_quote_facade_110" string="Facade Walls  (Sq.Mtrs.)"  on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										<field name="x_quote_110" string="Other 110" on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										
+										</div>
+									</group>
+									<group>
+										 
+										<div class="quote_200">  
+										<h4>200mm (m2)</h4>
+										<field name="x_quote_base_200" string="Basement Walls  (Sq.Mtrs.)"  on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+								
+										<field name="x_quote_party_200" string="Party Walls  (Sq.Mtrs.)"    on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+											
+										<field name="x_quote_lift_200" string="Lift/Stair Walls  (Sq.Mtrs.)"  on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										<field name="x_quote_facade_200" string="Facade Walls  (Sq.Mtrs.)"  on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										<field name="x_quote_200" string="Other 200"   on_change="onchange_quote_qty2(x_project_id,x_quote_110,x_quote_base_110,x_quote_party_110,x_quote_lift_110,x_quote_facade_110,x_quote_200,x_quote_base_200,x_quote_party_200,x_quote_lift_200,x_quote_facade_200)"/>
+										
+										</div>
+									</group>
+									</group>
+										
+									<group>
+										<div><h4>TOTAL FOR THIS PROJECT  (Sq.Mtrs.)</h4></div>
+									</group>
+									
+									<group><div><field name="x_quote_total" string="TOTAL FOR THIS PROJECT  (Sq.Mtrs.)"  readonly="1" class="oe_highlight"/></div></group></group>
+									
+									<group  ><div><span> </span></div>
+										</group>
+									</group>
+									
+								<group string=" ">	
+								</group>	
+								<group string="Rates ($)">
+								
+									<group>
+										<group>
+											<field name="x_is_rate1" string="Enable 30 Days Rate" /> 
+											<field name="x_rate1" string="30 Days EOM / m2"/>
+											<field name="x_rate_accs1" string="Accs 30 Days / unit"/>
+											<field name="x_rate_trans1" string="Transport 30 Days / m2"/>
+											
+										</group>
+										<group >
+											<field name="x_is_rate2" string="Enable 14 Days Rate" /> 
+											<field name="x_rate2" string="14 Days EOM / m2"/>
+											<field name="x_rate_accs2"  string="Accs 14 Days / unit"/>
+											<field name="x_rate_trans2" string="Transport 14 Days / m2"/>
+											
+										</group>
+									</group>
+								
+									<group>
+										<group>
+											<field name="x_is_rate3" string="Enable COD Rate" /> 
+											<field name="x_rate3" string="COD / m2"/>
+											<field name="x_rate_accs3"  string="Accs COD / unit"/>
+											<field name="x_rate_trans3" string="Transport COD / m2"/>
+											
+										</group>
+									</group>
+									 
+								</group>
+								<group>			
+									<group>
+										
+										<field name="x_transport_rate_id" options="{'limit': 10, 'create': false, 'create_edit': false}" on_change="transport_rate_change(x_transport_rate_id)"/>
+										
+										<field name="x_rate_truck"/>
+										
+										<field name="x_drawing_txt"/>
+										<field name="x_transport_txt" invisible="1"/>
+									</group>
+									 
+								</group>
+								
+								<group>
+									<group>
+										<field name="x_ref_no" string="Ref. No / Enquiry Id"  ></field>
+									</group>
+									<group>
+										<field name="x_projecttype_ids"  invisible="1" widget="many2many_tags" options="{'limit': 10, 'create': true, 'create_edit': true}"/>	 
+									</group>
+								</group>
+						</page>
+						<page string="Follow-ups">
+					
+							<field string="" name="x_phonecall_ids"  context="{'default_user_id': uid,'default_partner_id':partner_id,'default_x_project_id':x_project_id,'default_x_contact_id':x_contact_id,'default_name': 'follow-up','default_x_is_followup':True,'default_duration':1,'default_user_id':user_id,'default_state':'open'}"> 
+								
+								<form version="7.0"><group>
+									<field name="date" string="Date"/>
+									<field name="x_instruction" string="Instruction (if any)"/>
+									<field name="user_id" string="Responsible"/>
+									<field name="name" string="Address" invisible="1"/>
+									<field name="description" invisible="1"/>
+									<field name="partner_id" invisible="1"/>
+									<field name="x_project_id" invisible="1"/>
+									<field name="x_contact_id" invisible="1"/>
+									
+									<field name="state" invisible="1" />	 
+									<field name="x_is_followup" invisible="1"/>	 
+									<field name="duration" invisible="1"/>
+									</group>
+								</form>
+								<tree>
+									<field name="date"/>
+									<field name="partner_id" invisible="1" />
+									<field name="name" invisible="1" />
+									<field name="x_instruction" string="Instruction"/>
+									<field name="user_id" string="Responsible" options="{'create': false, 'create_edit': false}"/>
+									<field name="description" string="Comments"/>
+									<field name="state" invisible="1"/>	 
+								</tree>
+							</field>
+					
+						</page>
+						<page string="Status">
+							<field name="x_status" on_change="onchange_status_quote(x_status)"/>
+							<field name="description" placeholder="Notes" string="Notes"/>
+						</page>
+					</notebook>
+					
+					<!-- <field name="description" placeholder="Notes" string="Notes"/> -->
+					
+                </sheet>
+				
+				<div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+				
+				</form>
+				
+			</field>
+		</record>
+		
+		<record id="view_dincelcrm_quote_filter" model="ir.ui.view">
+			<field name="name">CRM Quote Search</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<search string="Search Quotes">
+					<field name="name" string="Quote#"/>
+					 
+					<separator/>
+				 
+					 
+					<field name="user_id"/>
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					 
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_quote_fw_pending_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quote.fwpending.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<tree string="Pending Quotation">
+					<field name="x_date_quote" /> 
+					<field name="name" string="Quote #"/>
+					<field name="partner_id"  /> 
+					<field name="x_project_id" invisible="1" /> 
+					<field name="x_proj_name" string="Project / Site" /> 
+					<field name="x_phone_partner"   /> 
+					<field name="x_contact_name"   /> 
+					<field name="x_phone"  invisible="1"/> 
+					<field name="x_mobile"  /> 
+					<field name="x_quote_total" sum="Total"/>
+					<field name="x_rate3" string="Rate COD"/>
+					<field name="x_quote_est_amt" sum="Total"/>
+					<field name="x_likely_sale_dt"/>
+					<field name="x_probability"/> 
+					<field name="x_proj_state" />
+					<field name="x_has_fw_pending"  invisible="1"/>
+					
+					<field name="user_id" string="Salesperson"/>
+					 
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_contractquote_pending_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.contractquote.pending.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<tree string="Pending Quotation">
+					<field name="x_date_quote" /> 
+					<field name="name" string="Quote #"/>
+					<field name="partner_id"  /> 
+					<field name="x_project_id" invisible="1" /> 
+					<field name="x_proj_name" string="Project / Site" /> 
+					<field name="x_phone_partner"   /> 
+					<field name="x_contact_name"   /> 
+					<field name="x_phone"  invisible="1"/> 
+					<field name="x_mobile"  /> 
+					<field name="x_quote_total" sum="Total"/>
+					<field name="x_rate3" string="Rate COD"/>
+					<field name="x_quote_est_amt" sum="Total"/>
+					<field name="x_likely_sale_dt"/>
+					<field name="x_probability"/> 
+					<field name="x_proj_state" />
+					<field name="x_has_fw_pending" invisible="1"/>
+					<field name="x_last_fw_dt" string="Last F/W"/>
+					<field name="x_last_fw_by" string="F/W By"/> 
+					<field name="x_last_fw_desc" string="F/W Comments"/>
+					<field name="x_status" />
+					<field name="user_id" string="Salesperson"/>
+					 
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_transport_quote_rates_form_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.transport.quote.rate.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelcrm.quote.transport.rates</field>
+			<field name="arch" type="xml">
+				<form string="Transport Rates" version="7.0">
+				 <sheet>
+				 <group>
+					<field name="name" />
+					<field name="region"  /> 
+					<field name="min_order" string="Min. m2 /load" /> 
+					<field name="rate1" />
+					<field name="rate2"/>
+					<field name="rate3" />
+					<field name="rate_truck"/>
+					 
+				 
+				 </group>
+				 </sheet>
+				</form>
+				
+			</field>
+		</record>
+		
+		<record id="view_dincelcrm_qutation_filter" model="ir.ui.view">
+			<field name="name">CRM - Quotation Filter</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<search string="Search Quotations">
+					<field name="name" string="Quotations"/>
+					<field name="partner_id" string="Customer"/>
+					<field name="x_project_id" string="Site Address"/>
+					<field name="user_id" string="Salesperson"/> 
+					<separator/>
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					     <filter name="quote_status"  string="Quote Status"   domain="[]" context="{'group_by':'x_status'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record id="dincelcrm_contractquote_action" model="ir.actions.act_window" >
+			<field name="name">Quotations</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_x_is_quote': 1, 'default_x_prepared_by': uid,'default_x_stage_id': 5}</field> 
+			<field name="domain">[('x_is_quote','=','1'),('x_stage_id','=',5)]</field>
+			<field name="search_view_id" ref="view_dincelcrm_qutation_filter"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_contractquote_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelcrm_contractquote_tree_view"/>
+            <field name="act_window_id" ref="dincelcrm_contractquote_action"/>
+		</record>
+	   
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_contractquote_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_contractquote_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_contractquote_action"/>
+		</record>
+		
+		<record id="dincelcrm_transport_quote_rates_action" model="ir.actions.act_window" >
+			<field name="name">Transportation Quotation Rates</field>
+			<field name="res_model">dincelcrm.quote.transport.rates</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+<record model="ir.actions.act_window.view" id="action_dincelcrm_transport_quote_rates_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            
+            <field name="act_window_id" ref="dincelcrm_transport_quote_rates_action"/>
+		</record>
+	   
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_transport_quote_rates_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_transport_quote_rates_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_transport_quote_rates_action"/>
+		</record>
+		
+		<record id="dincelcrm_wall_types_action" model="ir.actions.act_window" >
+			<field name="name">Quotation Wall Types</field>
+			<field name="res_model">dincelcrm.quote.wall.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>	
+		<record id="dincelcrm_quotationpipeline_filter" model="ir.ui.view">
+			<field name="name">Quotation Search</field>
+			<field name="model">account.analytic.account</field>
+			<field name="arch" type="xml">
+				<search string="Search Quotation">
+					<field name="name" string="Quotation"/>
+					 
+					<separator/>
+				
+					<filter name="x_date_from" string="Pipeline" domain="[('x_likely_sale_dt','&gt;=',(context_today()).strftime('%%Y-%%m-%%d'))]" />
+					
+					<field name="user_id"/>
+					 
+					<group expand="0" string="Group By...">
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record id="dincelreport_quotationreport_action" model="ir.actions.act_window" >
+			<field name="name">Quotation Report</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('x_is_quote','=','1')]</field>
+			<field name="view_id" ref="dincelcrm_contractquote_tree_view"/>
+		</record>	
+		
+		<record id="dincelreport_quotationpipeline_action" model="ir.actions.act_window" >
+			<field name="name">Pipeline Quotation</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="domain">[('x_is_quote','=','1')]</field>
+			<field name="context" eval="{'search_default_x_date_from':1}"></field>
+			<field name="view_id" ref="dincelcrm_contractquote_tree_view"/>
+			<field name="search_view_id" ref="dincelcrm_quotationpipeline_filter"/>
+		</record>
+		
+		<!-- Menu Items Start -->
+		
+		
+		<menuitem id="dincelcrm_contractquote_menu" 
+					name="Quotations" 
+					parent="base.menu_sales" 
+					action="dincelcrm_contractquote_action" 
+					sequence="4"
+					/>	
+		
+		<menuitem id="dincelreport_quotationreport_menu"
+					name="Quotation Report" 
+					parent="base.next_id_64" 
+					action="dincelreport_quotationreport_action" 
+					/>	
+					
+		<menuitem id="dincelreport_quotationpipeline_menu"
+					name="Pipeline Quotation" 
+					parent="base.next_id_64" 
+					action="dincelreport_quotationpipeline_action" 
+					/>	
+					
+		<menuitem id="dincelcrm_transport_quote_rates_menu" 
+					name="Quotation Transport Rates" 
+					parent="base.menu_base_config" 
+					action="dincelcrm_transport_quote_rates_action"
+					/>		
+					
+		<menuitem id="dincelcrm_wall_types_menu" 
+					name="Quotation Wall Types" 
+					parent="base.menu_base_config" 
+					action="dincelcrm_wall_types_action"
+					/>		
+		<!-- Menu Items End-->			
+		
+	</data>
+</openerp>	

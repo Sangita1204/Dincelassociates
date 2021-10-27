@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+	 
+	 	<record id="view_sale_make_delivery_docket" model="ir.ui.view">
+            <field name="name">Delivery / Pickup Docket</field>
+            <field name="model">dincelwarehouse.delivery.docket</field>
+            <field name="arch" type="xml">
+                <form string="Docket">
+                      <group>
+					    <group>
+						
+							<field name="schedule_id" invisible="1" />
+							<field name="order_id" invisible="1" />
+							<field name="partner_id" readonly="1" />
+							<field name="project_id" readonly="1" />
+							<field name="order_code" readonly="1" />
+							
+							<field name="date" string="Delivery Date"/>
+						   
+						  
+					     </group>
+						 
+						   <group>
+							<field name="pudel" widget="selection" />
+							<field name="warehouse_id"  widget="selection"  />
+							<field name="source_location_id" widget="selection"  />
+							<field name="destination_location_id" widget="selection"  />
+							  
+							<field name="qty" invisible="1" 
+								on_change="on_change_qty(qty,picking_lines,context)"/>
+								
+							
+							
+					     </group>
+					  
+					 </group>
+					 <group>
+						<group>
+							<field name="delivery_to" />
+							<field name="contact_id" context="{'default_parent_id': partner_id}" />
+							 <field name="vehicle_type" required="1"/> 
+						 </group>
+						 <group attrs="{'invisible': [('pudel','!=','pu')]}">
+									<field name="recipient_full_name" attrs="{'required': [('pudel','=','pu')]}" />
+									<field name="recipient_license"  />
+									<field name="vehicle_rego" attrs="{'required': [('pudel','=','pu')]}" />    
+									<field name="trailer_rego" attrs="{'required': [('trailer_rego_na','=', False),('pudel','=','pu')]}" />
+									<field name="trailer_rego_na"  />
+								</group>
+					</group>		
+					<group  string="Produced Lines">
+						<field name="picking_lines" nolabel="1">
+							<tree create="false" editable="bottom"	>
+								<field name="location_id"   readonly="1" />
+								<field name="qty_onhand" readonly="1" string="Produced" />
+								
+								<field name="product_id" readonly="1"/>
+								 
+								
+								<field name="order_length" string="Length (mm)" readonly="1" />
+								<field name="qty" readonly="1" string="M2" invisible="1" />
+								<field name="qty_panel" readonly="1" string="Qty"/>
+								
+								<field name="qty_delivered" readonly="1" string="Delivered"/>
+								<field name="qty_remain" readonly="1" string="Remain"/>
+								
+								<field name="pick_source"   invisible="1"  />
+								
+								<field name="qty_picked" string="Picking" on_change="on_change_pickqty(product_id,qty_onhand,qty_picked,context)" />
+								<field name="price_unit" invisible="1"/>
+								<field name="disc_pc" invisible="1"/>
+								<field name="product_uom" readonly="1"  invisible="1"/>
+								<field name="sale_order_id" invisible="1"/>
+								<field name="packs"  />
+								<field name="region_id"  invisible="1"/>
+								<field name="coststate_id"  invisible="1"/>
+								<field name="item_key" invisible="1"  />
+								
+							</tree>
+						</field>
+						
+					 </group>
+					 
+					<group  string="Reserve Lines">  
+					<field name="reserve_lines" nolabel="1">
+							<tree create="false" editable="bottom"	>
+								<field name="location_id"   readonly="1" />
+								<field name="qty_onhand" readonly="1" string="Available" />
+								
+								<field name="product_id" readonly="1"/>
+								 
+								<field name="order_length" string="Length (mm)" readonly="1"/>
+								<field name="qty" readonly="1" string="M2" invisible="1" />
+								<field name="qty_panel" readonly="1" string="Qty"/>
+							
+								<field name="qty_delivered" readonly="1" string="Delivered"/>
+								<field name="qty_remain" readonly="1" string="Remain"/>
+								
+								<field name="pick_source"   invisible="1"  />
+								
+								<field name="qty_picked" string="Picking" />
+								<field name="price_unit" invisible="1"/>
+								<field name="disc_pc" invisible="1"/>
+								<field name="product_uom" readonly="1"  invisible="1"/>
+								<field name="sale_order_id" invisible="1"/>
+								<field name="packs"  />
+								<field name="region_id" invisible="1" />
+								<field name="coststate_id"  invisible="1"/>
+								<field name="item_key"   invisible="1"/>
+							</tree>
+							
+						</field>
+						
+                       </group>
+					   
+                    <footer>
+                        <button name="create_docket_dcs" string="Create Docket" type="object"
+                            class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_create_deli_docket" model="ir.actions.act_window">
+            <field name="name">Create Docket</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelwarehouse.delivery.docket</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+		
+		
+    </data>
+</openerp>

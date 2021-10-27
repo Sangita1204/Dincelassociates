@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelmrp_mrp_schedule_new_form" model="ir.ui.view">
+            <field name="name">Schedule MO</field>
+            <field name="model">dincelmrp.schedule.new</field>
+            <field name="arch" type="xml">
+                <form string="MO">
+                     
+                    <group>
+                        
+                        <field name="date" invisible="1"/>
+						<field name="qty" on_change="on_change_qty(qty, item_lines, context)" invisible="1"/> 
+						
+					</group>
+					<group>
+						<div>
+						<field name="item_lines">
+							<tree create="false" editable="bottom"	 >
+								<field name="mrp_id"  invisible="1"/>
+								<field name="name"  readonly="1"/>
+								<field name="project_id"  readonly="1"/>
+								<field name="product_id" readonly="1"/>
+								
+								
+								<field name="order_length" readonly="1" />
+								
+								<field name="product_uom" invisible="1" />
+								<field name="region_id" invisible="1" />
+								<field name="order_id" invisible="1" />
+								<field name="qty_order"  readonly="1"  />
+								<field name="qty_ytd_produced" string="Produced YTD" readonly="1" />	
+								<field name="qty_remain" string="Remain" readonly="1" />
+								<field name="qty_curr_produce"  />
+								
+								
+								
+								
+							</tree>  
+							
+						
+						</field>
+						</div>
+                    </group>
+					
+                    <footer>
+                        <button  string="Save Schedule"  class="oe_highlight" name="save_schedule" type="object"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		  <record id="action_create_mrp_schedule_new_list" model="ir.actions.act_window">
+            <field name="name">MRP Schedule</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelmrp.schedule.new</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+		
+		
+		 <record model="ir.values" id="create_dincelmrp_schedule_new">
+			<field name="model_id" ref="mrp.model_mrp_production" />
+            <field name="name">MRP Schedule</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_create_mrp_schedule_new_list'))" />
+            <field name="key">action</field>
+            <field name="model">mrp.production</field>
+        </record>
+		
+    </data>
+</openerp>

@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	  
+	 
+	 
+	 	<record id="dincelmrp_sale_order_form" model="ir.ui.view">
+            <field name="name">dincelmrp.sale.order.form</field>
+            <field name="model">sale.order</field>
+            <field name="arch" type="xml">
+                <form string="Sales Order" edit="false">
+                    <header>
+					
+						<button string="Schedule MO"  name="button_schedule_mo" type="object"  attrs="{'invisible': [('x_remain2mo','=',False)]}"/>
+						 
+						
+                        <field name="state" widget="statusbar" invisible="1" statusbar_visible="draft,sent,progress,done" statusbar_colors='{"invoice_except":"red","waiting_date":"blue"}'/>
+						
+					</header>
+              
+                   <h1>                 
+                        <label string="Sales Order" />            
+						<field name="name" class="oe_inline" readonly="1"/>
+				   </h1>
+				    <label string=" " /><br />
+					<label string="Credit Limit Exceeded" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_cr_limit_over','=',False)]}"/>
+                    <group>
+					
+                        <group>
+						<field name="x_remain2mo" invisible="1" />
+						<field name="date_order" string="Order Date"/>
+						<field name="x_dt_process" string="Entry Date"/>
+							 
+                            <field name="partner_id" on_change="onchange_partner_id_v2(partner_id, x_project_id, context)"  context="{'search_default_customer':1, 'show_address': 1}"  domain="[('is_company', '=', True),('customer','=',True),('customer','=',True),('x_is_project','=',False)]"  options="{'limit': 15, 'no_quick_create': True, 'no_create_edit': False,'m2o_dialog':false,'always_reload': True}" widget="dincelcrm.dincelcrm_contact_form_new_view">
+							 
+							
+							</field>
+							
+                            <field name="x_region_id" />
+							
+							<field name="partner_invoice_id" groups="sale.group_delivery_invoice_address" context="{'default_type':'invoice'}"/>
+                            
+							<field name="partner_shipping_id" on_change="onchange_delivery_id(company_id, partner_id, partner_shipping_id, fiscal_position)" groups="sale.group_delivery_invoice_address" context="{'default_type':'delivery'}"/>
+							
+							<field name="x_project_id" domain="[('x_is_project', '=', True)]" on_change="onchange_projectsite(x_project_id, context)"  />
+                            
+							<field name="project_id" invisible="1"  />
+							
+							<field name="x_has_custom" invisible="1" />
+							
+							<field name="x_contact_id"  domain="['&amp;', ('x_is_project','=',False),'|',('parent_id', '=', partner_id),('parent_id', '=', x_project_id)]" />
+							
+								
+                            <field name="client_order_ref" string="Customer Purchase Order No."/>
+							
+							<field name="origin" string="DCS Order No."/>
+							
+							<field name="x_quote_id" domain="[('x_project_id', '=', x_project_id)]" options='{"no_create": 1, "no_create_edit": 1}'/>
+                           
+                        </group>
+						
+                        <group>
+						
+ 						
+						<field name="payment_term" on_change="change_payment_term(partner_id, payment_term,date_order,context)" options="{'no_create': True}"/>
+							<field name="x_credit_limit" readonly="1" />	
+							<field name="x_cr_limit_over" string="Over Credit Limit" readonly="1"/>  
+							<field name="x_deposit_exmpt" />	 <!--  attrs="{'invisible': [('x_has_custom','=','0')]}" -->
+							<field name="x_create_deposit" invisible="1"/>	
+							<field name="user_id" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice', 'base.group_sale_salesman_all_leads']}"/>
+							
+									
+							<field name="section_id" invisible="1" options="{'no_create': True}" groups="base.group_multi_salesteams"/>
+							<field name="x_pudel" required="1" />	
+							<field name="x_dt_request" />	
+							<field name="carrier_id" widget="selection"  invisible="1"/>
+							
+							<field name="x_warehouse_id" widget="selection"  required="1"  />
+							
+							<group colspan="2"  attrs="{'invisible': [('x_pudel','!=','del')]}">
+							<group>
+								<field name="x_street" />
+								<field name="x_postcode" />
+								<field name="x_suburb" />
+							</group>
+							<group>
+								<field name="x_state_id" domain="[('country_id', '=', x_country_id)]" widget="selection" />
+								<field name="x_country_id" widget="selection" />
+								
+								<field name="fiscal_position" options="{'no_create': True}"
+									on_change="onchange_fiscal_position(fiscal_position, order_line, context)" invisible="1"/>
+									
+								<field name="company_id" widget="selection" groups="base.group_multi_company" invisible="1"/>
+								
+								 
+								
+								<field name="invoiced" invisible="1"/>
+								
+								<field name="invoice_exists" invisible="1"/>
+								
+								<field name="currency_id" invisible="1"/>
+								 
+								
+								  
+								<field domain="[('type','=','sale')]" invisible="1" name="pricelist_id" groups="product.group_sale_pricelist" on_change="onchange_pricelist_id(pricelist_id,order_line)"/>
+								</group>
+							  </group>
+                        </group>
+						
+                    </group>
+					
+					 
+							
+                    <notebook>
+                        <page string="Order Lines">
+                            <field name="order_line" on_change="onchange_order_line_dcs(order_line, x_region_id, context)" context="{'default_x_region_id' : x_region_id }"> 
+                                <tree string="Sales Order Lines" editable="bottom">
+                                    
+									<field name="sequence" widget="handle"/>
+                                   
+								   <field name="state" invisible="1"/>
+                                    
+									<field name="th_weight" invisible="1"/>
+									
+									<field name="x_region_id" invisible="1" string="Cost Centre" widget="selection" />
+                                   
+								   <field name="product_id"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                                        groups="base.group_user"
+                                        on_change="product_id_change_v2(parent.pricelist_id, product_id, product_uom_qty, False, product_uos_qty, False, name, parent.partner_id, False, True, parent.date_order, False, parent.fiscal_position, False, parent.x_warehouse_id,context)"/>
+                                   
+								   <field name="name" invisible="1" />
+									
+									
+									
+									<field name="x_order_length"  string="Length" on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"/>
+									
+									<field name="x_order_qty" string="Qty" on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"/>
+									
+                                    <field name="product_uom_qty" string="M2/Unit"
+                                        context="{'partner_id':parent.partner_id, 'quantity':product_uom_qty, 'pricelist':parent.pricelist_id, 'uom':product_uom}"
+                           
+						   on_change="product_qty_changed(product_id,x_order_qty,x_order_length, parent.partner_id, parent.payment_term,parent.date_order, parent.x_warehouse_id, context)"  />
+									   
+                                    <field name="product_uom"
+                                        on_change="product_uom_change(parent.pricelist_id, product_id, product_uom_qty, product_uom, product_uos_qty, product_uos, name, parent.partner_id, False, False, parent.date_order, context)"
+                                        groups="product.group_uom" options='{"no_open": True}'  invisible="1"/>
+										
+                                    <field name="product_uos_qty" groups="product.group_uos" invisible="1"/>
+									
+                                    <field name="product_uos" string="UoS" groups="product.group_uos" invisible="1"/>
+                                    <field name="price_unit" string="Rate"/>
+                                    <field name="tax_id" widget="many2many_tags" domain="[('parent_id','=',False),('type_tax_use','&lt;&gt;','purchase')]"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="price_subtotal"/>
+									 
+                                </tree>
+                            </field>
+                            <group class="oe_subtotal_footer oe_right" colspan="2" name="sale_total">
+                                <field name="amount_untaxed" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_tax" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                <div class="oe_subtotal_footer_separator oe_inline">
+                                    <label for="amount_total" />
+                                    <button name="button_dummy"
+                                        states="draft,sent" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                                </div>
+                                <field name="amount_total" nolabel="1" class="oe_subtotal_footer_separator" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                            </group>
+							
+							<group class="oe_subtotal_footer oe_right" colspan="2">
+									<field name="x_tot_invoiced" widget='monetary' options="{'currency_field': 'currency_id'}"/> 
+									<field name="x_tot_balance" widget='monetary' options="{'currency_field': 'currency_id'}"/> 
+							</group>
+                            <div class="oe_clear"/>
+                            <field name="note" class="oe_inline" placeholder="Terms and conditions..."/>
+                        </page>
+                         
+						<page string="Invoices" groups="base.group_user">
+						  <div>
+						   <field name="x_account_ids"/>
+						  </div>
+						</page>
+						<page string="Deliveries" groups="base.group_user">
+						  <div><field name="x_pickinglist_ids"/>
+						  
+						  </div>
+						</page>
+						<page string="MRP" groups="base.group_user">
+						  <div><field name="x_mrp_lines_dcs"/>
+						  
+						  </div>
+						</page>
+						<page string="Accessories" groups="base.group_user">
+						  <div>
+						  <field name="x_acs_lines_dcs"/>
+						  
+						  </div>
+						</page>
+                    </notebook>
+					
+               
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+					
+		 <!--	
+		 <record id="dincelmrp_view_order_tree_inherit" model="ir.ui.view" >
+			<field name="name">dincelmrp.saleorder.tree.view.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				 
+					<field name="date_order" position="after">
+						 
+						 
+						<field name="x_colorcode" widget="color"  string="Colour" />
+					</field>
+					<field name="partner_id" position="after">
+					 
+						<field name="x_project_id"/>
+					   
+				</field>  
+			</field>
+		</record>
+		 
+		  <record id="dincelmrp_saleorder_treeview_inherit" model="ir.ui.view" >
+			<field name="name">dincelmrp.saleorder.treeview.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="sale.view_order_tree" />
+			<field name="arch" type="xml">
+				 <field name="partner_id" position="after">
+					 
+						<field name="x_project_id"/>
+					   
+				</field>
+			</field>
+		</record> -->
+		
+		
+		 <record id="dincelmrp_saleorder_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelmrp.saleorder.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="dincelaccount.dincelaccount_sale_order_form" />
+			<field name="arch" type="xml">
+				<button  position="after"  name="button_sales_orders">
+					<button string="Schedule MO"  name="button_schedule_mo" type="object"  />
+				</button> 
+				
+				 <xpath expr="//page[@string='Deliveries']" position="after">
+					
+					<page string="Production Schedules" groups="base.group_user">
+					  <div>
+						<field name="x_mrp_schedule_ids"/>
+					  </div>
+					</page>
+					<page string="Accessories" groups="base.group_user">
+						  <div>
+						  <field name="x_acs_lines_dcs"/>
+						  
+						  </div>
+						</page>
+					<page string="MRP" groups="base.group_user">
+					  <div>
+						<field name="x_mrp_lines_dcs"/>
+						<field name="x_remain2mo" invisible="1" />
+					  </div>
+					</page>
+					
+					
+				</xpath>
+			</field>
+		</record>
+		
+		
+	<record model="ir.ui.view" id="dincelmrp_sale_order_pending_pudel_tree">
+		<field name="name">Sales Orders</field>
+		<field name="model">sale.order</field>
+		<field name="arch" type="xml">
+			<tree string="Sales Orders" colors="red:(x_dt_actual &lt; current_date) and (x_pending_delivery== True and state not in ['cancel','done']);">
+			 <field name="x_pending_delivery" invisible="1"/>
+				<field name="message_unread" invisible="1"/>
+				<field name="name" string="Number"/>
+				<field name="date_order"  widget="date" string="Order Date"/>
+				<field name="x_dt_request"  widget="date" string="Reqested Date"/>
+				<field name="x_dt_anticipate"  widget="date" string="Anticipate Date"/>
+				<field name="x_dt_actual"  widget="date" string="Actual Date"/>
+				<field name="x_date_produced"  widget="date" string="Production Completed"/>
+				<field name="x_days_produced" />
+				<field name="origin" string="Order#" />
+				<field name="x_colorcode" widget="color"  string="Colour" readonly="1" />
+				
+				<field name="partner_id" string="Customer"/>
+				<field name="x_project_id"/>
+				<field name="x_proj_state" string="Project State"/>
+				<field name="x_project_suburb_id" string="Suburb"/>
+				<field name="x_pudel" string="PU / DEL"/>
+				
+				
+				<field name="state" invisible="1"/> 
+				<field name="x_acct_status"/>
+				<field name="x_acs_110" sum="110 Acs"/>
+				<field name="x_panel_110" sum="110 Panels"/>
+				
+				<field name="x_acs_155" sum="155 Acs"/>
+				<field name="x_panel_155" sum="155 Panels"/>
+				<field name="x_acs_200" sum="200 Acs"/>
+				<field name="x_panel_200" sum="200 Panels"/>
+				<field name="x_acs_275" sum="275 Acs"/>
+				<field name="x_panel_275" sum="275 Panels"/>
+				
+				<field name="payment_term" string ="Term"/> 
+				<field name="x_over_terms" widget="color"  />
+				<field name="x_ac_status" invisible="1"/>
+				<field name="x_dep_paid" string="Deposit" invisible="1"/>
+				<field name="x_bal_paid" invisible="1"/>
+				<field name="x_dep_amt" string="Dep Amt" sum="Dep Amt"/>
+				<field name="x_dep_paid_amt" string="Dep Paid" sum="Dep Amt"/>
+				<field name="x_bal_amt" string="Bal Amt" sum="Bal Amt"/>
+				<field name="x_bal_paid_amt" string="Bal Paid" sum="Bal Paid"/>
+				<field name="amount_total" string="Order Total" sum="Order Total"/>
+				<field name="x_tot_balance" string="To be Invoiced" sum="To be Invoiced"/>
+				<field name="x_deposit_paid" invisible="1"/>
+				<field name="x_balance_paid" invisible="1"/>
+				<field name="x_over_due" invisible="1" />
+				
+				<field name="x_prod_status"/>
+				<field name="x_del_status"/> 
+				<button name="open_invoices_all" type="object" string="Invoices" class="oe_highlight"/>
+			</tree>
+		</field>
+	</record>	
+		
+		
+	<record id="dincelmrp_productionlist_action" model="ir.actions.act_window" >
+		<field name="name">Production Qty</field>
+		<field name="res_model">dincelmrp.production</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="limit">80</field>
+		<field name="search_view_id" ref="view_dincelmrp_order_filter"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_productionlist_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelmrp_productionlist_action"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_productionlist_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+
+		<field name="act_window_id" ref="dincelmrp_productionlist_action"/>
+	</record>
+	
+	<!--
+	
+	<record id="dincelmrp_order_schdule_action" model="ir.actions.act_window" >
+		<field name="name">Schedule Orders</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_order_schdule_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelmrp_order_schdule_action"/>
+		
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_order_schdule_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelmrp_sale_order_form" />
+		<field name="act_window_id" ref="dincelmrp_order_schdule_action"/>
+	</record>
+	
+					
+	<menuitem id="dincelmrp_order_schdule_menu" 
+			name="Schedule Orders" 
+			parent="mrp.menu_mrp_manufacturing" 
+			action="dincelmrp_order_schdule_action" 
+			sequence="1"
+			/>	-->
+			
+	<menuitem id="dincelmrp_productionlist_menu" 
+			name="Production Qty" 
+			parent="mrp.menu_mrp_manufacturing" 
+			action="dincelmrp_productionlist_action" 
+			sequence="1"
+			/>	
+	
+	
+	</data>
+</openerp>	

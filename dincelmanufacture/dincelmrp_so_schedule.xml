@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<record	 id="dincelmrp_routing_schedule_form_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.routing.schedule.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">mrp.routing</field>
+			<field name="arch" type="xml">
+				<form string="Routing Schedule" >
+					 <sheet>
+					  <group>
+						<group>
+						<button name="button_schedule_mrp_110" string="Schedule 110mm" type="object" />
+						<button name="button_schedule_mrp_155" string="Schedule 155mm" type="object" />
+						<button name="button_schedule_mrp_200" string="Schedule 200mm" type="object" />
+						<button name="button_schedule_mrp_275" string="Schedule 275mm" type="object" />
+							<field name="name" readonly="1"/> 
+							<field name="x_current_product"/> 
+							<field name="x_product_till"/> 
+						 </group>
+						 
+						 <group>
+						 
+							 other issue is one pq has more than one line id
+						 </group>
+					 </group>
+					 
+					  </sheet>
+				</form>
+			</field>
+		</record>	
+		
+		<record model="ir.ui.view" id="dincelmrp_so_schedule_form">
+            <field name="name">Schedule Form</field>
+            <field name="model">dincelmrp.schedule</field>
+            <field name="arch" type="xml">
+                <form string="Schedule Form">
+					<header>
+					<button invisible="1" name="button_calculate_estdates" string="(Re) Calculate Est Dates" type="object"  attrs="{'invisible': [('planned','=',False)]}" />
+					</header>
+					<group>
+						<group><field name="planned" invisible="1"/> 
+							<field name="production_id" readonly="1"/>
+							<field name="order_id" readonly="1"/>
+							<field name="order_code" string="DCS Order No" readonly="1"/> 
+							<field name="color_code"  readonly="1" widget="color"/> 
+							<field name="product"  readonly="1"/>
+							<field name="week_sn" readonly="1"/>
+							<field name="route_id" widget="selection"/>
+							<field name="sequence_sort" />
+							<field name="name" invisible="1"/>
+							<field name="partner_id"  readonly="1"/>
+							<field name="project_id"  readonly="1"/>
+						</group>
+						<group>
+							<field name="len_order"  readonly="1"/>
+							<field name="hrs_order"  invisible="1" readonly="1"/>
+							<field name="len_complete"  readonly="1"/> 
+							<field name="len_remain"  readonly="1"/>
+							<field name="hrs_remain"  readonly="1"/> 
+							
+							<field name="process_status" invisible="1"  readonly="1"/> 
+							
+							<field name="schedule_start"/> 
+							<field name="schedule_stop"/> 
+							
+							<field name="date_deposit" readonly="1"/>
+							<field name="date_request"/>
+							<field name="note_request" readonly="1"/>
+							<field name="state"  readonly="1"/> 
+							<button string="Confirm with Client" name="confirm_with_client" colspan="2" type="object" attrs="{'invisible': [('state','!=','draft')]}" />
+							<button string="Make a Draft" name="make_a_draft" colspan="2" type="object" attrs="{'invisible': [('state','!=','confirmed')]}" />
+							
+						</group>
+					</group>
+					
+					<group string="Schedule Lines"> 
+						<field name="schedule_line"  readonly="1" nolabel="1">
+							<tree create="false"  edit="false">
+								<field name="state" readonly="1" invisible="1"/>
+								 <field name="name" readonly="1" invisible="1"/>
+								 <field name="product_id" readonly="1" />
+								 <field name="x_order_length" string="Length" readonly="1"/>
+								 <field name="x_order_qty" string="Qty" readonly="1"/>
+								  
+								 
+								 
+								 <field name="routing_id"  />
+							 
+								 
+								 <field name="x_produced_qty" string="Produced YTD" readonly="1" sum="Produced Qty"/>
+							</tree>
+							
+						</field>
+					</group>	
+                </form>
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="dincelmrp_so_schedule_tree">
+            <field name="name">Schedule Orders Tree</field>
+            <field name="model">dincelmrp.schedule</field>
+            <field name="arch" type="xml">
+                <tree string="Schedule Orders"  colors="red:(x_late_production=='1' and state not in ('done','cancel') and planned==False); red:(planned==True and x_late_anticipate=='1'); blue:state=='draft' and planned==False; grey:state=='cancel'; green:state=='done' and planned==False; orange:state=='part' and planned==False;  purple:planned==True; black:(state=='printed' and planned==False);">
+					<field name="week_sn"/>
+				
+					<field name="sequence_sort" string=" "/>
+					
+					<field name="production_id" invisible="1"/>
+					<field name="order_id" invisible="1"/>
+					<field name="order_code" string="DCS Order No" /> 
+					
+					
+					<field name="color_code" widget="color"/> 
+					<field name="product"/>
+					<field name="route_id"/>
+					
+                    <field name="name" invisible="1"/>
+					<field name="partner_id"/>
+					<field name="project_id" />
+                    <field name="date_deposit"/>
+					<field name="date_request"/>
+					
+					<field name="note_request" />		
+					<field name="x_dt_anticipate"/>
+                    <field name="len_order"  sum="Total LM" string="LM"/>
+					<field name="hrs_order"  sum="Total Hrs"/>
+					<field name="len_complete"  invisible="1" sum="Completed LM" string="Completed LM"/>
+					<field name="len_remain"  sum="Remaining LM" string="LM Remain"/>
+					
+					<field name="hrs_remain"  sum="Remain Hrs"/>
+                    <field name="date_print" />
+					<field name="date_flag" invisible="1"/>
+					<field name="line_flag" string="Clear"  invisible="1"/>
+					<field name="x_late_production"   invisible="1" />
+					<field name="x_late_anticipate"   invisible="1" />
+					<field name="schedule_start"/> 
+					<field name="schedule_stop"/> 
+			
+					<field name="len_complete" invisible="1" sum="Total Completed LM"/> 
+					<field name="process_status"  invisible="1"/> 
+					
+					
+					<field name="state"/> 
+					<field name="planned" string="Planned"/> 
+                </tree>
+            </field>
+			
+        </record>
+		
+		<record id="view_dincelmrp_schedule_filter" model="ir.ui.view">
+			<field name="name">MRP Schedule Search</field>
+			 <field name="model">dincelmrp.schedule</field>
+			<field name="arch" type="xml">
+				<search string="MRP Schedule Search">
+					 <field name="week_sn" string="Week No"/>
+					 <field name="order_code" string="DCS Order No" />
+					 <field name="partner_id" string="Customer" />
+					 <field name="project_id" string="Project / Site" />
+					
+					 <field name="route_id" string="Routing"/>
+					 <field name="name" string="Name"/>
+					 <field name="order_id" string="Order"/>
+					  
+					 
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+						<filter name="weekno"  string="By Week" icon="terp-personal" domain="[]" context="{'group_by':'week_sn'}"/>
+						<filter name="routing"  string="By Routing" icon="terp-personal" domain="[]" context="{'group_by':'route_id'}"/>
+					    <filter name="due_by"  string="By Due Date" icon="terp-personal" domain="[]" context="{'group_by':'due_by'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record id="view_dincelmrp_saleorder_schedule_graph" model="ir.ui.view">
+        <field name="name">dincelmrp.saleorder.schedule.graph</field>
+       <field name="model">dincelmrp.schedule</field>
+        <field name="arch" type="xml">
+            <graph string="By Line" type="bar">
+                <field name="route_id"/>
+                <field name="project_id"/>
+            </graph>
+        </field>
+    </record>
+	
+		<record model="ir.ui.view" id="view_dincelmrp_saleorder_schedule_calendar">
+         <field name="name">dincelmrp.saleorder.mo.calendar</field>
+         <field name="model">dincelmrp.schedule</field>
+       
+        <field name="arch" type="xml">
+            <calendar string="Schedule" date_start="schedule_start" color="route_id" date_stop="schedule_stop" mode="month">
+                <field name="order_id"/>
+                <field name="partner_id"/>                                     
+				<field name="project_id"/>      
+            </calendar>
+        </field>
+    </record>  
+	
+		<record id="view_dincelmrp_saleorder_schedule_gantt" model="ir.ui.view">
+            <field name="name">dincelmrp.saleorder.mo.gantt</field>
+            <field name="model">dincelmrp.schedule</field>
+            <field name="arch" type="xml">
+                <gantt date_stop="schedule_stop" date_start="schedule_start" progress="progress" string="Schedule" default_group_by="route_id">
+                </gantt>
+            </field>
+        </record>
+			
+		<record id="dincelmrp_all_pqline_schedule_action" model="ir.actions.act_window" >
+			<field name="name">All Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+		</record>
+	
+		<record id="dincelmrp_pqline_schedule_completed_action" model="ir.actions.act_window" >
+			<field name="name">Schedule Completed</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','in',('closed','cancel','done'))]</field> 
+		</record>
+	
+		<record id="dincelmrp_saleorder_schedule_action" model="ir.actions.act_window" >
+			<field name="name">All Active Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form,graph,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',False)]</field> 
+		</record>
+		
+		<record id="dincelmrp_saleorder_schedule110_action" model="ir.actions.act_window" >
+			<field name="name">110mm Order Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form,graph,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('product','=','110'),('planned','=',False)]</field> 
+		</record>
+		<record id="dincelmrp_saleorder_schedule155_action" model="ir.actions.act_window" >
+			<field name="name">155mm Order Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form,graph,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('product','=','155'),('planned','=',False)]</field> 
+		</record>
+		<record id="dincelmrp_saleorder_schedule200_action" model="ir.actions.act_window" >
+			<field name="name">200mm Order Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form,graph,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			
+			<field name="domain">[('state','not in',('closed','cancel','done')),('product','=','200'),('planned','=',False)]</field> 
+		</record>
+		<record id="dincelmrp_saleorder_schedule275_action" model="ir.actions.act_window" >
+			<field name="name">275 Order Schedule</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form,graph,calendar</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('product','=','275'),('planned','=',False)]</field> 
+		</record>
+		<record id="dincelmrp_pqline_schedule_action" model="ir.actions.act_window" >
+			<field name="name">Move to Schedule</field>
+			<field name="res_model">mrp.routing</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			
+		</record>	
+		
+		<record id="dincelmrp_plan_schedule_all_action" model="ir.actions.act_window" >
+			<field name="name">All Items</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True)]</field> 
+			<field name="context" eval="{'search_default_weekno': 1}"></field>
+		</record>
+		
+		<record id="dincelmrp_plan_schedule110_action" model="ir.actions.act_window" >
+			<field name="name">110mm</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True),('product','=','110')]</field> 
+			<field name="context" eval="{'search_default_weekno': 1}"></field>
+		</record>
+		<record id="dincelmrp_plan_schedule155_action" model="ir.actions.act_window" >
+			<field name="name">155mm</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True),('product','=','155')]</field>
+			<field name="context" eval="{'search_default_weekno': 1}"></field>			
+		</record>
+		<record id="dincelmrp_plan_schedule200_action" model="ir.actions.act_window" >
+			<field name="name">200mm</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True),('product','=','200')]</field> 
+			<field name="context" eval="{'search_default_weekno': 1}"></field>	
+		</record>
+		<record id="dincelmrp_plan_schedule275_action" model="ir.actions.act_window" >
+			<field name="name">275mm</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True),('product','=','275')]</field> 
+			<field name="context" eval="{'search_default_weekno': 1}"></field>
+		</record>
+		
+		<record id="dincelmrp_planpending_schedule_action" model="ir.actions.act_window" >
+			<field name="name">Pending Plan</field>
+			<field name="res_model">dincelmrp.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,gantt,form</field>
+			<field name="search_view_id" ref="view_dincelmrp_schedule_filter"/>
+			<field name="domain">[('state','not in',('closed','cancel','done')),('planned','=',True),('stage','=','preplan')]</field> 
+			
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmrp_routing_schedule_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			
+			<field name="act_window_id" ref="dincelmrp_pqline_schedule_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmrp_routing_schedule_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelmrp_routing_schedule_form_view"/>
+			<field name="act_window_id" ref="dincelmrp_pqline_schedule_action"/>
+		</record>
+		
+		<record id="dincelmrp_routing_schedule_action" model="ir.actions.act_window" >
+			<field name="name">Line / Routing</field>
+			<field name="res_model">mrp.routing</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			
+		</record>	
+		
+		<record id="dincelmrp_routing_plan_action" model="ir.actions.act_window" >
+			<field name="name">Routing Plan</field>
+			<field name="res_model">dincelmrp.routing.available</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('active','=',True)]</field> 
+			<field name="search_view_id" ref="view_dincelmrp_routing_avail_filter"/>
+			<field name="context" eval="{'search_default_name_week': 1}"></field>
+			
+		</record>	
+					 
+		<menuitem id="dincelmanufact_menu_schedule" name="Schedule" sequence="5"  parent="dincelmanufact_menu"/>		
+		<menuitem id="dincelmrp_pqline_schedule_menu" 
+			name="Move to Schedule" 
+			parent="dincelmanufact_menu_schedule" 
+			action="dincelmrp_pqline_schedule_action" 
+			sequence="1"
+			/>	
+			
+		
+		<menuitem id="dincelmrp_saleorder_schedule_menu" 
+			name="All Active Schedule" 
+			parent="dincelmanufact_menu_schedule" 
+			action="dincelmrp_saleorder_schedule_action" 
+			sequence="2"
+			/>	
+		<menuitem id="dincelmrp_saleorder_schedule110_menu" 
+					name="110mm Active Schedule" 
+					parent="dincelmanufact_menu_schedule" 
+					action="dincelmrp_saleorder_schedule110_action" 
+					sequence="3"
+					/>	
+		<menuitem id="dincelmrp_saleorder_schedule155_menu" 
+					name="155mm Active Schedule" 
+					parent="dincelmanufact_menu_schedule" 
+					action="dincelmrp_saleorder_schedule155_action" 
+					sequence="4"
+					/>	
+		<menuitem id="dincelmrp_saleorder_schedule200_menu" 
+					name="200mm Active Schedule" 
+					parent="dincelmanufact_menu_schedule" 
+					action="dincelmrp_saleorder_schedule200_action" 
+					sequence="5"
+					/>	
+		<menuitem id="dincelmrp_saleorder_schedule275_menu" 
+					name="275mm Active Schedule" 
+					parent="dincelmanufact_menu_schedule" 
+					action="dincelmrp_saleorder_schedule275_action" 
+					sequence="6"
+					/>	
+
+		
+		<menuitem id="dincelmrp_pqline_schedule_completed_menu" 
+			name="Schedule Completed" 
+			parent="dincelmanufact_menu_schedule" 
+			action="dincelmrp_pqline_schedule_completed_action" 
+			sequence="7"
+			/>	
+			
+		<menuitem id="dincelmrp_all_pqline_schedule_menu" 
+			name="All Schedule" 
+			parent="dincelmanufact_menu_schedule" 
+			action="dincelmrp_all_pqline_schedule_action" 
+			sequence="8"
+			/>	
+			
+		<menuitem id="dincelmanufact_menu_plan_schedule" name="Planned" sequence="6"  parent="dincelmanufact_menu"/>		
+		
+		<menuitem id="dincelmrp_planschedule_all_menu" 
+					name="All Items" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule_all_action" 
+					sequence="1"
+					/>	
+		
+		<menuitem id="dincelmrp_planschedule110_menu" 
+					name="110mm" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule110_action" 
+					sequence="3"
+					/>	
+		
+		<menuitem id="dincelmrp_planschedule155_menu" 
+					name="155mm" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule155_action" 
+					sequence="4"
+					/>	
+		
+		<menuitem id="dincelmrp_planschedule200_menu" 
+					name="200mm" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule200_action" 
+					sequence="5"
+					/>	
+		
+		<menuitem id="dincelmrp_planschedule275_menu" 
+					name="275mm" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule275_action" 
+					sequence="6"
+					/>	
+
+				<!--
+		<menuitem id="dincelmrp_planschedule_report_menu" 
+					name="Gantt Report" 
+					parent="dincelmanufact_menu_plan_schedule" 
+					action="dincelmrp_plan_schedule_report_action" 
+					sequence="7"
+					/>	-->
+					
+			
+		<menuitem id="dincelmanufact_menu_config" name="Configuration"  sequence="60"  parent="dincelmanufact_menu"/>			
+		
+		<menuitem id="dincelmrp_routing_mo_menu" 
+			name="Line / Routing " 
+			parent="dincelmanufact_menu_config" 
+			action="dincelmrp_routing_schedule_action" 
+			
+			/>	
+			
+		<menuitem id="dincelmrp_routing_plan_menu" 
+			name="Routing Plan" 
+			parent="dincelmanufact_menu_config" 
+			action="dincelmrp_routing_plan_action" 
+			
+			/>	
+			
+	</data>
+</openerp>	

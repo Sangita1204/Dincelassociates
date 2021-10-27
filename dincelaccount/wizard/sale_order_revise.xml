@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelsale_order_revise_form" model="ir.ui.view">
+            <field name="name">Revise Order</field>
+            <field name="model">dincelsale.order.revise</field>
+            <field name="arch" type="xml">
+                <form string="Revise">
+					
+				 <group>
+					 <field name="date"/>
+					  <field name="order_id"  />
+					   <field name="partner_id"  />
+					   <field name="revise_type" required="1" />
+					   
+						<field name="comments" />
+					 <field name="qty" on_change="on_change_qty(qty, new_lines, context)" invisible="1" />
+				  </group>
+					  
+                    <group>
+ 						<field name="new_lines"  invisible="1">
+							<tree create="false"  editable="bottom"	>
+								<field name="region_id" />
+								<field name="sequence" />
+								<field name="product_id" />
+								<field name="order_length" />
+								<field name="order_qty"  />
+								<field name="product_uom" />
+								<field name="product_uom_qty" />
+								<field name="tax_id" />
+								<field name="price_unit" />
+							</tree>
+						</field>
+                    </group>
+					
+					 <group>
+ 						<field name="old_lines" readonly="1" invisible="1">
+							<tree create="false" editable="bottom"	>
+								<field name="region_id" />
+								<field name="sequence" />
+								<field name="product_id" />
+								<field name="order_length" />
+								<field name="product_uom" />
+								<field name="order_qty"  />
+								<field name="tax_id" /> 
+							</tree>
+						</field>
+                    </group>
+					
+                    <footer>
+					
+						<button name="confirm_revise" type="object" string="Confirm Revision"/>
+                      
+                        or
+						
+                        <button string="Cancel" class="oe_link" special="cancel" />
+						
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+       
+		
+    </data>
+</openerp> 

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_stockreport">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+			 <style type="text/css">
+				 * {-webkit-print-color-adjust:exact;}
+				@media print {
+					body {-webkit-print-color-adjust: exact;}
+				}
+
+               
+                 
+            </style>
+	 
+            <div class="page" style="font-size:11px;">
+               
+				 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					 
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					<div class="col-xs-6" >
+					 
+                    </div>
+					 
+				</div>
+			 
+				
+			 	
+                <div class="row mt32 mb32">
+			 
+				 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>ID</th>					 
+							<th>Product</th>	
+							<th class="text-center">Qty</th>
+							 
+                        </tr>
+                    </thead>
+                     <tbody>
+                             
+							 
+							 	
+							 <tr t-foreach="lines(data)" t-as="b">
+							 
+                                <td class="col-xs-1">  <span t-att-style="style" t-esc="b['product_id']"/></td>
+								  
+								 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['name1']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['qty']"/></td>
+                            </tr>   
+							
+						 
+					  </tbody>
+				   </table>
+				   <div class="col-xs-12"> </div>
+				   
+				   <div style="clear:both;">			</div>
+	 
+				 
+				 
+				   
+				  
+				   
+				    
+				 
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+               
+				</div>
+				<!--
+			 <div class="row"> 	
+				<div class="col-xs-6">Packs: <span t-att-style="style" t-esc="o.packs"/></div>
+				<div class="col-xs-6">Trucks: <span t-att-style="style" t-esc="o.trucks"/></div>
+			</div>	
+			-->
+		 
+
+          
+           
+			
+		</div>
+       </t>
+    </t>
+</template>
+</data>
+</openerp>

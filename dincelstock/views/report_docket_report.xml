@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_docket_report">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <div class="page" style="font-size:11px;font-family:Times New Roman;">
+				 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					 
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					 
+					<div class="col-xs-6" >
+					<div class="col-xs-12" style="border:1px solid black;">
+                     <span>SHIPMENT DATE: </span> <span t-att-style="style" t-esc="o.partner_id.name"/>
+					<br />
+				
+					 <span>	DOCKET NO: </span> <span> </span>
+					 <br />
+					
+					 <span>	ORDER NAME/NO: </span> <span> </span>
+					 <br />
+					 
+					 <span>PROJECT: </span> <span t-att-style="style" t-esc="o.x_project_id.name"/>
+					<br />
+					 <span>DOCUMENT: </span> <span>Customer</span>
+					<br />
+					</div> 
+					  
+                    </div>
+					 
+				</div>
+				 
+				 <div class="col-xs-12">
+				 
+				
+				  <div class="col-xs-5">
+				   SOLD TO:
+				    <div class="col-xs-12">
+					 <span t-att-style="style" t-esc="o.partner_id.name"/>
+					 </div>
+				  </div>
+				  <div class="col-xs-5">
+				  DELIVER TO:
+					<div class="col-xs-12">
+					
+					 </div>
+				  </div>
+				  <div class="col-xs-2">
+				  </div>
+				 </div>
+				 
+                <div class="row mt32 mb32">
+					 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th >MODULE</th>					 
+							<th class="text-center">LENGTH</th>           
+							<th class="text-center">QTY.ORDERED</th>
+							<th class="text-center">QTY.SHIPPED</th>
+							<th class="text-center">REMAINING</th>
+							<th class="text-center">PACKS</th>
+							 
+                        </tr>
+                    </thead>
+                     <tbody>
+                             <tr t-foreach="o.picking_line" t-as="a">
+							 <td >  <span t-att-style="style" t-esc="a.product_id.name"/>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.order_length>0"><span t-att-style="style" t-esc="a.order_length"/> </t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_order>0"><span t-att-style="style" t-esc="a.qty_order"/></t>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.ship_qty>0"><span t-att-style="style" t-esc="a.ship_qty"/></t><t t-if="a.ship_qty==0">-</t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_remain>0"><span t-att-style="style" t-esc="a.qty_remain"/></t><t t-if="a.qty_remain==0">-</t>     </td>
+							 <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="a.packs"/>    </td>
+							 </tr>
+                    </tbody>
+                </table>
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+					 
+				</div>
+				
+			 <div class="row" > 	
+				 <div class="col-xs-6">TIME OF ARRIVAL AT DELIVERY ADDRESS: ........................</div>
+				  <div class="col-xs-6">TIME OF DEPARTURE FROM DELIVERY ADDRESS: ........................</div>
+			</div>	
+			<div class="row mt32 mb32">
+				 <div class="col-xs-12">	 I HAVE CHECKED THE PRODUCT LISTED IN THIS DELIVERY DOCKET AND CONFIRM THAT:­.</div>
+<div class="col-xs-12">i)I HAVE RECEIVED ALL PRODUCTS LISTED HEREIN;</div>
+<div class="col-xs-12">ii)THE PRODUCT RECEIVED AT DELIVERY ADDRESS IS IN GOOD ORDER.</div>
+<div class="col-xs-12">iii)ALL PRODUCT LEFT AT DELIVERY ADDRESS IS PROPERLY STORED ON A FLAT AREA CLEAR FROM DIRT AND RUBBISH.</div>
+					 <br/>
+				</div>
+			<div class="row"> 	
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+			</div>			
+			
+			<div class="row"> 		
+ 				 	<div class="col-xs-4" >NAME OF RECIPIENT
+					</div>
+					<div class="col-xs-4" >SIGNATURE
+					</div>
+					<div class="col-xs-4" >DATE
+					</div>
+			</div>
+			<div class="row" > 		
+				 
+				<div style="clear:both;">			</div>
+	 
+            </div>
+
+          
+           
+			<p style="page-break-after:always"></p>
+			
+			 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					 
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					 
+					<div class="col-xs-6" >
+					<div class="col-xs-12" style="border:1px solid black;">
+                     <span>SHIPMENT DATE: </span> <span t-att-style="style" t-esc="o.partner_id.name"/>
+					<br />
+				
+					 <span>	DOCKET NO: </span> <span> </span>
+					 <br />
+					
+					 <span>	ORDER NAME/NO: </span> <span> </span>
+					 <br />
+					 
+					 <span>PROJECT: </span> <span t-att-style="style" t-esc="o.x_project_id.name"/>
+					<br />
+					 <span>DOCUMENT: </span> <span>Dincel</span>
+					<br />
+					</div> 
+					  
+                    </div>
+					 
+				</div>
+				 
+				 <div class="col-xs-12">
+				 
+				
+				  <div class="col-xs-5">
+				   SOLD TO:
+				    <div class="col-xs-12">
+					 <span t-att-style="style" t-esc="o.partner_id.name"/>
+					 </div>
+				  </div>
+				  <div class="col-xs-5">
+				  DELIVER TO:
+					<div class="col-xs-12">
+					
+					 </div>
+				  </div>
+				  <div class="col-xs-2">
+				  </div>
+				 </div>
+				 
+                <div class="row mt32 mb32">
+					 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th >MODULE</th>					 
+							<th class="text-center">LENGTH</th>           
+							<th class="text-center">QTY.ORDERED</th>
+							<th class="text-center">QTY.SHIPPED</th>
+							<th class="text-center">REMAINING</th>
+							<th class="text-center">PACKS</th>
+							 
+                        </tr>
+                    </thead>
+                     <tbody>
+                             <tr t-foreach="o.picking_line" t-as="a">
+							 <td >  <span t-att-style="style" t-esc="a.product_id.name"/>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.order_length>0"><span t-att-style="style" t-esc="a.order_length"/> </t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_order>0"><span t-att-style="style" t-esc="a.qty_order"/></t>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.ship_qty>0"><span t-att-style="style" t-esc="a.ship_qty"/></t><t t-if="a.ship_qty==0">-</t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_remain>0"><span t-att-style="style" t-esc="a.qty_remain"/></t><t t-if="a.qty_remain==0">-</t>     </td>
+							 <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="a.packs"/>    </td>
+							 </tr>
+                    </tbody>
+                </table>
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+					 
+				</div>
+				
+			 <div class="row" > 	
+				 <div class="col-xs-6">TIME OF ARRIVAL AT DELIVERY ADDRESS: ........................</div>
+				  <div class="col-xs-6">TIME OF DEPARTURE FROM DELIVERY ADDRESS: ........................</div>
+			</div>	
+			<div class="row mt32 mb32">
+				 <div class="col-xs-12">	 I HAVE CHECKED THE PRODUCT LISTED IN THIS DELIVERY DOCKET AND CONFIRM THAT:­.</div>
+<div class="col-xs-12">i)I HAVE RECEIVED ALL PRODUCTS LISTED HEREIN;</div>
+<div class="col-xs-12">ii)THE PRODUCT RECEIVED AT DELIVERY ADDRESS IS IN GOOD ORDER.</div>
+<div class="col-xs-12">iii)ALL PRODUCT LEFT AT DELIVERY ADDRESS IS PROPERLY STORED ON A FLAT AREA CLEAR FROM DIRT AND RUBBISH.</div>
+					 <br/>
+				</div>
+			<div class="row"> 	
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+			</div>			
+			
+			<div class="row"> 		
+ 				 	<div class="col-xs-4" >NAME OF RECIPIENT
+					</div>
+					<div class="col-xs-4" >SIGNATURE
+					</div>
+					<div class="col-xs-4" >DATE
+					</div>
+			</div>
+			<div class="row" > 		
+				 
+				<div style="clear:both;">			</div>
+	 
+            </div>
+			
+			
+			<t t-if="o.print_transport">
+			
+			<p style="page-break-after:always"></p>
+			
+			 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					 
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					<div class="col-xs-6" >
+					<div class="col-xs-12" style="border:1px solid black;">
+                     <span>SHIPMENT DATE: </span> <span t-att-style="style" t-esc="o.partner_id.name"/>
+					<br />
+				
+					 <span>	DOCKET NO: </span> <span> </span>
+					 <br />
+					
+					 <span>	ORDER NAME/NO: </span> <span> </span>
+					 <br />
+					 
+					 <span>PROJECT: </span> <span t-att-style="style" t-esc="o.x_project_id.name"/>
+					<br />
+					 <span>DOCUMENT: </span> <span>Transport</span>
+					<br />
+					</div> 
+					  
+                    </div>
+					 
+				</div>
+				 
+				 <div class="col-xs-12">
+				 
+				
+				  <div class="col-xs-5">
+				   SOLD TO:
+				    <div class="col-xs-12">
+					 <span t-att-style="style" t-esc="o.partner_id.name"/>
+					 </div>
+				  </div>
+				  <div class="col-xs-5">
+				  DELIVER TO:
+					<div class="col-xs-12">
+					
+					 </div>
+				  </div>
+				  <div class="col-xs-2">
+				  </div>
+				 </div>
+				 
+				 
+                <div class="row mt32 mb32">
+					 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th >MODULE</th>					 
+							<th class="text-center">LENGTH</th>           
+							<th class="text-center">QTY.ORDERED</th>
+							<th class="text-center">QTY.SHIPPED</th>
+							<th class="text-center">REMAINING</th>
+							<th class="text-center">PACKS</th>
+							 
+                        </tr>
+                    </thead>
+                     <tbody>
+                             <tr t-foreach="o.picking_line" t-as="a">
+							 <td >  <span t-att-style="style" t-esc="a.product_id.name"/>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.order_length>0"><span t-att-style="style" t-esc="a.order_length"/> </t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_order>0"><span t-att-style="style" t-esc="a.qty_order"/></t>    </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.ship_qty>0"><span t-att-style="style" t-esc="a.ship_qty"/></t><t t-if="a.ship_qty==0">-</t>   </td>
+							 <td class="col-xs-1 text-center">  <t t-if="a.qty_remain>0"><span t-att-style="style" t-esc="a.qty_remain"/></t><t t-if="a.qty_remain==0">-</t>     </td>
+							 <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="a.packs"/>    </td>
+							 </tr>
+                    </tbody>
+                </table>
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+					 
+				</div>
+				
+			 <div class="row" > 	
+				 <div class="col-xs-6">TIME OF ARRIVAL AT DELIVERY ADDRESS: ........................</div>
+				  <div class="col-xs-6">TIME OF DEPARTURE FROM DELIVERY ADDRESS: ........................</div>
+			</div>	
+			<div class="row mt32 mb32">
+				 <div class="col-xs-12">	 I HAVE CHECKED THE PRODUCT LISTED IN THIS DELIVERY DOCKET AND CONFIRM THAT:­.</div>
+<div class="col-xs-12">i)I HAVE RECEIVED ALL PRODUCTS LISTED HEREIN;</div>
+<div class="col-xs-12">ii)THE PRODUCT RECEIVED AT DELIVERY ADDRESS IS IN GOOD ORDER.</div>
+<div class="col-xs-12">iii)ALL PRODUCT LEFT AT DELIVERY ADDRESS IS PROPERLY STORED ON A FLAT AREA CLEAR FROM DIRT AND RUBBISH.</div>
+					 <br/>
+				</div>
+			<div class="row"> 	
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+				<div class="col-xs-4" >................................................</div>
+			</div>			
+			
+			<div class="row"> 		
+ 				 	<div class="col-xs-4" >NAME OF RECIPIENT
+					</div>
+					<div class="col-xs-4" >SIGNATURE
+					</div>
+					<div class="col-xs-4" >DATE
+					</div>
+			</div>
+			<div class="row" > 		
+				 
+				<div style="clear:both;">			</div>
+	 
+            </div>
+			  </t>
+		</div>
+       </t>
+    </t>
+</template>
+</data>
+</openerp>

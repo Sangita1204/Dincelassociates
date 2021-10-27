@@ -1,0 +1,1390 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		 <record id="view_dincelcrm_phonecall_filter" model="ir.ui.view">
+			<field name="name">Activities Filter</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					 
+					 <field name="name" string="Address"/>
+					 <field name="partner_id" string="Customer" />
+					 <field name="x_project_id" string="Project / Site" />
+					 
+					 <field name="x_contact_id" string="Customer Contact"/>
+					 <field name="user_id" string="Salesperson" />
+					 
+				 
+					 
+			   </search>
+			</field>
+		</record>
+		
+		
+		 <record id="view_crm_case_allphonecalls_filter" model="ir.ui.view">
+			<field name="name">CRM - Phone Calls Search</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<search string="Search Phonecalls">
+					 <field name="name" string="Address"/>
+					 <field name="partner_id" string="Customer" />
+					 <field name="x_project_id" string="Project / Site" />
+					 
+					 <field name="x_contact_id" string="Customer Contact"/>
+					 <field name="user_id" string="Salesperson" />
+					 
+					<separator/>
+				
+					<filter name="x_date_from" string="Last 10 Days" domain="[('date','&gt;=',((context_today()-datetime.timedelta(days=10)).strftime('%%Y-%%m-%%d')))]" />
+					<field name="x_date_from_src" filter_domain="[('date','&gt;=',self)]" widget="calendar"/>	
+					<field name="x_date_to_src" filter_domain="[('date','&lt;=',self)]" widget="calendar"/>		
+					
+					 
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					   <filter name="x_type"  string="Type"  domain="[]" context="{'group_by':'x_type'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record id="dincelreport_myfollowups_calendar_view" model="ir.ui.view">
+			<field name="name">My Follow-Up</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<calendar string="My Follow-Up"  date_start="date" color="user_id" date_delay="duration">
+						<field name="x_contract_quote_id"/>
+						<field name="x_project_id" attrs="{'invisible': [('x_non_project','=',True)]}"/>
+						<field name="partner_id" attrs="{'invisible': [('x_non_project','=',False)]}"/>
+						<field name="x_non_project" invisible="1"/>
+				</calendar>
+			 </field>
+		</record>
+		
+		<record	 id="dincelreport_myfollowup_tree_view" model="ir.ui.view" >
+			<field name="name">My Follow-Ups</field>
+			<field name="view_type">tree</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<tree string="My Follow-Ups" create="false">
+					<field name="date"/>
+					<field name="x_project_id" />
+					<field name="name" invisible="1"/>
+					<field name="description"/>
+					<field name="partner_id" string="Customer"/>
+					<field name="x_contact_id" string="Contact"/>
+					<field name="x_type"/>
+					<field name="x_phone" string="Phone"/>
+					<field name="x_mobile" string="Mobile"/>
+					<field name="x_email" string="Email"/>
+					
+					<field name="x_proj_size"  string="Estimate (M2)"/>
+					<field name="x_proj_val" string="Project Value ($)"/>
+					<field name="x_likely_sale_dt"/>
+					<field name="x_get_quote"/>
+					
+					<!-- <field name="duration"/> -->
+					<field name="user_id" string="Salesperson" />
+					
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelreport_myfollowup_form_view" model="ir.ui.view" >
+			<field name="name">My Follow-Up</field>
+			<field name="view_type">form</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<form string="My Follow-Up" version="7.0">
+					 
+					<sheet string="Follow-Up">
+					
+						<group>
+						<group>
+						
+						<field name="x_origin_fw" attrs="{'invisible': [('x_origin_fw','>',0),('x_origin_fw','!=','')]}" readonly="1"/>
+								
+								<field name="x_project_id" readonly="1" attrs="{'required': [('x_non_project','=',False)]}"/>
+								<field name="partner_id" readonly="1"  string="Customer"/>
+							
+								<field name="x_type"  />
+								
+									<field name="date" string="Follow-up date (meeting/call)"/>
+							<field name="user_id" string="Salesperson" on_change="on_change_userid(user_id, context)"/>
+							  
+							<field name="x_is_coldcall" invisible="1"/>
+							<field name="duration" widget="float_time" invisible="1" string="Meeting Duration" />
+							
+							<field name="opportunity_id" string="From Lead / From  Opportunity  " invisible="1" context="{'opportunity_id': opportunity_id}"/>
+					 
+							<!-- <field name="x_client" invisible="1"/>
+							<field name="x_contact_name" invisible="1"/>
+							<field name="email_from" invisible="1"/>   -->
+						
+						<!-- 	<field name="x_has_lead" invisible="1"/>-->
+							<field name="state" invisible="1"/>	  
+							
+							<field name="x_instruction" string="Instruction / notes" readonly="1"/>	
+							<field name="x_is_followup" invisible="1"/>
+							<field name="x_status"  on_change="onchange_status_quote(x_status)"/>
+
+				<field name="description" placeholder="Comments..." required="1"/>		
+
+<field name="x_next_act_date" string="Next Follow-Up"/>
+							<field name="x_next_action" string="Instruction" placeholder="Instructions / notes for next follow-up" attrs="{'required': [('x_next_act_date','!=', ''),('x_next_act_date','!=', False)]}"/>
+											
+						</group>
+						
+						
+						<group>
+							<field name="x_non_project" />
+					
+							<field name="x_phone_partner"    readonly="1" /> 
+							
+									<field name="x_contact_id" readonly="1"/>
+							
+							<field name="x_mobile" invisible="1" />
+							<field name="x_phone" string="Phone" invisible="1"  /> 
+							<field name="x_email" string="Email" invisible="1"  /> 
+							
+							<field name="x_proj_size" string="Est. Sq.Mtrs. (m2)"  readonly="1"/>
+								<field name="x_proj_val" string="Project Value ($)"  readonly="1"/>
+								<field name="x_likely_sale_dt" string="Likely Sales Date"  readonly="1"/>
+								<field name="x_contract_quote_id" readonly="1"/>
+								
+								<field name="x_lead_id" readonly="1"/>
+								
+								<field name="x_get_quote" invisible="1"/>
+								
+								<field name="name"   string="Site Address*" invisible= "1"  /> 
+								
+								<label for="add_followups" string=" "/>
+							 <button string="Add Follow-Up"  name="add_followups"  type="object" />
+						</group>
+						
+						
+						</group>
+		
+						
+						 <group colspan="2">
+						 <group>
+							
+							  </group><group>
+							
+							  </group>
+							  </group>
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		
+		<record model="ir.ui.view" id="dincelsales_leads_new_enquiry_tree_view">
+            <field name="name">Leads</field>
+            <field name="model">account.analytic.account</field>
+            <field name="arch" type="xml">
+                <tree string="Leads" fonts="bold:message_unread==True" colors="blue:x_stage_id=='1';">
+				<field name="date" string="Date"/>
+					<field name="x_project_id"/>
+					<field name="x_proj_val" string="Project Value ($)"/>
+					<field name="partner_id"/>
+					<field name="x_contact_id"/>
+					<field name="x_is_quote" invisible="1"/>
+					<field name="x_stage_id" />
+					 
+					
+					<field name="user_id" string="Salesperson" />
+					<field name="message_unread" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+		
+		<record	 id="dincelcrm_myweeklyreport_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.myweeklyreport.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelcrm.weeklyreport</field>
+			<field name="arch" type="xml">
+				<tree string="My DOT Report" >
+				
+                    <field name="user_id" widget="selection"/>
+					<field name="entry_dt" required="1"/>
+					<field name="sales_update" required="1"/>
+					<field name="win_loss" required="1"/>
+					<field name="large_quote" required="1" string="New large quotes / projects since last update"/>
+					<field name="competitor" required="1" streeti="Competitor intell / market activitiy"/>
+					<field name="challanges" required="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_myweeklyreport_form_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.myweeklyreport.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelcrm.weeklyreport</field>
+			<field name="arch" type="xml">
+				<form string="My DOT Report" version="7.0">
+					<sheet>
+						<group>
+							<field name="name" invisible="1"/>
+							
+							<field name="user_id" widget="selection"/>
+							<field name="entry_dt" required="1"/>
+							<field name="sales_update" required="1"/>
+							<field name="win_loss" required="1"/>
+							<field name="large_quote" required="1" string="New large quotes / projects since last update"/>
+							<field name="competitor" required="1" streeti="Competitor intell / market activitiy"/>
+							<field name="challanges" required="1"/>
+							
+						 </group>
+						 
+					 </sheet>
+				</form>
+			</field>
+		</record>
+			 
+	<record id="view_dincelcrm_allweeklyreport_filter" model="ir.ui.view">
+			<field name="name">All DOT Report Filter</field>
+			<field name="model">dincelcrm.weeklyreport</field>
+			<field name="arch" type="xml">
+				<search string="DOT Report">
+					 
+				 
+					 
+					<field name="user_id"/>
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		
+		<record	 id="dincelcrm_quotationrates_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quote_rates.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelcrm.quote_rates</field>
+			<field name="arch" type="xml">
+				<tree string="Quotations Rates" >
+				
+                    <field name="name" />
+                    <field name="from_val"/>
+                    <field name="to_val"/>
+                    <field name="rate1"/>
+                    <field name="rate2"/>
+                    <field name="rate3"/>
+					<field name="rate_other_ac"/>
+                    <field name="rate_other_cod"/> 
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_quotationrates_form_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quotationrates.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelcrm.quote_rates</field>
+			<field name="arch" type="xml">
+				<form string="Quotations Rates" version="7.0">
+					<sheet>
+						<group>
+							<field name="name" />
+							<field name="from_val"/>
+							<field name="to_val"/>
+							<field name="rate1"/>
+							<field name="rate2"/>
+							<field name="rate3"/>
+							<field name="rate_other_ac"/>
+							<field name="rate_other_cod"/>
+						 </group>
+						 <notebook>
+							 <page string="Location Rates">	
+							<field name="location_line">
+								<tree editable="bottom">
+									<field name="warehouse_id"/>
+									<field name="rate1"/>
+									<field name="rate2"/>
+									<field name="rate3"/>
+								</tree>
+								<form string="Location Rates">
+								   
+									<group>
+										<group>
+											<field name="warehouse_id"/>
+											<field name="rate1"/>
+											<field name="rate2"/>
+											<field name="rate3"/>
+											
+										</group>
+									</group>
+								</form>
+							</field>
+							</page>
+							
+						    <page string="State Rates">	
+							<field name="rate_line">
+								<tree editable="bottom">
+									<field name="state_id"/>
+									<field name="rate1"/>
+									<field name="rate2"/>
+									<field name="rate3"/>
+								</tree>
+								<form string="Rate Lines">
+								   
+									<group>
+										<group>
+											<field name="state_id"/>
+											<field name="rate1"/>
+											<field name="rate2"/>
+											<field name="rate3"/>
+											
+										</group>
+									</group>
+								</form>
+							</field>
+							</page>
+						</notebook>
+					 </sheet>
+				</form>
+			</field>
+		</record>
+		
+		<record	 id="dincelcrm_leads_opportunities_action" model="ir.actions.act_window" >
+			<field name="name">Opportunities</field>
+			<field name="res_model">crm.lead</field>
+			<field name="view_mode">kanban,tree,form,graph,calendar</field>
+            <field name="domain">[('type','=','opportunity')]</field>
+            <field name="context">{
+              
+                'stage_type': 'opportunity', 
+                'default_type': 'opportunity'
+            }</field> 
+		 
+		 
+			 
+		</record>
+		
+		<record	 id="dincelcrm_leads_new_inqury_action" model="ir.actions.act_window" >
+			<field name="name">Enquiry New</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="context">{'default_x_is_quote': 1, 'default_x_stage_id': 1,'default_x_prepared_by':uid}</field> 
+			<field name="domain">['&amp;', ('x_is_quote','=','1'),'|',('x_stage_id','=',1),('x_stage_id','=',3)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="view_id" ref="dincelreport_leads_tree_view"/> -->
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincel_leads_new_enquiry_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelsales_leads_new_enquiry_tree_view"/>
+			<field name="act_window_id" ref="dincelcrm_leads_new_inqury_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincel_leads_new_enquiry_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_contractquote_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_leads_new_inqury_action"/>
+		</record>
+		
+		<record id="dincelcrm_quotationrates_action" model="ir.actions.act_window" >
+			<field name="name">Quotations Rates</field>
+			<field name="res_model">dincelcrm.quote_rates</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="dincelcrm_contacttype_action" model="ir.actions.act_window" >
+			<field name="name">Customer Contact Type</field>
+			<field name="res_model">dincelcrm.contact.type</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		
+		 <record id="dincelcrm_myfollowups_action" model="ir.actions.act_window" >
+			<field name="name">My Follow-Ups</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('user_id','=',uid),('state','=','open')]</field>
+			<field name="search_view_id" ref="view_crm_case_allphonecalls_filter"/>
+		 </record>
+		 <record model="ir.actions.act_window.view" id="action_myfollowups_calendar_view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myfollowups_calendar_view"/>
+            <field name="act_window_id" ref="dincelcrm_myfollowups_action"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="act_myfollowup_tree_view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelreport_myfollowup_tree_view"/>
+			<field name="act_window_id" ref="dincelcrm_myfollowups_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="act_myfollowup_form_view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myfollowup_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_myfollowups_action"/>
+		</record>
+		
+		<record	 id="dincelreport_mycalendar_calendar_view" model="ir.ui.view" >
+			<field name="name">dincelreport.mycalendar.calendar.view</field>
+			<field name="view_type">calendar</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<calendar string="Phone Calls" date_start="date" color="state" date_delay="duration">
+					<field name="name"/>
+					<field name="partner_id"/>
+				</calendar>
+			</field>
+		</record>
+		
+		<record	 id="dincelreport_myweeklycalls_calendar_view" model="ir.ui.view" >
+			<field name="name">dincelreport.mytasks.calendar.view</field>
+			<field name="view_type">calendar</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<calendar string="Phone Calls" date_start="date" color="user_id" date_delay="duration">
+					<field name="name"/>
+					<field name="partner_id"/>
+				</calendar>
+			</field>
+		</record>
+		<!--
+		<record	 id="dincelreport_myweeklycalls_calendar_view" model="ir.ui.view" >
+			<field name="name">dincelreport.myweeklycalls.calendar.view</field>
+			<field name="view_type">calendar</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<calendar string="Phone Calls" date_start="date" color="user_id" date_delay="duration">
+					<field name="name"/>
+					<field name="partner_id"/>
+				</calendar>
+			</field>
+		</record> -->
+		
+			
+		
+		
+		<record	 id="dincelreport_myweeklycalls_tree_view" model="ir.ui.view" >
+			<field name="name">My Activities</field>
+			<field name="view_type">tree</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<tree string="My Activities Report" create="false">
+					<field name="date"/>
+					<field name="name" string="Address"/>
+					<field name="description"/>
+					<field name="partner_id" string="Customer"/>
+					<field name="x_contact_id" string="Contact"/>
+					<field name="x_type" />
+					
+					<field name="x_phone" string="Phone"/>
+					<field name="x_mobile" string="Mobile"/>
+					<field name="x_email" string="Email"/>
+					
+					<field name="x_proj_size"  string="Estimate (M2)" sum="Total"/>
+					<field name="x_proj_val" string="Project Value ($)" sum="Total"/>
+					<field name="x_likely_sale_dt"/>
+					<field name="x_get_quote"/>
+					<field name="x_project_id" invisible="1"/>
+					<!-- <field name="duration"/> -->
+					<field name="user_id" string="Salesperson" />
+					<field name="x_is_followup" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelreport_myweeklycalls_form_view" model="ir.ui.view" >
+			<field name="name">My Activities</field>
+			<field name="view_type">form</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<form string="My Activity Log" version="7.0">
+					<header>
+					  <button string="Convert to Lead"  name="convert2lead" type="object"  attrs="{'invisible': ['|',('x_has_lead','=','1'),'|',('x_is_followup','=',True),('x_get_quote','!=','-')]}"/>
+					  
+					  <button string="Add Follow-Up"  name="add_followups"  type="object" />
+					</header>
+					<sheet string="Phone Call">
+					  
+						<group colspan="4">
+						
+							<field name="x_non_project" help="Tick this option if you wanted to make customer as primary contact of activity report."/>
+							
+							<field name="x_project_id" domain="[('x_is_project', '=', True)]"  context="{'default_user_id': uid,'default_x_is_project':True}"  on_change="onchange_project(x_project_id,partner_id,x_non_project)" string="Site Address" options="{'limit': 15, 'no_quick_create': True,'m2o_dialog':false}" attrs="{'readonly': [('x_is_followup','=',True)],'required':[('x_non_project','=',False)]}" />
+							
+							<field name="partner_id" on_change="onchange_client(x_project_id,partner_id,x_non_project)"  context="{'default_user_id': uid,'default_is_company':True}"  domain="[('is_company', '=', True)]"   string="Customer/Company" options="{'limit': 15, 'no_quick_create': True, 'no_create_edit': False,'m2o_dialog':false}" attrs="{'readonly': [('x_is_followup','=',True)]}"/>
+							
+							<field name="x_phone_partner" readonly="1" /> 
+							
+							<field name="x_contact_id" context="{'default_user_id': uid}"  domain="['&amp;', ('x_is_project','=',False),'|',('parent_id', '=', partner_id),('parent_id', '=', x_project_id)]" on_change="onchange_contact(x_contact_id,partner_id)" string="Customer/Site Contact" options="{'limit': 15, 'no_quick_create': True,'m2o_dialog':false}" attrs="{'readonly': [('x_is_followup','=',True)]}"/>
+							
+							<field name="x_type" required="1" />  
+							 
+						 </group>  
+						<group  >	
+							<group  >
+							<field name="x_mobile" readonly="1"/>
+							<field name="x_phone" string="Phone"   readonly="1" /> 
+							<field name="x_email" string="Email"  readonly="1"/> 
+							<field name="state" invisible="1" />  
+								<field name="x_proj_size" string="Est. Sq.Mtrs. (m2)"  readonly="1"/>
+								<field name="x_proj_val" string="Project Value ($)"  readonly="1"/>
+								<field name="x_likely_sale_dt" string="Likely Sales Date"  readonly="1"/>
+								
+								<field name="x_get_quote" invisible="1"/>
+							</group>
+							
+							<group >
+							<field name="name"  string="Site Address*" invisible="1" /> 
+						
+							<field name="date" string="Activity date (meeting/call)"/>
+							<field name="user_id" string="Salesperson" on_change="on_change_userid(user_id, context)"/>
+							<label for="section_id"  attrs="{'invisible': [('x_is_followup','=',True)]}"/>
+                            <div attrs="{'invisible': [('x_is_followup','=',True)]}">
+                                <field name="section_id" />
+                                <button name="case_escalate" string="Escalate" type="object" attrs="{'invisible': [('section_id','=',False)]}"/>
+                            </div>
+							<field name="x_is_coldcall" string="Cold Call" attrs="{'invisible': [('x_is_followup','=',True)]}"/>
+							<field name="duration" widget="float_time" invisible="1" string="Meeting Duration" />
+							
+							<field name="opportunity_id" string="From Lead / From  Opportunity  " invisible="1" context="{'opportunity_id': opportunity_id}"/>
+					 
+							<!--
+							<field name="x_contact_name" invisible="1"/>
+							<field name="email_from" invisible="1"/> -not needed because of the chatter, thus invisible, but must be in the view as it's returned by onchange_partner_id()-->
+							<field name="priority" invisible="1"/>
+							<field name="x_has_lead" invisible="1"/><field name="x_is_followup" invisible="1"/>
+							<field name="x_contract_quote_id" readonly="1" attrs="{'invisible': [('x_is_followup','=',False)]}"/>	
+							
+						  </group>
+						</group>
+						<field name="description" placeholder="Comments..."/>
+						
+					<group colspan="4">
+							<field name="x_next_act_date" string="Next Follow-Up"/>
+							<field name="x_next_action" string="Instruction" placeholder="Instructions / notes for next follow-up" attrs="{'required': [('x_next_act_date','!=', ''),('x_next_act_date','!=', False)]}"/>
+					</group>
+
+					</sheet>
+					<div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		
+		<record id="dincelcrm_mytasks_action" model="ir.actions.act_window" >
+			<field name="name">My Calendar</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('user_id','=',uid),('state','in',['open','done'])]</field>
+			<field name="search_view_id" ref="view_crm_case_allphonecalls_filter"/>
+		 </record>
+		 <record model="ir.actions.act_window.view" id="action_tasks_calendar_view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_mycalendar_calendar_view"/>
+            <field name="act_window_id" ref="dincelcrm_mytasks_action"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="act_tasks_tree_view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelreport_myfollowup_tree_view"/>
+			<field name="act_window_id" ref="dincelcrm_mytasks_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="act_tasks_form_view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_mytasks_action"/>
+		</record>
+		
+		<record id="dincelcrm_myactivities_action" model="ir.actions.act_window" >
+			<field name="name">My Activities</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('user_id','=',uid),('state','=','done')]</field>
+			<field name="context">{'search_default_state': 'done', 'default_state': 'done', 'default_duration': 1}</field>
+			
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_myweeklycalls_calendar">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_calendar_view"/>
+            <field name="act_window_id" ref="dincelcrm_myactivities_action"/>
+       </record>
+	   
+		<record model="ir.actions.act_window.view" id="action_meetingcalls_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+            <field name="act_window_id" ref="dincelcrm_myactivities_action"/>
+       </record>
+	   
+	   <record model="ir.actions.act_window.view" id="act_meetingcalls_form__view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_myactivities_action"/>
+		</record>
+		
+		
+		<record id="dincelcrm_myactivities_rpt_action" model="ir.actions.act_window" >
+			<field name="name">My Activities Reports</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form,calendar</field>
+			<field name="domain">[('user_id','=',uid),('state','=','done')]</field>
+			<field name="context" eval="{'search_default_x_date_from':1}"/>
+		
+			<!--<field name="context" eval="'{\'default_state\':\'open\'}'"/>-->
+	
+			<!--<field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/> -->
+			<field name="search_view_id" ref="view_crm_case_allphonecalls_filter"/>
+		 </record>
+		 
+		<record model="ir.actions.act_window.view" id="action_myweeklycalls_tree_view">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+            <field name="act_window_id" ref="dincelcrm_myactivities_rpt_action"/>
+        </record>
+		
+		<record model="ir.actions.act_window.view" id="act_myweeklycalls_form__view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_form_view"/>
+			<field name="act_window_id" ref="dincelcrm_myactivities_rpt_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_mysales_activities_calendar">
+            <field name="sequence" eval="3"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_calendar_view"/>
+            <field name="act_window_id" ref="dincelcrm_myactivities_rpt_action"/>
+       </record>
+	   
+	   
+	   <record	 id="dincelcrm_mycustomers_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.mycustomers.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">res.partner</field>
+			<field name="arch" type="xml">
+				<tree string="Contacts">
+					 
+					<field name="name"  string="Name / Site Address"/>
+					<field name="parent_id" string = "Parent Company"/> 
+					<field name="phone" /> 
+					<field name="email" /> 
+					<field name="property_payment_term" /> 
+					
+					<field name="credit_limit" /> 
+					<field name="x_deposit_exmpt" /> 
+					<field name="user_id" />
+					 
+				</tree>
+			</field>
+		</record>
+		
+		<record	 id="dincelsales_mysales_activities_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.mysales.activities.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">res.partner</field>
+			<field name="arch" type="xml">
+				<tree string="Contacts">
+					 
+					<field name="name"  string="Name / Site Address"/>
+					<field name="parent_id" string = "Parent Company"/> 
+					<field name="phone" /> 
+					<field name="email" /> 
+					<field name="user_id" />
+					 
+				</tree>
+			</field>
+		</record>
+
+
+		<record	 id="dincelcrm_mycustomers_overterms_action" model="ir.actions.act_window" >
+			<field name="name">My Customers (over terms)</field>
+			<field name="res_model">res.partner</field>
+			<field name="domain">[('user_id','=',uid),('is_company','=',True),('x_cr_over','=',True)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			
+		</record>
+		
+		
+	   <record	 id="dincelcrm_mycustomers_action" model="ir.actions.act_window" >
+			<field name="name">My Customers</field>
+			<field name="res_model">res.partner</field>
+			<field name="domain">[('user_id','=',uid),('is_company','=',True)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+			<!-- <field name="view_id" ref="dincelsales_mysales_activities_tree_view"/> -->
+			
+		</record>
+		 <record model="ir.actions.act_window.view" id="action_dincelreport_mycustomers_kanban">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">kanban</field>
+            
+            <field name="act_window_id" ref="dincelcrm_mycustomers_action"/>
+       </record>
+		 <record model="ir.actions.act_window.view" id="action_dincelreport_mycustomers_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelcrm_mycustomers_tree_view"/>
+            <field name="act_window_id" ref="dincelcrm_mycustomers_action"/>
+       </record>
+		<record model="ir.actions.act_window.view" id="action_dincelreport_mycustomers_form">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+		
+			<field name="act_window_id" ref="dincelcrm_mycustomers_action"/>
+		</record>
+		
+		<record id="dincelreport_allfollowups_report_action" model="ir.actions.act_window" >
+			<field name="name">All Follow-Ups Reports</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state','=','open')]</field>
+			
+		 </record>
+		 
+		 <record model="ir.actions.act_window.view" id="act_allfollowup_report_tree_view">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelreport_myfollowup_tree_view"/>
+			<field name="act_window_id" ref="dincelreport_allfollowups_report_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="act_allfollowup_report_form_view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myfollowup_form_view"/>
+			<field name="act_window_id" ref="dincelreport_allfollowups_report_action"/>
+		</record>
+		
+			
+		<record model="ir.ui.view" id="dincelreport_allweeklycalls_graph_view">
+		   <field name="name">dincelreport.allweeklycall.graph</field>
+		   <field name="model">crm.phonecall</field>
+		   <field name="type">graph</field>
+		   <field name="arch" type="xml">
+				 <graph string="Call Analysis">
+					  <field name="user_id" group="True"/>
+					  <field name="duration" operator="*"/>
+				</graph>
+			</field>
+		</record>
+		
+		 <record id="dincelcrm_salesact_pipeline_filter" model="ir.ui.view">
+			<field name="name">Quotation Sales Activities</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<search string="Search Sales Activities">
+					<field name="name" string="Quotation"/>
+					 
+					<separator/>
+				
+					<filter name="x_date_from" string="Pipeline" domain="[('x_likely_sale_dt','&gt;=',(context_today()).strftime('%%Y-%%m-%%d'))]" />
+					
+					<field name="user_id"/>
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					   <filter name="x_type"  string="Type"  domain="[]" context="{'group_by':'x_type'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+	
+	
+		<record id="dincelreport_salesact_pipeline_action" model="ir.actions.act_window" >
+			<field name="name">Pipeline Sales Activities</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+			<field name="context" eval="{'search_default_x_date_from':1}"></field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+			<field name="search_view_id" ref="dincelcrm_salesact_pipeline_filter"/>
+		 
+		 </record>
+		<record id="dincelreport_allweeklycalls_action" model="ir.actions.act_window" >
+			<field name="name">All Salesperson Activities Report</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,graph</field>
+			<field name="domain">[('state','=','done')]</field>
+			<field name="context" eval="{'search_default_x_date_from':1,'search_default_salesperson': 1}"></field>
+			<!--	<field name="view_id" ref="dincelreport_allweeklycalls_tree_view"/>
+			<field name="view_id" ref="act_allweeklycalls_graph_view"/>-->
+			<field name="search_view_id" ref="view_crm_case_allphonecalls_filter"/>
+		</record>
+		 <record model="ir.actions.act_window.view" id="action_report_crm_lead_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_allweeklycalls_action"/>
+       </record>
+		<record model="ir.actions.act_window.view" id="act_allweeklycalls_graph_view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">graph</field>
+			<field name="view_id" ref="dincelreport_allweeklycalls_graph_view"/>
+			<field name="act_window_id" ref="dincelreport_allweeklycalls_action"/>
+		</record>
+		
+		
+		<record id="dincelreport_allcalls_action" model="ir.actions.act_window" >
+			<field name="name">All Sales Activities</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('state','=','done')]</field>
+			<field name="search_view_id" ref="view_crm_case_allphonecalls_filter"/>
+		</record>
+		 
+		<record model="ir.actions.act_window.view" id="action_myweeklycalls_calendar">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_calendar_view"/>
+            <field name="act_window_id" ref="dincelreport_allcalls_action"/>
+		</record>
+	   
+		<record model="ir.actions.act_window.view" id="action_meetingcalls_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_allcalls_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="act_meetingcalls_form__view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_form_view"/>
+			<field name="act_window_id" ref="dincelreport_allcalls_action"/>
+		</record>
+		
+		
+		<record model="ir.ui.view" id="dincelsales_leads_new_enquiry_tree_view">
+            <field name="name">Leads</field>
+            <field name="model">account.analytic.account</field>
+            <field name="arch" type="xml">
+                <tree string="Leads" fonts="bold:message_unread==True" colors="blue:x_stage_id=='1';">
+				<field name="date" string="Date"/>
+					<field name="x_project_id"/>
+					<field name="x_proj_val" string="Project Value ($)"/>
+					<field name="partner_id"/>
+					<field name="x_contact_id"/>
+					<field name="x_is_quote" invisible="1"/>
+					<field name="x_stage_id" />
+					 
+					
+					<field name="user_id" string="Salesperson" />
+					<field name="message_unread" invisible="1"/>
+                </tree>
+            </field>
+        </record>
+		
+		
+		<record	 id="dincelcrm_mycontractleads_new_action" model="ir.actions.act_window" >
+			<field name="name">My Leads</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="context">{'default_x_is_quote': 1, 'default_x_stage_id': 1,'default_user_id':uid,'default_x_prepared_by':uid}</field> 
+			<field name="domain">['&amp;', ('x_is_quote','=','1'),'&amp;', ('user_id','=',uid),'|',('x_stage_id','=',1),('x_stage_id','=',3)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincel_mycontractleads_new_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelsales_leads_new_enquiry_tree_view"/>
+			<field name="act_window_id" ref="dincelcrm_mycontractleads_new_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincel_mycontractleads_new_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+		 
+			<field name="act_window_id" ref="dincelcrm_mycontractleads_new_action"/>
+		</record>
+		
+	 
+		
+		<record	 id="dincelcrm_myquotes_action" model="ir.actions.act_window" >
+			<field name="name">My Quotes</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="context">{'default_x_is_quote': 1, 'default_x_stage_id': 5}</field> 
+			<field name="domain">[('user_id','=',uid),('x_is_quote','=','1'),('x_stage_id','not in',[1,2])]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="view_id" ref="dincelreport_leads_tree_view"/> -->
+		</record>
+		 <record model="ir.actions.act_window.view" id="action_dincelreport_contractquote_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            
+            <field name="act_window_id" ref="dincelcrm_myquotes_action"/>
+       </record>
+		<record model="ir.actions.act_window.view" id="action_dincelreport_contractquote_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_contractquote_form_view"/> 
+			<field name="act_window_id" ref="dincelcrm_myquotes_action"/>
+		</record>
+		
+		<record id="dincelcrm_allcontacts_action" model="ir.actions.act_window" >
+			<field name="name">Contacts</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_is_company': 1}</field> 
+			<field name="view_id" ref="dincelsales_mysales_activities_tree_view"/>
+		 </record>
+		 
+		 
+		 <record	 id="dincelcrm_allweeklyreport_action" model="ir.actions.act_window" >
+			<field name="name">All DOT Report</field>
+			<field name="res_model">dincelcrm.weeklyreport</field>
+			<field name="context">{'default_user_id': uid}</field> 
+			
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="search_view_id" ref="view_dincelcrm_allweeklyreport_filter"/>
+			<field name="context" eval="{'search_default_salesperson': 1}"></field>
+		</record>
+		 <record model="ir.actions.act_window.view" id="action_dincelcrm_allweeklyreport_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            
+            <field name="act_window_id" ref="dincelcrm_allweeklyreport_action"/>
+       </record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_allweeklyreport_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_myweeklyreport_form_view"/> 
+			<field name="act_window_id" ref="dincelcrm_allweeklyreport_action"/>
+		</record>
+		
+		<record	 id="dincelcrm_myweeklyreport_action" model="ir.actions.act_window" >
+			<field name="name">My DOT Report </field>
+			<field name="res_model">dincelcrm.weeklyreport</field>
+			<field name="context">{'default_user_id': uid}</field> 
+			<field name="domain">[('user_id','=',uid)]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<!-- <field name="view_id" ref="dincelreport_leads_tree_view"/> -->
+		</record>
+		 <record model="ir.actions.act_window.view" id="action_dincelcrm_myweeklyreport_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            
+            <field name="act_window_id" ref="dincelcrm_myweeklyreport_action"/>
+       </record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_myweeklyreport_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_myweeklyreport_form_view"/> 
+			<field name="act_window_id" ref="dincelcrm_myweeklyreport_action"/>
+		</record>
+		
+		
+		  <record id="dincelreport_quote_fw_pending_action" model="ir.actions.act_window" >
+			<field name="name">Quote Follow-up Pending</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('x_is_quote','=','1'),('x_is_quote','=','5'),('x_has_fw_pending','=','1')]</field>
+			<field name="search_view_id" ref="view_dincelcrm_quote_filter"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_quote_fw_pending_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelcrm_quote_fw_pending_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_quote_fw_pending_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="act_quote_fw_pending_form__view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_contractquote_form_view"/>
+			<field name="act_window_id" ref="dincelreport_quote_fw_pending_action"/>
+		</record>
+		
+		 <record id="dincelreport_quote_fw_all_action" model="ir.actions.act_window" >
+			<field name="name">Quote Follow-up Report</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('x_is_quote','=','1'),('x_is_quote','=','5')]</field>
+			
+		</record>
+		<record model="ir.actions.act_window.view" id="action_quote_fw_all_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelcrm_contractquote_pending_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_quote_fw_all_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="act_quote_fw_all_form__view">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelcrm_contractquote_form_view"/>
+			<field name="act_window_id" ref="dincelreport_quote_fw_all_action"/>
+		</record>
+		
+		 <record id="view_dincelcrm_phone_fw_filter" model="ir.ui.view">
+			<field name="name">Activities Follow-Up</field>
+			<field name="model">crm.phonecall</field>
+			<field name="arch" type="xml">
+				<search string="Follow-Up">
+					 
+				 	 <field name="name" string="Address"/>
+					 <field name="partner_id" string="Customer" />
+					 <field name="x_project_id" string="Project / Site" />
+					 
+					 <field name="x_contact_id" string="Customer Contact"/>
+					 <field name="user_id" string="Salesperson" />
+					  
+					 
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					   <filter name="x_type"  string="Type"  domain="[]" context="{'group_by':'x_type'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+			
+		  <record id="dincelreport_phonecall_fw_pending_action" model="ir.actions.act_window" >
+			<field name="name">Pending Follow-ups</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('state','=','open'),('x_active_user','=','1')]</field>
+			<field name="search_view_id" ref="view_dincelcrm_phone_fw_filter"/>
+			<field name="context" eval="{'search_default_salesperson': 1}"></field>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_phonecall_fw_pending_calendar">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myfollowups_calendar_view"/>
+            <field name="act_window_id" ref="dincelreport_phonecall_fw_pending_action"/>
+       </record>
+	   
+		 <record model="ir.actions.act_window.view" id="action_phonecall_fw_pending_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myfollowup_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_phonecall_fw_pending_action"/>
+       </record>
+	   <record model="ir.actions.act_window.view" id="act_phonecall_fw_pending_form_view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myfollowup_form_view"/>
+			<field name="act_window_id" ref="dincelreport_phonecall_fw_pending_action"/>
+		</record>
+		
+		 <record id="dincelreport_meetingcalls_action" model="ir.actions.act_window" >
+			<field name="name">My Activities</field>
+			<field name="res_model">crm.phonecall</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('user_id','=',uid),('state','=','done')]</field>
+			<field name="context">{'search_default_state': 'done', 'default_state': 'done', 'default_duration': 1}</field>
+			
+		</record>
+		<record model="ir.actions.act_window.view" id="action_myweeklycalls_calendar">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">calendar</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_calendar_view"/>
+            <field name="act_window_id" ref="dincelreport_meetingcalls_action"/>
+       </record>
+		 <record model="ir.actions.act_window.view" id="action_meetingcalls_tree">
+            <field name="sequence" eval="2"/>
+            <field name="view_mode">tree</field>
+            <field name="view_id" ref="dincelreport_myweeklycalls_tree_view"/>
+            <field name="act_window_id" ref="dincelreport_meetingcalls_action"/>
+       </record>
+	   <record model="ir.actions.act_window.view" id="act_meetingcalls_form__view">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelreport_myweeklycalls_form_view"/>
+			<field name="act_window_id" ref="dincelreport_meetingcalls_action"/>
+		</record>
+		
+		
+		<record	 id="dincelcrm_myorders_action" model="ir.actions.act_window" >
+			<field name="name">My Orders</field>
+			<field name="res_model">sale.order</field>
+			 
+			<field name="domain">[('user_id','=',uid),('state','not in',['cancel','done']),('x_del_status','!=','delivered')]</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		
+		</record>
+		
+		<record id="dincelcrm_myquote_schedule_action" model="ir.actions.act_window" >
+			<field name="name">My Component List Schedule</field>
+			<field name="res_model">dincelcrm.quote.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('user_id','=',uid)]</field>
+			 <field name="context">{'search_default_draft': 1, 'search_default_progress': 1}</field>
+		</record>
+		
+		<record id="dincelcrm_estimate_schedule_action" model="ir.actions.act_window" >
+			<field name="name">My Component List</field>
+			<field name="res_model">dincelcrm.quote.schedule</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">calendar,tree,form</field>
+			<field name="domain">[('entry_by','=',uid)]</field>
+			 <field name="context">{'search_default_draft': 1, 'search_default_progress': 1}</field>
+		</record>
+		
+		<!--
+		<record id="open_view_quotation_approval_request" model="ir.actions.act_window" >
+			<field name="name">Quotation Approval</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state', '=', 'need_approval')]</field>
+			<field name="view_id" ref="dincelcrm_contractquote_action"/>
+		</record>
+		-->
+		
+		<record id="open_view_quotation_approval_request" model="ir.actions.act_window" >
+			<field name="name">Quotation Approval</field>
+			<field name="res_model">account.analytic.account</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('state', '=', 'need_approval')]</field>
+			<field name="view_id" ref="dincelcrm_contractquote_tree_view"/>
+			<field name="search_view_id" ref="view_dincelcrm_qutation_filter"/>
+		</record>
+		
+		
+		
+		<!--   My Menu Starts  -->  
+				
+		<menuitem id="dincelcrm_menu" name="My Menu" sequence="1"/>
+		
+		<menuitem id="dincelcrm_menu_sub" name="My Menu"  parent="dincelcrm_menu"/>
+		
+		<menuitem id="dincelcrm_myfollowups_menu" 
+					name="My Follow-Ups" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_myfollowups_action"
+					sequence="1" 
+					/>		
+					
+		<menuitem id="dincelcrm_myactivities_menu" 
+					name="My Activities" 
+					parent="dincelcrm_menu_sub"
+					action="dincelcrm_myactivities_action"
+					sequence="2" 
+					/>
+		 
+		 <menuitem id="dincelcrm_mytasks_menu" 
+					name="My Calendar" 
+					parent="dincelcrm_menu_sub"
+					action="dincelcrm_mytasks_action"
+					sequence="2" 
+					/>
+		
+		<menuitem 
+			action="open_view_quotation_approval_request" 
+			id="menu_quotation_approval" 
+			name="Quotation Approval Request" 
+			parent="dincelcrm_menu_sub" 
+			groups="base.admin_user_quotation"
+			sequence="3" />
+			
+		<!--		
+		<menuitem id="dincelcrm_myactivities_rpt_menu" 
+					name="My Activities Report" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_myactivities_rpt_action"
+					sequence="3" 
+					/>	 			 	
+					
+		<menuitem id="dincelcrm_mycustomers_menu" 
+					name="My Customers" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_mycustomers_action"
+					sequence="4" 
+					/>	 
+		<menuitem id="dincelcrm_mycustomers_overterms_menu" 
+					name="My Customers (over terms)" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_mycustomers_overterms_action"
+					sequence="4" 
+					/>	 
+					
+		<menuitem id="dincelcrm_mycontractleads_new_menu" 
+					name="My Leads" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_mycontractleads_new_action"
+					sequence="5" 
+					/>		
+								
+		
+		<menuitem id="dincelcrm_myquotes_menu" 
+					name="My Quotes" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_myquotes_action"
+					sequence="6" 
+					/>	
+		
+		
+					
+		<menuitem id="dincelcrm_myorders_menu" 
+					name="My Orders" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_myorders_action"
+					sequence="7" 
+					/>	
+					
+	
+			
+		<menuitem id="dincelcrm_myweeklyreport_menu" 
+					name="My DOT Report" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_myweeklyreport_action"
+					sequence="9" 
+					/>	
+					
+		<menuitem id="dincelcrm_myquote_schedule_menu" 
+					name="My Component List Schedule" 
+					parent="dincelcrm_menu_sub" 
+					 
+					action="dincelcrm_myquote_schedule_action"
+					sequence="9" 
+					/>			
+					
+		<menuitem id="dincelcrm_estimate_schedule_menu" 
+					name="My Component List" 
+					parent="dincelcrm_menu_sub" 
+				 
+					action="dincelcrm_estimate_schedule_action"
+					sequence="9" 
+					/>	
+					
+		<menuitem id="dincelcrm_allcontacts_menu" 
+					name="All Contacts" 
+					parent="dincelcrm_menu_sub"
+					action="dincelcrm_allcontacts_action"
+					sequence="10" 
+					/>		
+						-->
+		<!--   My Menu Ends  -->
+		
+		
+		<!--   Sales Menu Ends  -->
+		<!--
+		<menuitem id="dincelcrm_leads_new_inqury_menu" 
+				name="Leads / Inquiry" 
+				parent="base.menu_sales" 
+				action="dincelcrm_leads_new_inqury_action" 
+				sequence="3"
+				/>	
+		<menuitem id="dincelcrm_leads_opportunities_menu" 
+				name="Opportunities" 
+				parent="base.menu_sales" 
+				action="dincelcrm_leads_opportunities_action" 
+				sequence="3"
+				/>	
+						
+	 
+		<menuitem id="dincelreport_allcalls_menu" 
+					name="All Sales Activities Report" 
+					parent="crm.menu_crm_case_phone" 
+					action="dincelreport_allcalls_action"
+					sequence="4" 
+					/>	
+				
+		<menuitem id="dincelreport_quote_fw_pending_menu" 
+					name="Quote Follow-up Pending" 
+					parent="crm.menu_crm_case_phone" 
+					action="dincelreport_quote_fw_pending_action"
+					sequence="6" 
+					/>	 
+					
+		<menuitem id="dincelreport_phonecall_fw_pending_menu" 
+					name="Pending Follow-ups" 
+					parent="crm.menu_crm_case_phone" 
+					action="dincelreport_phonecall_fw_pending_action"
+					sequence="5" 
+					/>	
+		<menuitem id="dincelcrm_allweeklyreport_menu" 
+					name="All DOT Reports" 
+					parent="crm.menu_crm_case_phone" 
+					action="dincelcrm_allweeklyreport_action"
+					sequence="4" 
+					/>	
+		-->			
+				
+		<!--   Sales Menu Ends  -->
+	
+		
+		<!--   Config Menu Starts  -->					
+	 <!--
+		<menuitem id="dincelcrm_quotationrates_menu" 
+				name="Quotations Rates" 
+				parent="base.menu_base_config" 
+				action="dincelcrm_quotationrates_action"
+				/>				
+					
+		<menuitem id="dincelcrm_contacttype_menu" 
+				name="Customer Contact Types" 
+				parent="base.menu_base_config" 
+				action="dincelcrm_contacttype_action"
+				/>				
+		-->			
+		 	
+		<!--   Config  Menu Ends  -->					
+		<!--   Reporting  Menu Starts  -->		
+		<!--
+	 	<menuitem id="dincelreport_allweeklycalls_menu"
+					name="All Salesperson Activities Report" 
+					parent="base.next_id_64" 
+					action="dincelreport_allweeklycalls_action" 
+					/>
+					
+		<menuitem id="dincelsales_allfollowups_report_menu" 
+					name="All Follow-Ups Report" 
+					parent="base.next_id_64" 
+					action="dincelreport_allfollowups_report_action"
+					
+					/>	
+		<menuitem id="dincelreport_salesact_pipeline_menu"
+					name="Pipeline Sales Activities" 
+					parent="base.next_id_64" 
+					action="dincelreport_salesact_pipeline_action" 
+					/>	
+			<menuitem id="dincelreport_quote_fw_menu" 
+					name="Quote Follow-up Report" 
+					parent="base.next_id_64" 
+					action="dincelreport_quote_fw_all_action"
+					sequence="5" 
+					/>		
+						-->
+		<!--   Reporting  Menu Ends  -->		
+	</data>
+</openerp>	

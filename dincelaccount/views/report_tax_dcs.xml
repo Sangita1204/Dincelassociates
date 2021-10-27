@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_tax_dcs">
+    <t t-call="report.html_container">
+        <t t-call="report.internal_layout">
+            <div class="page">
+                <h2>Tax Statement</h2>
+
+                <div class="row mt32 mb32">
+                    <div class="col-xs-3">
+                        <strong>Chart of Tax:</strong>
+                        <p t-esc="get_account(data)"/>
+                    </div><!--
+                    <div class="col-xs-3">
+                        <strong>Fiscal Year:</strong>
+                        <p t-esc="get_fiscalyear(data)"/>
+                    </div> -->
+                    <div class="col-xs-3">
+                        <strong>Date:</strong>
+                        <p>
+                            Start Date: <span t-esc="get_start_date(data)"/><br/>
+                            End Date: <span t-esc="get_end_date(data)"/>
+                        </p>
+                    </div>
+                    <div class="col-xs-3">
+                        <strong>Based On:</strong>
+                        <p t-esc="get_basedon(data)"/>
+                    </div>
+                </div>
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Tax Name</th>
+							<th>Reference</th>
+                            <th>Date</th>
+							<th>Partner</th>
+							<th>Sale Value</th>
+							<th>Purchase Value</th>
+							<th>Tax Collected</th>
+							<th class="text-right">Tax Paid</th>
+                        </tr>
+                    </thead>
+					<t t-set="tot_tax" t-value="0"/>
+					<t t-set="tot_paid" t-value="0"/>
+                    <tbody>
+                        <tr t-foreach="get_lines(data['form']['based_on'], data['form']['company_id'])" t-as="taxline">
+                            <t t-if="taxline['code'] == '.'">
+                                <t t-set="style" t-value="'font-weight:normal;'"/>
+                            </t>
+                            <t t-if="taxline['code'] !='.'">
+                                <t t-set="style" t-value="'font-weight:bold;'"/>
+                            </t>
+
+                            <td>
+                                <span t-att-style="style" t-esc="taxline['level']" style="color:white;"/>
+                                <span t-att-style="style" t-if="taxline['code']" t-esc="taxline['code']"/>
+                                <span t-att-style="style" t-esc="taxline['name']"/>
+								 
+                            </td>
+							<td>
+							  <span t-att-style="style" t-esc="taxline['number']"/>
+							   
+							  </td>
+                              <td>
+							  <span t-att-style="style" t-esc="taxline['date_invoice']"/>
+							   
+							  </td>
+							  <td>
+							   <span t-att-style="style" t-esc="taxline['partner_name']"/>
+							   
+							  </td>
+							  <td class="text-right">
+							  <t t-if="taxline['sale_amt'] >0"> 
+								<span t-att-style="style" t-esc="formatLang(taxline['sale_amt'], currency_obj=res_company.currency_id)"/>
+							   </t>
+							  </td>
+							  <td class="text-right">
+							  <t t-if="taxline['purchase_amt'] >0"> 
+							  <span t-att-style="style" t-esc="formatLang(taxline['purchase_amt'], currency_obj=res_company.currency_id)"/>
+							    </t>
+							  </td>
+							  <td class="text-right">
+							   <t t-if="taxline['sale_tax'] >0"> 
+							  <span t-att-style="style" t-esc="formatLang(taxline['sale_tax'], currency_obj=res_company.currency_id)"/>
+							  <t t-set="tot_tax" t-value="tot_tax+taxline['sale_tax']"/> 
+							    </t>
+							  </td>
+							   
+                            <td class="text-right">
+							 <t t-if="taxline['purchase_tax'] >0"> 
+                                <span t-att-style="style" t-esc="formatLang(taxline['purchase_tax'], currency_obj=res_company.currency_id)"/>
+								<t t-set="tot_paid" t-value="tot_paid+taxline['purchase_tax']"/> 
+								 </t>
+                            </td>
+                        </tr>    
+						<tr>
+						<td colspan="6" class="text-right" style="font-weight:bold;">TOTAL:
+						 </td>
+						 <td class="text-right"  style="font-weight:bold;"><span t-att-style="style" t-esc="formatLang((tot_tax), currency_obj=res_company.currency_id)"/>
+						 </td>
+						  <td class="text-right"  style="font-weight:bold;"><span t-att-style="style" t-esc="formatLang((tot_paid), currency_obj=res_company.currency_id)"/>
+						 </td>
+						</tr>
+							<tr>
+						<td colspan="6" class="text-right"  style="font-weight:bold;">BALANCE:
+						 </td>
+						 
+						  <td colspan="2" class="text-right"  style="font-weight:bold;"><span t-att-style="style" t-esc="formatLang((tot_tax-tot_paid), currency_obj=res_company.currency_id)"/>
+						 </td>
+						</tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

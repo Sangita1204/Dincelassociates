@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	<record id="dinceltest_test_form" model="ir.ui.view">
+        <field name="name">dinceltest.test.form</field>
+        <field name="model">dinceltest.test</field>
+     
+        <field name="arch" type="xml">
+		<form string="Test">
+            <button name="testbutton" string="Test BTN" type="object"/> 
+			 </form>
+        </field>
+    </record>
+	 
+	 	
+	<record id="dinceltest_test_action" model="ir.actions.act_window" >
+			<field name="name">DINCEL TEST</field>
+			<field name="res_model">dinceltest.test</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+	</record>  
+		
+	<record id="act_test_tree_view" model="ir.actions.act_window.view">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+	 
+		<field name="act_window_id" ref="dinceltest_test_action"/>
+	</record>
+	<record id="act_test_form_view" model="ir.actions.act_window.view">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dinceltest_test_form"/>
+		<field name="act_window_id" ref="dinceltest_test_action"/>
+	</record>
+
+	
+	<menuitem id="dinceltest_test_menu" 
+				name="DINCEL Test" 
+				parent="base.menu_custom" 
+				action="dinceltest_test_action" 
+				/>
+				
+				
+	
+
+					
+	</data>
+</openerp>	

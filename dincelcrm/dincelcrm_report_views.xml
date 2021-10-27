@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+			
+			
+	<template id="dincelcrm.report_quotation_report">
+		  <t t-call="report.html_container">
+			<t t-foreach="docs" t-as="o">
+					 <div class="header">
+								This Is Header23
+					  </div>
+					<div class="page">
+						<div class="header">
+						 <img class="img img-responsive" src="/static/src/img2/snap.png"/>
+<img class="img img-responsive" src="/dincelcrm/img/snap.png"/>
+<img   src="/dincelcrm/img/snap.png"/>
+							</div>
+						<h2>Report title1112</h2>
+						<p>2223<span t-field="o.name"/></p>
+					</div>
+				 
+			</t>
+		</t>
+	</template>
+		
+
+         
+    </data>
+</openerp>

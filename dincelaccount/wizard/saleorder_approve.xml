@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_saleorder_approve_request" model="ir.ui.view">
+            <field name="name">Approval Request</field>
+            <field name="model">saleorder.approve.request</field>
+            <field name="arch" type="xml">
+                <form >
+                      
+						<group>
+						<field name="request_id" invisible="1" />
+							<field name="qty" invisible="1" on_change="on_change_qty(qty,request_id,type,subtype,approve_flag)" />
+							<field name="partner_ids"   widget="many2many_tags_email" required="1"  context="{'force_email':True, 'show_email':True}" placeholder="Add contacts to notify..." />
+							<field name="date" invisible="1" required="1"/>
+							<field name="request_uid" invisible="1" attrs="{'required': [('approve_flag','=',False)]}" />
+							<field name="user_id" invisible="1"  attrs="{'required': [('approve_flag','=',True)]}"/>
+							<field name="request_text"  attrs="{'required': [('approve_flag','=',False)],'invisible': [('approve_flag','=',True)]}"/>
+							
+							<field name="subject" invisible="1" />
+							
+							<!--<field name="subject" attrs="{'required': [('approve_flag','=',True)],'invisible': [('approve_flag','=',False)]}"/> -->
+							<field name="comments" attrs="{'required': [('approve_flag','=',True)],'invisible': [('approve_flag','=',False)]}" />
+							 <field name="state" attrs="{'required': [('approve_flag','=',True)],'invisible': [('approve_flag','=',False)]}"/>
+							
+						
+							<field name="type" readonly="1" required="1"/>
+							<field name="subtype" readonly="1" attrs="{'invisible': [('type','!=','cancel')]}"/>
+							<field name="approve_flag" invisible="1"/>
+							<field name="approve_pending" invisible="1"/>
+							
+						  </group>
+						<group attrs="{'invisible': [('approve_flag','=',True)]}">
+							<!--<label colspan="2" string="The order requires approval to proceed due to discount applied. Enter your reason to submit a request and continue." attrs="{'invisible': [('type','not in',['credit','discount'])]}"/>
+								
+							<label  colspan="2" string="The order requires approval to proceed due to open/paid invoice/s. Enter your reason to submit a request and continue." attrs="{'invisible': [('type','!=','cancel'),('subtype','!=','order')]}"/>
+							
+							<label  colspan="2" string="The invoice requires approval to proceed due to partial/full produced item(MRP). Enter your reason to submit a request and continue." attrs="{'invisible': [('subtype','!=','invoice')]}"/>
+							 
+							 
+							 <label  colspan="2" string="The order requires approval to proceed due to having their outstanding balance  over the allowed credit limit. Enter your reason to submit a request and continue." attrs="{'invisible': [('type','!=','mrp')]}"/>
+							 -->
+							 <div colspan="2" >
+							 <field name="notes" readonly="1" attrs="{'invisible': [('approve_pending','=',True)]}" nolabel="1"/>
+							 
+								<field name="invoice_id" invisible="1" />
+								<field name="order_id" invisible="1"  />
+								</div>
+								<div  colspan="2" attrs="{'invisible': [('approve_pending','=',False)]}" style="border:1px solid red; padding:10px;color:red;font-weight:bold;">
+							 <label  colspan="2"    string="There is already pending approval request. Please contact account admin or a super user for follow up."   />
+							 
+							 </div>
+						</group>
+						
+							
+					
+                    <footer>
+						<button attrs="{'invisible': [('approve_pending','=',True)]}"  name="submit_request" type="object" class="oe_highlight" string="Submit"/>
+                        
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+  
+    </data>
+</openerp> 

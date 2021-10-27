@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+	<!-- Account Menu Starts -->
+		<menuitem id="dincelaccount_external_menu" name="Accounting External" sequence="1"/>
+		<menuitem id="dincelaccount_external_menu_sub" name="Accounting"  parent="dincelaccount_external_menu"/>
+			<menuitem id="dincelaccount_external_bills_menu" 
+						name="Supplier Bills" 
+						parent="dincelaccount_external_menu_sub" 
+						action="dincelaccount_purchase_invoice_action"
+						sequence="1" 
+						/>	
+						
+			<menuitem id="dincelaccount_external_journal_menu" 
+						name="Journal Entries" 
+						parent="dincelaccount_external_menu_sub" 
+						sequence="2" 
+						/>	
+						
+					<menuitem id="dincelaccount_external_moves_all"	
+							name="Journal Items" 
+							action="account.action_account_moves_all_a"
+							parent="dincelaccount_external_journal_menu"
+						/>
+					
+					<menuitem id="dincelaccount_external_moves_line"
+							name="Journal Entries" 
+							action="account.action_move_journal_line"
+						   parent="dincelaccount_external_journal_menu"
+						/>
+						
+						
+			<menuitem id="dincelaccount_external_ac_menu" 
+						name="Reports" 
+						parent="dincelaccount_external_menu_sub" 
+						sequence="3" 
+						/>	
+					
+		
+					<menuitem id="dincelaccount_external_tax_report" 
+								name="Tax Reports - GST" 
+								parent="dincelaccount_external_ac_menu" 
+								action="dincelaccount_tax_report_action2" 
+								/>	
+
+				  
+
+					<menuitem id="dincelaccount_external_profit_loss" 
+								name="Profit and Loss" 
+								parent="dincelaccount_external_ac_menu" 
+								action="action_dcs_account_report_pnl" 
+								/>					
+								
+					<menuitem id="dincelaccount_external_balance_sheet" 
+								name="Balance Sheet" 
+								parent="dincelaccount_external_ac_menu" 
+								action="action_dcs_account_report_bs" 
+								/>	
+
+					<menuitem id="dincelaccount_external_trial_balance_new" 
+								name="Trial Balance" 
+								parent="dincelaccount_external_ac_menu" 
+								action="action_dcs_account_report_tb" 
+								/>
+					
+	    
+		
+		
+	</data>
+</openerp>	

@@ -1,0 +1,151 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+	
+		<record id="dincelcrm_quote_schedule_filter" model="ir.ui.view">
+			<field name="name">Quote Schedule Filter</field>
+			<field name="model">dincelcrm.quote.schedule</field>
+			<field name="arch" type="xml">
+				<search>
+					 
+					 <field name="quote_id" />
+					 <field name="partner_id" string="Customer" />
+					 <field name="project_id" string="Project / Site" />
+					 <field name="name" string="Name"/>
+					 
+					 <field name="user_id" />
+					 <field name="entry_by" />
+					  <filter string="Draft" name="draft" domain="[('state','=','draft')]" help="Draft Schedules" />
+					  <filter string="Progress" name="progress" domain="[('state','=','progress')]" help="Progress Schedules" />
+					  <filter string="Done" name="done" domain="[('state','=','done')]" help="Done Schedules" />
+					  
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+						<filter name="partner"  string="Customer"  domain="[]" context="{'group_by':'partner_id'}"/> 
+						<filter name="project"  string="Project / Site"  domain="[]" context="{'group_by':'project_id'}"/> 
+					   <filter name="salesperson"  string="Salesperson" icon="terp-personal" domain="[]" context="{'group_by':'user_id'}"/>
+					   <filter name="entryby"  string="Estimate Team" icon="terp-personal" domain="[]" context="{'group_by':'entry_by'}"/>
+					   <filter name="state"  string="State" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+       <record id="dincelcrm_quote_schedule_form_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quote.schedule.form</field>
+			<field name="model">dincelcrm.quote.schedule</field>
+			
+			<field name="arch" type="xml">
+					 
+				<form  create="false"   version="7.0">
+				 <sheet>
+					<group>
+						<group> 
+							<field name="name" style="font-weight:bold;" readonly="1"   />
+							<field name="quote_id"  readonly="1" />
+							
+							<field name="wall_id"/>
+								
+							<field name="product"    />
+							
+							<field name="size_m2" />
+							<field name="comments" />
+							<field name="state"    />
+					
+							<field name="entry_by"  />
+
+						</group>
+					
+						<group>
+							<field name="partner_id" readonly="1"  />
+							<field name="project_id"  readonly="1" />
+							<field name="user_id" readonly="1" />
+							
+							
+							<field name="component_required" readonly="1"/>
+							<field name="component_sent" />
+							<field name="component_received"/>
+							<field name="order_sent" />
+							<field name="order_received"/>							
+							<field name="delivery_date" />
+						</group>
+
+								
+						<field name="pour_ids" colspan="2" nolabel="1" >
+							<div style="font-weight:bold;">Pours</div>
+							<tree editable="bottom">
+								<field name="schedule_id" invisible="1"/>
+								<field name="name" />
+								<field name="pour_date"    />
+								<field name="size_m2"    />
+							</tree>
+						</field>
+					</group> 
+					
+					</sheet>
+					
+					 <div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+                 </form>
+			</field>
+		</record>
+		
+		
+		<record	 id="dincelcrm_quote_schedule_calendar_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quote.schedule.calendar.view</field>
+			<field name="view_type">calendar</field>
+			<field name="model">dincelcrm.quote.schedule</field>
+			<field name="arch" type="xml">
+				<calendar string="Calendar" date_start="component_required" color="entry_by" >
+					<field name="project_id"/>
+					<field name="partner_id"/>
+					<field name="quote_id"    />
+					<field name="product"    />
+					<field name="state"    />
+					  
+				</calendar>
+			</field>
+		</record>
+		
+		 <record id="dincelcrm_quote_schedule_tree_view" model="ir.ui.view" >
+			<field name="name">dincelcrm.quote.schedule.tree</field>
+			<field name="model">dincelcrm.quote.schedule</field>
+			
+			<field name="arch" type="xml">
+					 
+				<tree create="false"  colors="red:over_due_clist==True;blue:state == 'draft';grey:state=='cancel';green:state == 'done';">
+					<field name="name"   />
+					<field name="partner_id"    />
+					<field name="project_id"   />
+					<field name="quote_id"   />
+					
+					<field name="entry_by"  />
+					<field name="user_id"   />
+					
+				
+					<field name="wall_id"/>
+				
+					<field name="product"    />
+					
+					<field name="component_required" />
+					
+					<field name="component_sent" />
+					
+					
+					<field name="component_received"/>
+					<field name="order_sent" />
+					<field name="order_received"/>							
+					<field name="delivery_date" />
+					<field name="size_m2" />
+					<field name="comments" />
+					<field name="state" />
+					<field name="pour_ids" />
+					<field name="over_due_clist" invisible="1"/>
+				</tree>
+			</field>
+		</record>
+    </data>
+</openerp>

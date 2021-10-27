@@ -1,0 +1,158 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+
+         <!--  Partners inherited form -->
+        <record id="view_task_dincelpartner_info_form" model="ir.ui.view">
+            <field name="name">res.dincelpartner.task.buttons</field>
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="dincelcrm.dincelcrm_contact_form_new_view"/>
+            <field name="priority" eval="50"/>
+            <field name="groups_id" eval="[(4, ref('project.group_project_user'))]"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='buttons']" position="inside">
+                    <button class="oe_inline oe_stat_button" type="object" name="button_view_partner_task" 
+                        context="{'search_default_partner_id': active_id, 'default_partner_id': active_id}"
+                        icon="fa-tasks">
+                        <field  string="Tasks" name="task_count" widget="statinfo"/>
+                    </button>     
+                        
+                     <button class="oe_inline oe_stat_button" type="object" name="button_view_partner_issues"
+                        context="{'search_default_partner_id': active_id, 'default_partner_id': active_id}"
+                        attrs="{'invisible': [('customer', '=', False)]}"
+                        icon="fa-bug" groups="project.group_project_user">
+                        <field  string="Issues" name="issue_count" widget="statinfo"/>
+                    </button>    
+                </xpath>
+            </field>
+       </record>
+		<record id="view_project_project_tree_inherit" model="ir.ui.view">
+            <field name="name">project.project.tree.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.view_project"/>
+			 <field name="arch" type="xml">
+				 
+				<field name="partner_id"  position="replace">
+					<field name="x_scope" />
+					<field name="x_curr_status" />
+					
+					<field name="x_next_stage" />
+					<field name="x_dates"/>
+					<field name="x_tracking"/>
+					<field name="x_impact"/>
+				</field>
+				 
+			</field>
+			 
+		 </record>
+		 
+		  <record id="view_project_project_form_inherit" model="ir.ui.view">
+            <field name="name">project.project.form.inherit</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+			 <field name="arch" type="xml">
+			   <group name="group_alias"   position="after">
+					<group>
+					<field name="x_category_id" />
+					</group>
+				</group>
+				<field name="analytic_account_id" position="replace">
+					<field name="analytic_account_id" invisible="1" />
+				</field>
+				<field name="parent_id" position="replace">
+					<field name="parent_id" invisible="1" />
+				</field>
+				
+				  <xpath expr="//notebook/page[@string='Team']" position="before">
+					<page string="Info">
+					<group colspan="2">
+						<field name="x_scope" />
+						<field name="x_status" readonly="1"/>
+						<field name="x_previous" invisible="1" />
+						
+						<group colspan="2">
+							<field name="x_status_ids" >
+							<tree>
+							<field name="date" />
+							<field name="status" />
+							</tree>
+							<form>
+							<field name="date" />
+							<field name="status" />
+							</form>
+							</field>
+							 
+						</group> 
+						
+						<field name="x_next_stage" />
+						
+						<field name="x_dates"/>
+						<field name="x_tracking"/>
+						<field name="x_impact"/>
+						
+					</group> 
+					
+					
+					</page>
+					 
+					
+					 
+				  </xpath>
+			</field>
+       </record>
+		
+		<record id="dincelproject_project_filter" model="ir.ui.view">
+            <field name="name">Projects Search</field>
+            <field name="model">project.project</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Title"/>
+                    <field name="x_category_id"/>
+					<field name="user_id"/>
+					 
+					
+                    <filter   string="New" name="new" domain="[('state','=','draft')]" help="New " />
+                    <filter   string="Open" name="open" domain="[('state','=','open')]" help="Open " />
+                    <filter   string="Pending" name="pending" domain="[('state','=','pending')]" help="Pending " />
+					<filter   string="Cancelled" name="cancelled" domain="[('state','=','cancelled')]" help="Cancelled " />
+					<filter   string="Closed" name="closed" domain="[('state','=','close')]" help="Closed " />
+					
+					<separator/>
+					
+              
+            
+                  
+                    <group expand="0" string="Group By">
+                        <filter string="Category"   domain="[]" help="Partner" context="{'group_by':'x_category_id'}" />
+                        <filter string="Manager"  domain="[]" help="Manager" context="{'group_by':'user_id'}" />
+                     
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}" />
+                 
+                    </group>
+                </search>
+            </field>
+        </record>
+		
+		<record id="dincelproject_projects_menu_action" model="ir.actions.act_window" >
+			<field name="name">Projects</field>
+			<field name="res_model">project.project</field>
+			<field name="view_type">form</field>
+			<field name="search_view_id" ref="dincelproject_project_filter"/>
+			<field name="context">{'search_default_new':1,'search_default_open': 1,'search_default_pending': 1}</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+	
+		<menuitem id="dincelproject_menu" name="Project" />
+		<menuitem id="dincelproject_menu_sub" name="Project"  parent="dincelproject_menu"/>
+
+			<menuitem id="dincelproject_projects_menu" 
+						name="Projects" 
+						parent="dincelproject_menu_sub" 
+						action="dincelproject_projects_menu_action"
+						sequence="1" 
+						/>	
+						
+						
+   </data>
+</openerp>

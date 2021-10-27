@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+			 <record id="dincelstock_transfer_stock_form_view" model="ir.ui.view" >
+			<field name="name">dincelstock.transfer.stock.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelstock.transfer</field>
+			<field name="arch" type="xml">
+				<form string="Delivery Form" version="7.0">
+					<header>
+							<button string="Mark as print"  type="object" name="button_mark_printed" attrs="{'invisible': [('state','not in', ['draft'])]}" />
+							<button string="Print Loadsheet"  type="object" name="button_print_loadsheet" />
+							<button string="Print Docket"  type="object" name="button_print_docket" />
+						 <button name="button_mark_sent" type="object" states="printed" string="Validate as Sent" />  
+						 <button name="validate_stock_received" type="object" states="sent" string="Validate as Received" />  
+						 <button name="button_mark_draft" type="object" states="printed,sent" string="Mark as Draft" />  
+						 
+						 <button string="Blank Loadsheet"   class="oe_link" type="object" name="button_blank_loadsheet" />
+						 
+						 <field name="state" widget="statusbar" statusbar_visible="draft,printed,sent,done"/>
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+							
+								<field name="name" readonly="1"/>
+								
+								<field name="type" on_change="onchange_type(type, context)"/>
+								
+								<field name="partner_id"   attrs="{'invisible': [('type','=','manual')]}" on_change="onchange_partner_id(partner_id, project_id,type, True, context)"/>
+								
+								<field name="project_id" attrs="{'invisible': [('type','=','manual')]}" on_change="onchange_partner_id(partner_id, project_id,type, True, context)"/>
+								
+								<field name="order_id" attrs="{'invisible': [('type','=','manual')]}" on_change="onchange_origin_id(order_id,partner_id, project_id,type, context)"/>
+								
+								<field name="origin"  attrs="{'invisible': [('type','=','manual')],'readonly': [('state','!=','draft')]}" on_change="onchange_origincode(origin, context)" string="DCS Order #"  />
+								
+								<field name="date" />
+								
+								<field name="user_id"/>
+			 
+								<field name="pudel"/>   
+								
+								<field name="picking_type_id"   attrs="{'readonly': [('state','!=','draft')]}"/>
+								
+								<field name="picking_id" readonly="1"/>   
+								
+								<field name="mrp_missing"  invisible="1"/>
+								
+								<field name="date_received"  attrs="{'invisible': [('state','not in',['sent','done'])],'required': [('state','in',['sent','done'])]}"/>
+								
+								<field name="received_by"  attrs="{'invisible': [('state','not in',['sent','done'])],'required': [('state','in',['sent','done'])]}"/>
+								<field name="manifest_id" readonly="1" />
+							</group>
+							
+						    <group>
+   
+  								
+								<field name="company_id" invisible="1"   attrs="{'readonly': [('state','!=','draft')]}" />
+								
+								<field name="warehouse_id"  required="1" on_change="onchange_warehouse_frm(warehouse_id, context)"  attrs="{'readonly': [('state','!=','draft')]}" />
+								<field name="source_location_id" required="1" domain="[('usage','=','internal')]"  attrs="{'readonly': [('state','!=','draft')]}"/>
+								
+							
+								
+								<field name="destination_warehouse_id" required="1"  on_change="onchange_warehouse_to(destination_warehouse_id, context)"  attrs="{'readonly': [('state','!=','draft')]}"/>
+								
+								<field name="destination_location_id" required="1" domain="[('usage','=','internal')]"  attrs="{'readonly': [('state','!=','draft')]}"/>
+								<field name="transit_location_id" readonly="1" />
+								<field name="all_location" on_change="onchange_location(all_location, context)"/> 
+							  <div colspan="2"  attrs="{'invisible': [('mrp_missing','=',False)]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px;">
+							Missing or mismatch MRP/reserve quantity found.
+							</div>
+							</group>
+						</group>
+						 <notebook>
+						    <page string="Delivery Lines">	
+								<field name="picking_line" attrs="{'readonly': [('state','!=','draft')]}" context="{'default_location_id' : source_location_id }"> 
+									<tree editable="bottom">
+										<field name="sequence"  widget="handle"/>
+									 
+										<field name="location_id"  domain="[('usage','=','internal')]" />
+										<field name="product_id" on_change="onchange_product_id(product_id,context)"  required="1"/> 
+										
+										<field name="name"  invisible="1" />
+										<field name="prod_length" /> 
+										<field name="order_qty" on_change="onchange_qty_remain(order_qty,ship_qty,qty_remain,qty_remain_tmp,parent.type,context)" /> 
+										<field name="qty_remain_tmp" readonly="1" /> 
+										<field name="packs"  /> 
+										<field name="ship_qty" on_change="onchange_qty_remain(order_qty,ship_qty,qty_remain,qty_remain_tmp,parent.type,context)" /> 
+										<field name="qty_remain" invisible="1" /> 
+										<field name="qty_remain_read"  readonly="1" />
+										<field name="product_uom" invisible="1" />  
+										
+									</tree>
+								</field>
+							</page>
+						</notebook>
+						
+						<group>
+						 
+						<field name="note"/>
+						
+						</group>
+                     </sheet>      
+					 
+					 <div class="oe_chatter">
+						<field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+						<field name="message_ids" widget="mail_thread"/>
+					</div>
+				</form>
+			</field>
+		</record>
+		
+		
+	 <record id="dincelstock_stocktransfer_tree" model="ir.ui.view" >
+			<field name="name">dincelstock.stocktransfer.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelstock.transfer</field>
+			<field name="arch" type="xml">
+			
+				<tree colors="grey:state == 'cancel'; blue:state == 'sent';green:state == 'done';">
+					<field name="name"/>
+                    <field name="manifest_id"   />
+					<field name="type" />
+					<field name="date"  string="Date"/>
+					<field name="warehouse_id"   />
+					<field name="source_location_id" />
+					
+				
+					
+					<field name="destination_warehouse_id" />
+					<field name="destination_location_id"  />
+					
+					
+                    <field name="state"/>
+                    
+                </tree>
+				
+			</field>
+			
+		</record>	
+		
+		
+	<record id="dincelstock_transfer_stock1_action" model="ir.actions.act_window" >
+		<field name="name">Inter Branch Transfer</field>
+		<field name="res_model">dincelstock.transfer</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain"></field>  
+	</record>
+	<record model="ir.actions.act_window.view" id="action_dincelstock_transfer_stock1_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelstock_transfer_stock1_action"/>
+	 
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelstock_transfer_stock1_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		 <field name="view_id" ref="dincelstock_transfer_stock_form_view"/>
+		<field name="act_window_id" ref="dincelstock_transfer_stock1_action"/>
+		 
+	</record>
+	
+	 <record id="dincelstock_receive_do_stock1_action" model="ir.actions.act_window" >
+		<field name="name">IBT Pending Receive</field>
+		<field name="res_model">dincelstock.transfer</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'progress')]</field> 
+	</record>
+	 
+	 <record model="ir.actions.act_window.view" id="action_dincelstock_do_stock1_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelstock_receive_do_stock1_action"/>
+	 
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelstock_do_stock1_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		 
+		<field name="act_window_id" ref="dincelstock_receive_do_stock1_action"/>
+		 
+	</record>
+	
+	  <record id="dincelstock_receive_done_stock1_action" model="ir.actions.act_window" >
+		<field name="name">IBT Done</field>
+		<field name="res_model">dincelstock.transfer</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'done')]</field> 
+	</record>
+	 
+	 <record id="dincelstock_ibt_manifest_action" 
+		 model="ir.actions.act_window" >
+		<field name="name">IBT Manifest</field>
+		<field name="res_model">dincelstock.ibt.manifest</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+	
+	</record>
+	
+		<menuitem id="dincelstock_transfer_stock1_menu" 
+				name="Inter Branch Transfer (IBT)" 
+				parent="dincelwarehouse.dincelwarehouse_stock_menu" 
+				action="dincelstock_transfer_stock1_action" 
+				sequence="1"
+				/>			
+		
+<menuitem id="dincelstock_ibt_manifest_menu" 
+			name="IBT Manifest" 
+			parent="dincelwarehouse.dincelwarehouse_stock_menu" 
+			action="dincelstock_ibt_manifest_action" 
+			sequence="2"
+			/>			
+	  <menuitem id="dincelstock_transfer_do_stock1_menu" 
+			name="IBT Pending Receive" 
+			parent="dincelwarehouse.dincelwarehouse_stock_menu" 
+			action="dincelstock_receive_do_stock1_action" 
+			sequence="3"
+			/>			
+		  
+		<menuitem id="dincelstock_transfer_done_stock1_menu" 
+			name="IBT Done" 
+			parent="dincelwarehouse.dincelwarehouse_stock_menu" 
+			action="dincelstock_receive_done_stock1_action" 
+			sequence="4"
+			/>			
+	</data>
+</openerp>	

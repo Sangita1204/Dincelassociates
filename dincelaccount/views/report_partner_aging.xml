@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_partner_aging">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <div class="page" style="font-size:11px;">
+                <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div   class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+				 
+				 <div   class="col-xs-12" >
+						<br />
+						<br />
+						<span t-att-style="style" t-esc="o.partner_id.name"/><br />
+						<span t-att-style="style" t-esc="o.partner_id.street"/> <span t-att-style="style" t-esc="o.partner_id.street2"/> <br /> 
+						<span t-att-style="style" t-esc="o.partner_id.city"/>
+						 <t t-if="o.partner_id.state_id">
+								<span t-att-style="style" t-esc="o.partner_id.state_id.name"/>
+							 </t>
+						<span t-att-style="style" t-esc="o.partner_id.zip"/>
+						<br />
+						
+						 
+						<span> </span> 
+                    </div>
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					<div  class="col-xs-3 text-center" style="font-weight:bold;width:200px;" >
+					 Customer Aging Report
+					<div class="col-xs-12 text-center" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                   
+					DATE
+					</div> 
+					  <div class="col-xs-12 text-center" style="border:1px solid black;">
+                        <span t-att-style="style" t-esc="o.date"/>
+						  </div>
+                    </div>
+					 
+				</div>
+				
+
+                <div class="row mt32 mb32">
+                     
+
+                <table class="table table-condensed">
+                    <thead>
+                        <tr>
+                            <th>Invoice #</th>
+							<th>Date</th>
+							<th class="text-right">0-30 Days</th>
+							<th class="text-right">30-60 Days</th>
+							<th class="text-right">60-90 Days</th>
+							<th class="text-right">+90 Days</th>
+							<th class="text-right">Total</th>
+                        </tr>
+                    </thead>
+					<t t-set="tot_grand" t-value="0"/>
+                    <tbody>
+                           <tr t-foreach="lines(data)" t-as="a">
+								<t t-set="tot_amt" t-value="0"/>
+                                <td><span t-att-style="style" t-esc="a['internal_number']"/></td>
+								<td><span t-att-style="style" t-esc="a['date_invoice']"/> </td>
+								<td class="text-right"> <t t-if="a['day1']==0"> - </t><t t-if="a['day1']!=0"> <span t-att-style="style" t-esc="formatLang(a['day1'], currency_obj=res_company.currency_id)"/> <t t-set="tot_amt" t-value="tot_amt+a['day1']"/> </t></td>
+								<td class="text-right"><t t-if="a['day2']==0"> - </t><t t-if="a['day2']!=0"> <span t-att-style="style" t-esc="formatLang(a['day2'], currency_obj=res_company.currency_id)"/> <t t-set="tot_amt" t-value="tot_amt+a['day2']"/> </t></td>
+								<td class="text-right"><t t-if="a['day3']==0"> - </t><t t-if="a['day3']!=0"> <span t-att-style="style" t-esc="formatLang(a['day3'], currency_obj=res_company.currency_id)"/> <t t-set="tot_amt" t-value="tot_amt+a['day3']"/> </t></td>
+								<td class="text-right"><t t-if="a['day4']==0"> - </t><t t-if="a['day4']!=0"> <span t-att-style="style" t-esc="formatLang(a['day4'], currency_obj=res_company.currency_id)"/> <t t-set="tot_amt" t-value="tot_amt+a['day4']"/> </t></td>
+								<td class="text-right" style="font-weight:bold;"><span t-att-style="style" t-esc="formatLang(tot_amt, currency_obj=res_company.currency_id)"/></td>
+								<t t-set="tot_grand" t-value="tot_amt+tot_grand"/> 
+                            </tr>   
+							<tr>
+							<td colspan="6" class="text-right" style="font-weight:bold;">
+							TOTAL:
+							</td>
+							<td class="text-right" style="font-weight:bold;">
+							<span t-att-style="style" t-esc="formatLang(tot_grand, currency_obj=res_company.currency_id)"/>
+							</td>
+							
+							  </tr>   
+                    </tbody>
+                </table>
+				</div>
+		</div>
+        </t>
+    </t>
+</template>
+</data>
+</openerp>

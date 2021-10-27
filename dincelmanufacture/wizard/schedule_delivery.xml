@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelmrp_schedule_delivery_form" model="ir.ui.view">
+            <field name="name">Schedule Delivery</field>
+            <field name="model">dincelmrp.schedule.delivery</field>
+            <field name="arch" type="xml">
+                <form string="Schedule Delivery">
+                     
+                    <group>
+						<group>
+							<field name="order_id" readonly="1"/>
+							<field name="partner_id" readonly="1" context="{'search_default_customer':1, 'show_address': 1}" />
+							<field name="project_id" readonly="1"/>
+							<field name="pending_invoice" readonly="1"/>
+							<field name="stop_supply" readonly="1"/>
+							<field name="hold_supply" readonly="1"/>
+							<field name="stop_supply_over" invisible="1"/>
+							<field name="from_order" invisible="1" />
+					    </group>
+						<group>
+							 <field name="pudel"  />
+							 <field name="date" string="Scheduled Date"/>
+							 <field name="part" invisible="1"/>
+							 <field name="packs" invisible="1" />
+							 <field name="trucks" invisible="1"  />
+							 <field name="dockets" />
+						</group>
+							   
+						<group colspan="2">
+							<field name="comments"  />
+							<field name="qty" on_change="on_change_qty(qty, context)" invisible="1"/> 
+						</group>
+                    </group>
+					
+				 
+						<group nolabel="1"  attrs="{'invisible': [('pending_invoice','=',False)]}">
+							 
+							<label string="Pending COD invoice/s found, please contact account team or admin manager to continue !!" style="color:red; border:2px solid red; padding:10px;" /> 
+						</group>
+					 <group nolabel="1">
+							<label string="" />  
+						 </group>
+						<group nolabel="1"  attrs="{'invisible': [('stop_supply','=',False)]}">
+							 
+							<label string="Warning!! Stop supply enabled for this customer, please contact account team or admin manager to continue !!" style="color:red; border:2px solid red; padding:10px;" /> 
+						</group>
+					 <group nolabel="1">
+							<label string="" />  
+						 </group>
+						<group nolabel="1"  attrs="{'invisible': [('hold_supply','=',False)]}">
+							 
+						<label string="Warning!! Hold supply enabled for this customer, please contact account team or admin manager to continue !!" style="color:red; border:2px solid red; padding:10px;" /> 
+						</group>
+					 
+					 <group nolabel="1"  attrs="{'invisible': [('stop_supply_over','=',False)]}">
+							 
+						<label string="Warning!! This delivery pushes the customer over their credit limit (stop supply), please contact account to authorise and continue!!" style="color:red; border:2px solid red; padding:10px;" /> 
+						</group>
+						
+                    <footer>
+                        <button string="Schedule Delivery" class="oe_highlight" name="schedule_delivery" type="object" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		
+    </data>
+</openerp>

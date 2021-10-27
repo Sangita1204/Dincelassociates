@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<template id="dincelmanufacture.report_mrp_log_records">
+		  <t t-call="report.html_container">
+			<t t-foreach="docs" t-as="o">
+				<div class="page">
+				
+				<div class="row mt32 mb32">
+					<div class="col-xs-5">
+					<div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.x_site_address"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					</div>
+					</div>
+				</div>
+				
+				<div class="row mt32 mb32">
+				<div class="col-xs-12">
+					<div class="header">
+						We have pleasure in confirming our contract conditions as Consulting Engineers in accordance with the following and the attached standard Conditions of Contract for Engagement for Consulting Engineering Services.<br />
+
+This Contract is based on the condition for Dincel &amp; Associates completing the entire engineering services outlined below.  Dincel &amp; Associates shall reserve the intellectual property rights for the services provided including sketches, drawings, reports and other documents until all payments outlined by this Contract are completed.<br />
+
+					</div>
+				</div>
+				</div>
+				
+				</div>
+			</t>
+		</t>
+	</template>
+	</data>
+</openerp>

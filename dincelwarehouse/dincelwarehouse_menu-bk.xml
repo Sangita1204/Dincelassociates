@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    <record id="dincelwarehouse_deli_schedule_action" model="ir.actions.act_window" >
+		<field name="name">Delivery Schedule</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'done')]</field>
+	 </record>
+	 
+	 <record id="dincelwarehouse_deli_history_action" model="ir.actions.act_window" >
+		<field name="name">Delivery Schedule</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'done')]</field>
+	 </record>
+	 
+		<!-- 
+	 <record id="dincelwarehouse_pickinglist_action" model="ir.actions.act_window" >
+		<field name="name">Sale Order Picking List</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', 'not in', ('sent', 'cancel')),('x_has_mrp', '=', True)]</field>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelwarehouse_pickinglist_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelwarehouse_pickinglist_action"/>
+		<field name="view_id" ref="dincelmanufacture.dincelmrp_sale_order_tree"/> 
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelwarehouse_pickinglist_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelwarehouse_sale_form_view" />
+		<field name="act_window_id" ref="dincelwarehouse_pickinglist_action"/>
+	</record>
+	
+		-->
+	<!-- Warehouse Menu Starts -->
+	<menuitem id="dincelwarehouse_menu" name="Warehouse" sequence="4"/>
+	<menuitem id="dincelwarehouse_menu_sub" name="Warehouse"  parent="dincelwarehouse_menu"/>
+	
+	<menuitem id="dincelwarehouse_deli_schedule_menu" 
+				name="Delivery Schedule" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_deli_schedule_action" 
+				sequence="1"
+				/>	
+				
+	<menuitem id="dincelwarehouse_deli_history_menu" 
+				name="Delivery Done" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_deli_history_action" 
+				sequence="2"
+				/>	
+				
+		<!--		
+	<menuitem id="dincelwarehouse_pickinglist_menu" 
+				name="Sale Order Picking List" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_pickinglist_action" 
+				sequence="1"
+				/>	
+				-->
+		 
+					
+	 
+	</data>
+</openerp>	

@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	 	   
+	
+	
+	<record id="dincelstock_report_stock_view" model="ir.ui.view">
+            <field name="name">Stock Report</field>
+            <field name="model">dcsreport.stock.report</field>
+            <field name="arch" type="xml">
+            <form string="Stock Report">
+                <group  >
+				  <group  >
+                    <field name="location_id" domain="[('usage','=','internal')]" widget='selection' 
+							on_change="onchange_location(location_id, context)" />
+					  </group  >
+					 
+					   <group  >
+                    <field name="product_id"  widget='selection' domain="[('x_dcs_group','in',['P110','P200','P275','P155'])]" 
+							on_change="onchange_product(product_id, context)" />
+ 
+					  </group  >
+                </group>
+			 <group  >
+			 <field nolabel="1" name="line_ids" colspan="4"  readonly="1">
+					 <tree create="false" edit="false">
+					 
+						<field name="location_id"/>
+						 <field name="product"/>
+						  <field name="product_id" invisible="1"/>
+						 <field name="prod_length"/>
+						 <field name="qty_stock" sum="Total Stock"/>
+						  <field name="qty_reserve" sum="Total Reserve"/>
+					 </tree>
+			 </field>
+			 </group>
+			 <group>   
+				<group>   
+					 <field name="report_type"/>
+					 
+					 
+					 </group>	
+
+<group>   
+ <field name="date" attrs="{'invisible': [('report_type', 'not in', ('sales_report', 'delivery_report', 'stockvaluation', 'stockvaluation_product'))]}"/>
+					 <field name="date_to" attrs="{'invisible': [('report_type', 'not in', ('sales_report', 'delivery_report'))]}" />
+ </group> </group>
+					 
+                <footer>
+                    <!--<button name="print_report" invisible="1" type="object"  string="Print "  class="oe_highlight"/>
+					 <button name="print_report_stock"   type="object"  string="Preview"  class="oe_highlight"/> 
+                    or
+                    <button string="Cancel" class="oe_link" special="cancel"/>
+					-->
+					<div>
+						<div groups="base.warehouse_nicola" class="oe_right">
+							<button string="Stock Report" class="oe_link" type="object" name="preview_stock_report" /> | 
+							<button string="Stock Valuation Report" type="object" name="preview_stock_valuation" class="oe_link" /> | 
+							<button string="Produced but not Delivered" class="oe_link" type="object" name="preview_stock_produced"/> 
+						</div>
+						<div class="oe_left">
+							<button name="print_report_stock" type="object" string="Preview" class="oe_highlight"/>
+							 
+							 
+							or
+							<button string="Cancel" class="oe_link" special="cancel"/>
+						</div>
+					</div>
+                </footer>
+            </form>
+            </field>
+        </record>
+		
+		<record id="dincelstock_report_stock_action" model="ir.actions.act_window">
+             <field name="name">Stock Report</field>
+             <field name="res_model">dcsreport.stock.report</field>
+             <field name="type">ir.actions.act_window</field>
+             <field name="view_type">form</field>
+             <field name="view_mode">form</field>
+             <field name="view_id" ref="dincelstock_report_stock_view"/>
+             <field name="target">new</field>
+           
+        </record>
+		
+		<report
+				id="action_report_stockreport"
+				model="stock.move"
+				report_type="qweb-html"
+				string="Stock Report"
+				name="dincelstock.report_stockreport"
+				file="dincelstock.report_stockreport"
+			/>		
+		 
+		 <report
+            id="action_report_stock_value"
+            model="sale.order"
+            report_type="qweb-html"
+            string="Sales Report"
+            name="dincelstock.report_stock_value"
+            file="dincelstock.report_stock_value"
+        />
+		
+		<report
+            id="action_report_stock_delivery"
+            model="sale.order"
+            report_type="qweb-html"
+            string="Delivery Report"
+            name="dincelstock.report_stock_delivery"
+            file="dincelstock.report_stock_delivery"
+        />
+		
+		<menuitem id="dincelstock_report_stock_menu" 
+				name="Stock Report" 
+				action="dincelstock_report_stock_action" 
+				parent="dincelwarehouse.dincelwarehouse_stock_menu"/> 
+					
+	</data>
+</openerp>	

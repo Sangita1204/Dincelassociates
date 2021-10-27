@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<record model="ir.ui.view" id="dincelsale_product_summary_tree">
+            <field name="name">Product Summary</field>
+            <field name="model">dincelsale.productsummary</field>
+            <field name="arch" type="xml">
+                <tree string="Product Summary" create="false">
+                    <field name="code" invisible="1"/>
+					<field name="name" />
+					<field name="lead_days" />
+					<field name="next_schedule"/>
+					<field name="last_update" />
+					<field name="user_id" />
+					
+					<field name="produce_speed" string="Production Speed (m/min)"/>
+					<field name="remain_lm" sum="Total Remain L/M"/>
+					<field name="remain_hrs" sum="Total Remain Hrs"/>
+					<field name="hold_lm" sum="Total Hold L/M"/>
+					<field name="hold_hrs" sum="Total Hold Hrs"/>
+					<field name="truck1" />
+					<field name="truck2" />
+					
+                </tree>
+            </field>
+        </record>
+		
+		
+		<record	 id="dincelsale_product_summary_form" model="ir.ui.view" >
+			<field name="name">dincelsale.product.summary.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelsale.productsummary</field>
+			<field name="arch" type="xml">
+				<form  version="7.0"  create="false">
+					<header>
+					
+					 
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+							<field name="code" invisible="1" readonly="1"/>
+							<field name="name" readonly="1" />
+							<field name="lead_days" attrs="{'invisible': [('type','in', ['delivery'])]}" />
+							<field name="next_schedule"  attrs="{'invisible': [('type','in', ['delivery'])]}" />
+							<field name="type" invisible="1"/>
+							<field name="truck1" readonly="1" attrs="{'invisible': [('type','not in', ['delivery'])]}"/>
+							<field name="truck2" readonly="1" attrs="{'invisible': [('type','not in', ['delivery'])]}"/>
+							
+							</group>
+							
+						    <group>
+								<field name="produce_speed" string="Production Speed (m/min)" readonly="1" attrs="{'invisible': [('type','in', ['delivery'])]}"/>
+								<field name="remain_lm" readonly="1" attrs="{'invisible': [('type','in', ['delivery'])]}"/>
+								<field name="remain_hrs" readonly="1" attrs="{'invisible': [('type','in', ['delivery'])]}"/>
+								<field name="hold_lm" readonly="1" attrs="{'invisible': [('type','in', ['delivery'])]}"/>
+								<field name="hold_hrs" readonly="1" attrs="{'invisible': [('type','in', ['delivery'])]}"/>
+								
+							</group>
+							
+                        </group>
+						
+						 
+                     </sheet>      
+					  
+				</form>
+			</field>
+		</record>
+		
+	<record id="dincelsale_product_summary_action" model="ir.actions.act_window" >
+			<field name="name">Dashboard / Summary</field>
+			<field name="res_model">dincelsale.productsummary</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+	</record>
+		<!--
+	<menuitem id="dincelsale_product_summary_menu" 
+				name="Dashboard / Summary" 
+				parent="dincelmanufacture.dincelcrm_sales_order_menu" 
+				action="dincelsale_product_summary_action" 
+				 
+				/>	
+				-->
+	</data>
+</openerp>	

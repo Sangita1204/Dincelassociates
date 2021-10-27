@@ -1,0 +1,507 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+
+		<record id="dincelaccount_purchase_items_action" model="ir.actions.act_window" >
+			<field name="name">Item/Parts</field>
+			<field name="res_model">product.template</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{"search_default_filter_to_purchase":1}</field>
+		</record>
+		
+		<record id="dincelaccount_purchase_order_action" model="ir.actions.act_window" >
+			<field name="name">Purchase Orders</field>
+			<field name="res_model">purchase.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="dincelaccount_purchase_order_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+         
+            <field name="act_window_id" ref="dincelaccount_purchase_order_action"/>
+        </record>
+		
+        <record id="dincelaccount_purchase_order_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelpurchase.dincelpurchase_new_order_form"/>
+            <field name="act_window_id" ref="dincelaccount_purchase_order_action"/>
+        </record>
+		
+		<!--
+		<record id="dincelaccount_purchase_receipt_action" model="ir.actions.act_window" >
+			<field name="name">Receipt Purchase Order</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			
+            <field name="domain">[('type','=','receipt')]</field>
+            <field name="context">{'default_type':'receipt'}</field>
+		</record>
+		-->
+		
+		<record id="dincelaccount_purchase_refund_invoice_action" model="ir.actions.act_window">
+            <field name="name">Supplier Refund Bill</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','in_refund')]</field>
+            <field name="context">{'default_type':'in_refund', 'type':'in_refund', 'journal_type': 'purchase_refund'}</field>
+        </record>
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_refund_invoice_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelaccount.dincelaccount_supplier_invoice_tree_view"/>
+			<field name="act_window_id" ref="dincelaccount_purchase_refund_invoice_action"/>
+		</record>
+		
+		<record id="action_dincelaccount_purchase_refund_invoice_formview" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount_supplier_invoice_form"/>
+            <field name="act_window_id" ref="dincelaccount_purchase_refund_invoice_action"/>
+        </record>
+		
+		 <record id="dincelaccount_purchase_invoice_action" model="ir.actions.act_window">
+            <field name="name">Supplier Bill</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('type','=','in_invoice')]</field>
+            <field name="context">{'default_type':'in_invoice', 'type':'in_invoice', 'journal_type': 'purchase'}</field>
+        </record>
+
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_invoice_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelaccount.dincelaccount_supplier_invoice_tree_view"/>
+			<field name="act_window_id" ref="dincelaccount_purchase_invoice_action"/>
+		</record>
+		
+		<record id="action_dincelaccount_purchase_invoice_formview" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount_supplier_invoice_form"/>
+            <field name="act_window_id" ref="dincelaccount_purchase_invoice_action"/>
+        </record>
+		
+		
+		<record id="dincelaccount_purchase_invoice_offset_action" model="ir.actions.act_window" >
+			<field name="name">Supplier Bill Offset</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		    <field name="domain">[('type','=','purchase')]</field>
+            <field name="context">{'default_type': 'purchase', 'type': 'purchase','default_x_cr_note': True}</field>
+		</record>
+			<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_offset_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelaccount_purchase_invoice_offset_action"/>
+		</record>
+		
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_offset_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="view_dincelaccount_purchase_offset_form"/>
+			<field name="act_window_id" ref="dincelaccount_purchase_invoice_offset_action"/>
+		</record>
+		
+		
+		<record id="dincelaccount_purchase_invoice_pay_action" model="ir.actions.act_window" >
+			<field name="name">Supplier Bill Payments</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		    <field name="domain">[('type','=','purchase')]</field>
+            <field name="context">{'default_type': 'purchase', 'type': 'purchase'}</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_invoice_pay_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelaccount_purchase_invoice_pay_action"/>
+		</record>
+		
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_invoice_pay_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelaccount_supplier_payment_form"/>
+			<field name="act_window_id" ref="dincelaccount_purchase_invoice_pay_action"/>
+		</record>
+		
+					
+					
+		<record id="dincelaccount_purchase_supplier_action" model="ir.actions.act_window" >
+			<field name="name">Supplier</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('supplier','=',True)]</field>
+			<field name="context">{'default_supplier': 1,'default_customer':0}</field>
+		</record>
+				
+		<record id="dincelaccount_purchase_supplier_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+         
+            <field name="act_window_id" ref="dincelaccount_purchase_supplier_action"/>
+        </record>
+		
+        <record id="dincelaccount_purchase_supplier_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount_partner_form_new_view"/>
+            <field name="act_window_id" ref="dincelaccount_purchase_supplier_action"/>
+        </record>
+		
+		
+				
+		<record id="dincelaccount_banking_action" model="ir.actions.act_window" >
+			<field name="name">Banking</field>
+			<field name="res_model">account.bank.statement</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="dincelaccount_sales_customer_action" model="ir.actions.act_window" >
+			<field name="name">Customers</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('customer','=',True),('x_is_project','=',False)]</field>
+			<field name="context">{'default_customer': True,'default_x_is_client': True,'default_is_company': True,'search_default_customer': True}</field> 
+		</record>
+		
+		
+		<!-- Account Menu Starts 
+		<menuitem id="dincelaccount_menu" name="Accounting" sequence="1"/>
+		<menuitem id="dincelaccount_menu_sub" name="Accounting"  parent="dincelaccount_menu"/>
+		-->
+		<!-- sales 				
+		<menuitem id="dincelaccount_sales" 
+					name="Sales" 
+					parent="dincelaccount_menu_sub" 
+					sequence="1" 
+					/>	
+					
+		<menuitem id="dincelaccount_sales_customer" 
+					name="Customers" 
+					parent="dincelaccount_sales" 
+					action="dincelaccount_sales_customer_action" sequence="1" 
+					/>	
+					
+					
+        <menuitem id="dincelaccount_sales_invoices" 
+				name="Invoices" 
+				parent="dincelaccount_sales"
+				action="action_dincel_invoices"  sequence="1" 
+				/>
+		<menuitem id="dincelaccount_sales_refund_invoices"
+				string="Refund Invoices" 
+				 parent="dincelaccount_sales"
+				 action="action_dincel_invoices_refund" sequence="1"  />
+		
+		<menuitem id="dincelaccount_sales_pay_invoices" 
+					name="Invoice Payment" 
+					parent="dincelaccount_sales" 
+					action="dincelaccount_invoice_voucher_action" 
+					 
+					/>	 
+					
+		-->
+					
+		
+<!-- sales 	accounting -->
+	<!--
+	 <menuitem id="dincelaccount_sales_crmacct_invoices" 
+					name="Invoices" 
+					parent="dincelmanufacture.dincelcrm_sales_order_menu" 
+					action="action_dincel_invoices"  
+					/>
+			
+	<menuitem id="dincelaccount_sales_acct_menu" 
+				name="Accounting" 
+				parent="dincelcrm.dincelcrm_sale_menu" 
+				sequence="2"
+				/>	
+				
+	 
+						
+        <menuitem id="dincelaccount_sales_acct_invoices" 
+				name="Invoices" 
+				parent="dincelaccount_sales_acct_menu"
+				action="action_dincel_invoices"  sequence="1" 
+				/>
+		<menuitem id="dincelaccount_sales_refund_acct_invoices"
+				string="Refund Invoices" 
+				 parent="dincelaccount_sales_acct_menu"
+				 action="action_dincel_invoices_refund" sequence="1"  />
+		
+		<menuitem id="dincelaccount_sales_pay_acct_invoices" 
+					name="Invoice Payment" 
+					parent="dincelaccount_sales_acct_menu" 
+					action="dincelaccount_invoice_voucher_action"   />
+					
+
+
+
+		<menuitem id="dincelaccount_crmsales_aging_report" 
+					name="Ageing Reports" 
+					parent="dincelaccount_sales_acct_menu" 
+					action="dincelaccount_partner_aging_action" 
+					/>	
+		
+		<menuitem id="dincelaccount_crmsales_statement_report" 
+					name="Customer Statement" 
+					parent="dincelaccount_sales_acct_menu" 
+					action="dincelaccount_partner_statement_action" 
+					/>	
+					 
+		-->			
+		<!-- purchase -->		
+<!--		
+		<menuitem id="dincelaccount_purchase" 
+					name="Purchasing" 
+					parent="dincelaccount_menu_sub" 
+					sequence="2" 
+					/>	
+				
+		<menuitem id="dincelaccount_purchase_order" 
+					name="Purchase Orders" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_order_action" sequence="2" 
+					/>
+-->					
+					<!-- 
+		<menuitem id="dincelaccount_purchase_receipt" 
+					name="Receipt Purchase Order" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_receipt_action" sequence="3" 
+					/>	
+					-->
+			<!--		
+		<menuitem id="dincelaccount_purchase_invoice" 
+					name="Supplier Bills" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_invoice_action" sequence="3" 
+					/>	
+					
+		<menuitem id="dincelaccount_purchase_refund_invoice" 
+					name="Supplier Refund Bills" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_refund_invoice_action" sequence="4" 
+					/>	
+					
+		<menuitem id="dincelaccount_purchase_invoice_pay" 
+					name="Supplier Bill Payments" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_invoice_pay_action" sequence="5" 
+					/>	
+					
+						
+		<menuitem id="dincelaccount_purchase_invoice_offset" 
+					name="Supplier Bill Offset" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_invoice_offset_action" sequence="5" 
+					/>	
+					
+		<menuitem id="dincelaccount_purchase_supplier" 
+					name="All Suppliers" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_supplier_action" sequence="6" 
+					/>	
+		<menuitem id="dincelaccount_purchase_items" 
+					name="Items/Parts" 
+					parent="dincelaccount_purchase" 
+					action="dincelaccount_purchase_items_action" sequence="7" 
+					/>		
+-->
+			<!-- Accounting -->		
+		<!--
+		<menuitem id="dincelaccount_ac_journal_menu" 
+					name="Journal Entries" 
+					parent="dincelaccount_menu_sub" 
+					sequence="3" 
+					/>	
+					
+		<menuitem id="dincelaccount_ac_moves_all"	
+				name="Journal Items" 
+				action="account.action_account_moves_all_a"
+				parent="dincelaccount_ac_journal_menu"
+			/>
+		
+		<menuitem id="dincelaccount_ac_moves_journal_line"
+				name="Journal Entries" 
+				action="account.action_move_journal_line"
+               parent="dincelaccount_ac_journal_menu"
+			/>
+			
+		
+		<menuitem id="dincelaccount_ac_menu" 
+					name="Accounting" 
+					parent="dincelaccount_menu_sub" 
+					sequence="4" 
+					/>	
+		<menuitem id="dincelaccount_ac_tax_report" 
+					name="Tax Reports - GST" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_tax_report_action2" 
+					/>	
+
+		<menuitem id="dincelaccount_banking" 
+					name="Banking" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_banking_action" 
+					/>	
+
+		<menuitem id="dincelaccount_bank_reconcile" 
+					name="Bank Reconciliation" 
+					parent="dincelaccount_ac_menu" 
+					action="action_dincelaccount_reconcile" 
+					/>	
+
+		<menuitem id="dincelaccount_ac_profit_loss" 
+					name="Profit and Loss" 
+					parent="dincelaccount_ac_menu" 
+					action="action_dcs_account_report_pnl" 
+					/>					
+					
+		<menuitem id="dincelaccount_ac_balance_sheet" 
+					name="Balance Sheet" 
+					parent="dincelaccount_ac_menu" 
+					action="action_dcs_account_report_bs" 
+					/>	
+
+		<menuitem id="dincelaccount_ac_trial_balance_new" 
+					name="Trial Balance" 
+					parent="dincelaccount_ac_menu" 
+					action="action_dcs_account_report_tb" 
+					/>
+					
+		<menuitem id="dincelaccount_aging_report" 
+					name="Ageing Reports" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_partner_aging_action" 
+					/>	
+		
+		<menuitem id="dincelaccount_statement_report" 
+					name="Customer Statement Reports" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_partner_statement_action" 
+					/>	
+						
+		<menuitem id="dincelaccount_salesreport" 
+					name="Sales Reports" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_salesreport_action" 
+					/>	
+					
+		<menuitem id="dincelreport_sales_report" 
+					name="Sales Reports" 
+					parent="base.next_id_64" 
+					action="dincelaccount_salesreport_action"
+				 
+					/>	
+		<menuitem id="dincelaccount_ac_stock_value" 
+					name="Stock Valuation" 
+					parent="dincelaccount_ac_menu" 
+					action="stock_account.action_wizard_stock_valuation_history" 
+					/>			
+-->
+		
+			<record model="ir.ui.view" id="view_sales_dashboard">
+            <field name="name">Sales Dashboard</field>
+            <field name="model">dashboard.sales</field>
+            <field name="arch" type="xml">
+			<form string="Embedded Webpage">
+                <div style="position:absolute; left:0; top:0; width:100%; height:100%; border:none"> 
+                <iframe src="http://erp.dincel.com.au/odoo/web/report/index.php" style="border:none; width:100%; height:100%;"> 
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+                <!--<object data="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;">
+                    <embed src="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;"> </embed>
+                    Error: Embedded data could not be displayed.
+                </object>-->
+                </div>
+			</form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_sales_dashboard">
+            <field name="name">Sales Dashboard</field>
+            <field name="res_model">dashboard.sales</field>
+			<field name="view_id" ref="view_sales_dashboard"/>
+			<field name="view_mode">form</field>
+        </record>
+		
+		<record model="ir.ui.view" id="view_production_dashboard">
+            <field name="name">Production Dashboard</field>
+            <field name="model">dashboard.sales</field>
+            <field name="arch" type="xml">
+			<form string="Embedded Webpage">
+                <div style="position:absolute; left:0; top:0; width:100%; height:100%; border:none"> 
+                <iframe src="http://erp.dincel.com.au/odoo/web/report/mrp.php" style="border:none; width:100%; height:100%;"> 
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+                <!--<object data="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;">
+                    <embed src="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;"> </embed>
+                    Error: Embedded data could not be displayed.
+                </object>-->
+                </div>
+			</form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_production_dashboard">
+            <field name="name">Production Dashboard</field>
+            <field name="res_model">dashboard.sales</field>
+			<field name="view_id" ref="view_production_dashboard"/>
+			<field name="view_mode">form</field>
+        </record>
+
+		<!--
+		<menuitem id="dincelreport_sales_dashboard" 
+					name="Sales Dashboard" 
+					parent="base.menu_reporting_dashboard" 
+					action="action_sales_dashboard"
+
+					/> 
+		<menuitem id="dincelreport_production_dashboard" 
+					name="Production Dashboard" 
+					parent="base.menu_reporting_dashboard" 
+					action="action_production_dashboard" 
+					/>
+		-->			
+		<!-- Account Menu Ends -->
+		
+		<!--
+		
+		<menuitem id="dincelaccount_sales_aging_report" 
+					name="Ageing Reports" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_partner_aging_action" 
+					/>	
+		
+		<menuitem id="dincelaccount_sales_statement_report" 
+					name="Customer Statement" 
+					parent="dincelaccount_ac_menu" 
+					action="dincelaccount_partner_statement_action" 
+					/>	
+					
+			
+		<menuitem id="dincelaccount_customerstatement_menu" 
+					name="My Customer Statement" 
+					parent="dincelcrm.dincelcrm_menu_sub" 
+					action="dincelaccount_partner_statement_action"
+					sequence="8" 
+					/>	
+		
+		-->
+	</data>
+</openerp>	

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <template id="report_header_custom1" inherit_id="CalendarView.quick_create">
+            <xpath expr="//div[@class='form-group']" position="append">
+                <div class ="header">
+                    Your Code
+                </div>
+            </xpath>
+        </template>
+    </data>
+</openerp>

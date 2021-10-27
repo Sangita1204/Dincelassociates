@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_newcontact">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+			 <style type="text/css">
+				 * {-webkit-print-color-adjust:exact;}
+				@media print {
+					body {-webkit-print-color-adjust: exact;}
+				}
+
+               
+                 
+            </style>
+	 
+            <div class="page" style="font-size:11px;">
+               
+				 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					<span>New non-verified contacts </span>
+					  
+					</div>
+				 
+					 
+				</div>
+			 
+				
+			 	
+                <div class="row mt32 mb32">
+			 
+				 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>ID</th>					 
+							<th>Name</th>	
+							<th>Created</th>
+							<th>By</th>
+							<th>Edit</th> 
+							<th>By</th>
+							<th>Project</th>
+							<th>Phone</th>
+							<th>Mobile</th> 
+							<th>Email</th>
+							<th>Street</th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                             
+							 
+							 	
+				 <tr t-foreach="lines(data)" t-as="b">
+				 
+					<td class="col-xs-1">  <span t-att-style="style" t-esc="b['id']"/></td>
+					  
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['name']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['create_date']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['create_usr']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['write_date']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['write_usr']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['is_project']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['phone']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['mobile']"/></td>
+					 <td class="col-xs-1">  <span t-att-style="style" t-esc="b['email']"/></td>
+					<td class="col-xs-1">  <span t-att-style="style" t-esc="b['street']"/></td>
+				</tr>   
+							
+						 
+					  </tbody>
+				   </table>
+				   <div class="col-xs-12"> </div>
+				   
+				   <div style="clear:both;">			</div>
+	 
+				 
+				 
+				   
+				  
+				   
+				    
+				 
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+               
+				</div>
+				 
+		 
+
+          
+           
+			
+		</div>
+       </t>
+    </t>
+</template>
+</data>
+</openerp>

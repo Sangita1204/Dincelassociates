@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_account_invoice_pdf_multi" model="ir.ui.view">
+            <field name="name">Invoice Pdf</field>
+            <field name="model">dincelaccount.invoice.multi</field>
+            <field name="arch" type="xml">
+                <form >
+                    
+                    <group>
+                        
+                        
+						<field name="qty" on_change="on_change_qty(qty, invoice_lines, context)" invisible="1"/>
+						<field name="invoice_lines">
+						<tree create="false" edit="false"	>
+							<field name="invoice_id" readonly="1"/>
+							<field name="partner_id" readonly="1" />
+							<field name="project_id"  readonly="1"/>
+							<field name="sub_total" sum="Total" readonly="1" />
+						 
+						</tree>
+						</field>
+                    </group>
+                    <footer>
+                        <button  string="Print Pdf" class="oe_highlight" name="print_pdf_invoice" type="object" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_account_invoice_pdf_multi" model="ir.actions.act_window">
+            <field name="name">Invoice Pdf</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelaccount.invoice.multi</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_account_invoice_pdf_multi"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record model="ir.values" id="dincelaccount_invoice_pdf_menu">
+            <field name="model_id" ref="account.model_account_invoice" />
+            <field name="name">Invoice Pdf</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_account_invoice_pdf_multi'))" />
+            <field name="key">action</field>
+            <field name="model">account.invoice</field>
+        </record>
+    </data>
+</openerp>

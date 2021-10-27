@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_sale_order_make_mo_dcs" model="ir.ui.view">
+            <field name="name">Create MO</field>
+            <field name="model">dincelsale.make.mrp</field>
+            <field name="arch" type="xml">
+                <form string="Create MO">
+                    <separator colspan="4" string="Decison tree for MO?" />
+                    <group>
+                        
+                        <field name="date" string="Scheduled Date"/>
+						<field name="qty" on_change="on_change_qty(qty, mrp_lines, context)" invisible="1"/>
+						<field name="mrp_lines">
+						<tree create="false" editable="bottom"	>
+							<field name="product_id" readonly="1"/>
+							<field name="product_qty" readonly="1" string="Qty ordered"/>
+							<field name="qty_original"  invisible="1"/>
+							<field name="qty_available" readonly="1" string="Qty in stock"/>
+							<field name="qty_reserve" 
+							string="Qty reserve" 
+							on_change="on_change_qty2(qty_original,product_qty, qty_available, qty_produce,qty_reserve,context)"/>
+							<field name="qty_produce" 
+							string="Qty to be made" 
+							on_change="on_change_qty(qty_original,product_qty, qty_available, qty_produce,qty_reserve,context)" />
+							<field name="order_length" readonly="1" string="Length"/>
+							<field name="order_id" readonly="1" string="Order"/>
+							<field name="product_uom" readonly="1" string="Unit" invisible="1"/>
+						</tree>
+						</field>
+                    </group>
+                    <footer>
+                        <button  string="Create MO" class="oe_highlight" name="make_mrp_dcs" type="object" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        <record id="action_sale_order_make_mo_dcs" model="ir.actions.act_window">
+            <field name="name">Make MO</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelsale.make.mrp</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_sale_order_make_mo_dcs"/>
+            <field name="target">new</field>
+            <field name="multi">True</field>
+        </record>
+
+        <record model="ir.values" id="sale_order_make_invoice">
+            <field name="model_id" ref="sale.model_sale_order" />
+            <field name="name">Make MO</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_sale_order_make_mo_dcs'))" />
+            <field name="key">action</field>
+            <field name="model">sale.order</field>
+        </record>
+    </data>
+</openerp>

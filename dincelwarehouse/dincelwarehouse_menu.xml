@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+    <record id="dincelwarehouse_deli_schedule_action" model="ir.actions.act_window" >
+		<field name="name">Delivery Schedule</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'done')]</field>
+		<field name="context" eval="{}"></field>
+		<field name="search_view_id" ref="view_dincelwarehouse_deli_schedule_filter"/>
+		
+	 </record>
+	 
+	  <record id="dincelwarehouse_deli_schedule2_action" model="ir.actions.act_window" >
+		<field name="name">Schedule by Region</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'done')]</field>
+		<field name="context" eval="{'search_default_stateid': 1,'search_default_dateactual': 1}"></field>
+		<field name="search_view_id" ref="view_dincelwarehouse_deli_schedule_filter"/>
+		
+	 </record>
+	 
+	 <record id="dincelwarehouse_deli_schedule_loc_action" model="ir.actions.act_window" >
+		<field name="name">Schedule by Location</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'done')]</field>
+		<field name="context" eval="{'search_default_warehouseid': 1,'search_default_dateactual': 1}"></field>
+		<field name="search_view_id" ref="view_dincelwarehouse_deli_schedule_filter"/>
+		
+	 </record>
+	 
+	   <record id="dincelwarehouse_part_schedule_action" model="ir.actions.act_window" >
+		<field name="name">Partial Delivery Schedule</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'partial')]</field>
+	 </record>
+	 
+	 
+	 <record id="dincelwarehouse_deli_history_action" model="ir.actions.act_window" >
+		<field name="name">Delivery Schedule</field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'done')]</field>
+		<field name="search_view_id" ref="view_dincelwarehouse_deli_schedule_filter"/>
+	 </record>
+	 
+	 
+	 <record id="dincelwarehouse_payment_pending_action" model="ir.actions.act_window" >
+		<field name="name">Authorised but pending</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '!=', 'cancel'),('x_authorise_but', '=', True)]</field>  
+		
+	</record>
+	
+	  <record id="dincelwarehouse_deli_pending_fw_action" model="ir.actions.act_window" >
+		<field name="name">Authorisation Follow-up </field>
+		<field name="res_model">dincelwarehouse.sale.order.delivery</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', '=', 'done'),('fw_done', '=', False),('authorize_docket', '=', True)]</field>
+		<field name="search_view_id" ref="view_dincelwarehouse_deli_schedule_filter"/>
+	 </record>
+	 
+	<record id="dincelwarehouse_goods_rx_action" model="ir.actions.act_window" >
+		<field name="name">Purchase Order</field>
+		<field name="res_model">purchase.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		
+	 </record>
+	 <record id="actnew_dincelwarehouse_purchase_order_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field> 
+            <field name="act_window_id" ref="dincelwarehouse_goods_rx_action"/>
+        </record>
+		
+        <record id="actnew_dincelwarehouse_purchase_order_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelpurchase.dincelpurchase_new_order_form"/>
+            <field name="act_window_id" ref="dincelwarehouse_goods_rx_action"/>
+        </record>
+		
+	  
+	 <record id="dincelwarehouse_stock_move_action" model="ir.actions.act_window" >
+		<field name="name">Stock Move</field>
+		<field name="res_model">stock.move</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		 <field name="context">{"search_default_filter_to_sell":1}</field>
+	 </record>
+	 
+	 <record id="dincelwarehouse_stock_value_action" model="ir.actions.act_window" >
+		<field name="name">Stock Value</field>
+		<field name="res_model">stock.quant</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="context">{'search_default_internal_loc': 1}</field> <!--  , 'search_default_locationgroup':1 -->
+	 </record>
+	 
+	 <!-- 
+	 <record id="dincelwarehouse_pickinglist_action" model="ir.actions.act_window" >
+		<field name="name">Sale Order Picking List</field>
+		<field name="res_model">sale.order</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state', 'not in', ('sent', 'cancel')),('x_has_mrp', '=', True)]</field>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelwarehouse_pickinglist_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelwarehouse_pickinglist_action"/>
+		<field name="view_id" ref="dincelmanufacture.dincelmrp_sale_order_tree"/> 
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelwarehouse_pickinglist_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<field name="view_id" ref="dincelwarehouse_sale_form_view" />
+		<field name="act_window_id" ref="dincelwarehouse_pickinglist_action"/>
+	</record>
+	
+		-->
+	<!-- Warehouse Menu Starts -->
+	<menuitem id="dincelwarehouse_menu" name="Warehouse" sequence="4"/>
+	<menuitem id="dincelwarehouse_menu_sub" name="Warehouse"  parent="dincelwarehouse_menu"/>
+	
+
+	<menuitem id="dincelwarehouse_deli_schedule2_menu" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_deli_schedule2_action" 
+				sequence="1"
+				/>				
+	<menuitem id="dincelwarehouse_deli_schedule_loc_menu" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_deli_schedule_loc_action" 
+				sequence="1"
+				/>		
+				
+	<menuitem id="dincelwarehouse_deli_schedule_menu" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_deli_schedule_action" 
+				sequence="2"
+				/>	
+				
+	<!--
+	<menuitem id="dincelwarehouse_part_schedule_menu" 
+				name="Partial Delivery Schedule" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_part_schedule_action" 
+				sequence="1"
+				/>	
+				 -->
+	<menuitem id="dincelwarehouse_completed_menu_sub" name="Completed"  parent="dincelwarehouse_menu"/>
+	
+	
+				
+	<menuitem id="dincelwarehouse_deli_history_menu" 
+				name="Delivered Schedules" 
+				parent="dincelwarehouse_completed_menu_sub" 
+				action="dincelwarehouse_deli_history_action" 
+				sequence="1"
+				/>		
+				
+	<menuitem id="dincelwarehouse_deli_pending_fw_menu" 
+				name="Authorisation Follow-up" 
+				parent="dincelwarehouse_completed_menu_sub" 
+				action="dincelwarehouse_deli_pending_fw_action" 
+				sequence="1"
+				/>	
+				
+	<menuitem id="dincelwarehouse_payment_pending_menu" 
+				name="Authorised but pending" 
+				parent="dincelwarehouse_completed_menu_sub" 
+				action="dincelwarehouse_payment_pending_action" 
+				sequence="1"
+				/>	
+				
+	<menuitem id="dincelwarehouse_stock_menu" name="Stock"  parent="dincelwarehouse_menu"/>
+	
+	<menuitem id="dincelwarehouse_stock_value_menu" 
+				name="Stock Value" 
+				parent="dincelwarehouse_stock_menu" 
+				action="dincelwarehouse_stock_value_action" 
+				sequence="1"
+				/>	
+				
+	<menuitem id="dincelwarehouse_stock_move_menu" 
+				name="Stock Move" 
+				parent="dincelwarehouse_stock_menu" 
+				action="dincelwarehouse_stock_move_action" 
+				sequence="2"
+				/>	
+				
+		<record id="dincelwarehouse_picking_to_invoice_action" model="ir.actions.act_window">
+            <field name="name">Incoming Shipments</field>
+            <field name="res_model">stock.picking</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form,calendar</field>
+            <field name="context">{"default_type": "in", "contact_display": "partner_address", "search_default_done": 1, "search_default_reception_to_invoice": 1}</field>
+            <field name="search_view_id" ref="stock.view_picking_internal_search"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a new incoming shipment.
+              </p><p> 
+                Here you can track all the product receipts of purchase
+                orders where the invoicing is "Based on Incoming Shipments",
+                and for which you have not received a supplier invoice yet.
+                You can generate a supplier invoice based on those receipts.
+              </p>
+            </field>
+       </record>
+
+     			
+				
+	<menuitem id="dincelwarehouse_purchase_menu" name="Purchase"  parent="dincelwarehouse_menu"/>
+	
+	<menuitem id="dincelwarehouse_goods_rx_menu" 
+				name="Purchase Order" 
+				parent="dincelwarehouse_purchase_menu" 
+				action="dincelwarehouse_goods_rx_action" 
+				sequence="1"
+				/>	
+				
+   <menuitem action="dincelwarehouse_picking_to_invoice_action"
+            id="dincelwarehouse_picking_to_invoice_menu"
+            parent="dincelwarehouse_purchase_menu" 
+			name="Incoming Shipments"  />				
+				
+<!--
+<menuitem id="dincelwarehouse_deli_dockets_done_menu" 
+				name="Dockets" 
+				parent="dincelwarehouse_completed_menu_sub" 
+				action="dincelwarehouse_deli_dockets_done_action" 
+				sequence="2"
+				/>	-->				
+		<!--		
+	<menuitem id="dincelwarehouse_pickinglist_menu" 
+				name="Sale Order Picking List" 
+				parent="dincelwarehouse_menu_sub" 
+				action="dincelwarehouse_pickinglist_action" 
+				sequence="1"
+				/>	
+				-->
+		 
+					
+	 
+	</data>
+</openerp>	

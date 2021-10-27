@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelsale_order_balance1_form" model="ir.ui.view">
+            <field name="name">Balance 1 Invoice</field>
+            <field name="model">dincelsale.order.balance</field>
+            <field name="arch" type="xml">
+                <form string="Revise">
+					
+				 <group>
+					 <field name="date"/>
+					  <field name="order_id" invisible="1" />
+					  <field name="amount" required="1" /> 
+					 <field name="qty" invisible="1" />
+				  </group>
+					 
+					
+                    <footer>
+					
+						<button name="button_create_balance1" type="object" string="Create Balance 1"/>
+                      
+                        or
+						
+                        <button string="Cancel" class="oe_link" special="cancel" />
+						
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+       
+		
+    </data>
+</openerp> 

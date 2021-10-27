@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	<template id="report_quotation_report_new">
+		  <t t-call="report.html_container">
+			<div class="page">
+				<p>This is test.</p>
+			</div>
+		</t>
+	</template>
+	</data>
+</openerp>

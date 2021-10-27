@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_partner_invoice">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+            <div class="page" style="font-size:11px;">
+               
+				 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div   class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					<div   class="col-xs-12" style="border:1px solid black;">
+						
+						<strong> Billing Adddress:</strong> <br />
+						<span t-att-style="style" t-esc="get_partner(data)"/>	<br />
+						<span t-att-style="style" t-esc="get_street1(data)"/>	<br />
+						<span t-att-style="style" t-esc="get_street2(data)"/>	<br />
+						<br />
+						<span> </span> 
+                    </div>
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					<div class="col-xs-6" >
+					<div class="col-xs-12" style="border-top:1px solid black;border-left:1px solid black;border-right:1px solid black;">
+                     <div  class="col-xs-12" style="padding-left:0px;"> <span class="col-xs-5" style="padding-left:0px;">Invoice No: </span><t t-if="'number' in o.fields_get()"> <span t-att-style="style" t-esc="o.number"/> </t></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Invoice Date: </span> <span t-att-style="style" t-esc="o.date_invoice"/></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Invoice Type: </span> <t t-if="o.x_inv_type=='balance'"> <span>BALANCE INVOICE </span> </t><t t-if="o.x_inv_type=='deposit'"> <span>DEPOSIT INVOICE </span> </t><t t-if="o.x_inv_type=='full'"> <span>FULL INVOICE </span> </t></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Customer Order Date: </span> <span t-att-style="style" t-esc="o.x_sale_order_id.client_order_ref"/></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Dincel Order No: </span> <span t-att-style="style" t-esc="o.x_sale_order_id.origin"/></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Due Date: </span> <span t-att-style="style" style="font-weight:bold;" t-esc="o.date_due"/></div>
+					 <div  class="col-xs-12" style="padding-left:0px;"><span class="col-xs-5" style="padding-left:0px;">Payment Terms: </span> <span t-att-style="style" style="font-weight:bold;" t-esc="o.payment_term.name"/></div>
+					 
+					</div> 
+					  <div class="col-xs-12" style="border:1px solid black;">
+                      	<strong> Delivery Adddress:</strong> <br />
+						 <t t-if="o.x_sale_order_id.x_contact_id"> 
+						<span t-att-style="style" t-esc="o.x_sale_order_id.x_contact_id.name"/><br />
+						</t>
+						<span t-att-style="style" t-esc="o.partner_id.name"/><br />
+						
+						 <t t-if="o.x_sale_order_id.x_pudel=='pu'"> <span>PICKUP </span> </t>
+						  <t t-if="o.x_sale_order_id.x_pudel=='del'">	<span t-att-style="style" t-esc="o.x_sale_order_id.x_street"/><br />
+						  	<span t-att-style="style" t-esc="o.x_sale_order_id.x_suburb"/>
+							 <t t-if="o.x_sale_order_id.x_state_id">
+								<span t-att-style="style" t-esc="o.x_sale_order_id.x_state_id.name"/>
+							 </t>
+						   <span t-att-style="style" t-esc="o.x_sale_order_id.x_postcode"/>
+						  </t>
+						<br />
+						 <br />
+						<span> </span> 
+						  </div>
+                    </div>
+					 
+				</div>
+				<t t-set="tot_rows" t-value="0"/>
+                <div class="row mt32 mb32">
+					 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>Description</th>
+							 
+							<th>Qty</th>
+                            <th>Unit</th>
+							<th class="text-right">Rate</th>
+							<th class="text-right">Disc %</th>
+							<th class="text-right">Amount</th>
+							
+                        </tr>
+                    </thead>
+                    <tbody>
+                           <tr t-foreach="lines(data)" t-as="a">
+                                <td>  <span t-att-style="style" t-esc="a['name']"/></td>
+							 
+								<td class="col-xs-1"> <span t-att-style="style" t-esc="a['quantity']"/>	 </td>
+								<td class="col-xs-1"> <span t-att-style="style" t-esc="a['uom']"/>	 </td>
+					
+								<td class="text-right" style="width:120px;">
+									 <span t-att-style="style" t-esc="formatLang(a['price_unit'], currency_obj=res_company.currency_id)"/>
+									
+								</td>
+								<td class="text-right col-xs-1"> <t t-if="a['discount']>0">
+									 <span t-att-style="style" t-esc="a['discount']"/> </t>
+								</td>
+								<td class="text-right" style="width:120px;">
+									 <span t-att-style="style" t-esc="formatLang(a['price_subtotal'], currency_obj=res_company.currency_id)"/>
+								</td>
+								 <t t-set="tot_rows" t-value="tot_rows+1"/> 
+                            </tr>   
+                    </tbody>
+                </table>
+				</div>
+				
+				 
+				<div class="row">
+				 <div class="col-xs-6"><strong>
+				     
+				    <span t-att-style="style" t-esc="o.comment"/> </strong> <br />
+					<p><strong>By paying this invoice, customer agrees with the "Terms and
+Conditions of Sale" dated 04/02/2016 unless notified otherwise by
+this invoice.</strong></p> <br />
+					<span>We reserve the right to increase our prices on a Pro-Rata Basis, if the Australian Dollar falls
+below US 90 Cents.</span>
+				 </div>
+                <div class="col-xs-5 pull-right">
+                    <table class="table table-condensed" style="border:1px solid black;">
+                        <tr class="border-black">
+                            <td>Subtotal:</td>
+                            <td class="text-right">
+                                <span t-att-style="style" t-esc="formatLang(get_subtotal(data), currency_obj=res_company.currency_id)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>GST:</td>
+                            <td class="text-right">
+                                 <span t-att-style="style" t-esc="formatLang(get_taxtotal(data), currency_obj=res_company.currency_id)"/>
+                            </td>
+                        </tr>
+                        <tr class="border-black">
+                            <td>Total (inc-GST):</td>
+                            <td class="text-right">
+                                 <span t-att-style="style" t-esc="formatLang(get_total(data), currency_obj=res_company.currency_id)"/>
+                            </td>
+                        </tr>
+						  <tr >
+                            <td>Paid to Date:</td>
+                            <td class="text-right">
+                                 <span t-att-style="style" t-esc="formatLang(get_total_paid(data), currency_obj=res_company.currency_id)"/>
+                            </td>
+                        </tr>
+						 <tr class="border-black">
+                            <td><strong>Balance Due:</strong></td>
+                            <td class="text-right">
+                                 <span t-att-style="style" t-esc="formatLang(get_total_bal(data), currency_obj=res_company.currency_id)"/>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+			 
+			
+			 <div class="row"  style="height:400px;border-top:1px solid black;">
+				<p>This Invoice is a claim for payment under the Building &amp; Construction Industry Security Of Payment Act 1999 NSW
+				</p>
+              
+			<div class="col-xs-3">
+			<p style="font-weight:bold;text-decoration:underline;">How to pay:</p>
+			</div>
+			<div class="col-xs-3">
+			<p style="font-weight:bold; text-decoration:underline;font-size:16px;">Remittance Advice</p>
+			</div>
+			<div class="col-xs-6 text-right">
+			<p>Please fax your remittance advice to: <span t-att-style="style" t-esc="company.fax"/></p>
+			</div>  
+			<div style="clear:both;">
+			</div>
+		 
+			<p ><span style="text-decoration:underline;">Cheque:</span> Please make cheque payable to Dincel Construction System Pty Ltd. Post to: PO Box 104,ST CLAIR, NSW 2759
+            </p>
+			<p ><span style="text-decoration:underline;">OR:</span>	EFT to our Bank Account:   BSB:032-277,Account No:20-2269,Account Name:Dincel Construction System Pty Ltd. 
+            </p>
+			<p >
+             <span style="text-decoration:underline;">OR:</span>CREDIT CARD: Complete your credit card details and fax to <span t-att-style="style" t-esc="company.fax"/>
+            </p>
+			<t t-set="tot_amount" t-value="get_total_bal(data)"/>
+			<t t-foreach="card_fees(data)" t-as="a">
+				<div class="row" >
+					 <t t-set="tot_amount" t-value="get_total_bal(data)"/> <div class="col-xs-5" />
+					 <div class="col-xs-7 text-right" style="border-bottom:1px solid black;padding-left:6px;">
+					 <span >If paying by: </span>
+					 <span t-att-style="style" t-esc="a['code']"/>  
+					 <span>, Balance Due  </span><t t-if="a['fee_pc']>0.0"> <span>+</span><span t-att-style="style" t-esc="a['fee_pc']"/>% Surcharge </t>
+					
+					  
+					     <t t-set="tot_amount" t-value="tot_amount+(tot_amount*a['fee_pc']*0.01)"/> 
+						<span t-att-style="style" style="padding-left:6px;" t-esc="formatLang(tot_amount, currency_obj=res_company.currency_id)"/>
+					 
+					 </div>
+					 </div>
+				</t>
+            </div>
+
+          
+           
+			
+		</div>
+       </t>
+    </t>
+</template>
+</data>
+</openerp>

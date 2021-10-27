@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	 	   	
+	
+	<record id="dincelstock_inventoryadjust_custom_form_view" model="ir.ui.view">
+            <field name="name">Stock Inventory Form</field>
+            <field name="model">dincelstock.inventory</field>
+            <field name="arch" type="xml">
+				<form >
+                <header>
+                    
+                    <button name="button_validate_inventory" states="draft,confirm"  string="Validate Inventory" type="object" class="oe_highlight" groups="account.account_admin_user"/>
+                   
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name" class="oe_edit_only"/>
+                        <h1><field name="name" placeholder="e.g. Annual inventory"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="location_id" domain="[('usage','not in', ['supplier','production'])]"/>
+                           
+                        </group>
+                        <group>
+                            <field name="date" />
+							 
+                          
+                        </group>
+                    </group>
+                    <notebook  >
+                        <page string="Inventory Details">
+                            
+                            <field name="line_ids" string="Inventory Details" context="{'default_location_id': location_id}">
+                                <tree string="Inventory Details" editable="bottom" >
+									
+									<field name="name" invisible="1" />
+									
+                                    <field name="product_id" domain="[('type','=','product'),('x_prod_cat','in',['customlength','stocklength'])]"
+										on_change="onchange_createline_new1(location_id, product_id, prod_length,real_qty, context)"/>
+                                   
+								   <field name="prod_length" 
+										on_change="onchange_createline_new1(location_id, product_id, prod_length,real_qty, context )"/> 
+                                   
+								   <field name="location_id" domain="[('id', 'child_of', parent.location_id)]" groups="stock.group_locations" 
+										on_change="onchange_createline_new1(location_id, product_id, prod_length,real_qty, context)"/>
+                                    
+                                    <field name="theory_qty" />
+									
+                                    <field name="real_qty" string="Real Quantity"
+										on_change="onchange_createline_new2(location_id, product_id, prod_length,real_qty, context)"/>
+									
+									
+									 
+									<field name="adjust_qty"  />
+									<field name="standard_cost" />
+									<field name="product_qty" invisible="1"/>
+									<field name="diff_qty" invisible="1" />
+									
+                                    <field name="state" invisible="True"/>
+                                </tree>
+                            </field>
+                            <p/>
+                            <h3 class="oe_grey">Notes</h3>
+                            <ul class="oe_grey"><li>Inventory adjustments will be made by comparing the theoretical and the checked quantities.</li>
+                            <li>You can delete lines to ignore some products.</li>
+                            <li>If a product is not at the right place, set the checked quantity to 0 and create a new line with correct location.</li>
+                            </ul>
+                        </page>
+                         
+                    </notebook>
+                </sheet>
+				<div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+		
+		 <record id="dincelstock_inventory_lines_filter" model="ir.ui.view">
+			<field name="name">Move Lines Search</field>
+			<field name="model">dincelstock.journal.line</field>
+			<field name="arch" type="xml">
+				<search>
+					 
+					<field name="location_id"/>
+                    <field name="product_id"/>
+					<field name="prod_length"/>
+					 <field name="name" />
+					 <field name="state" />
+					 
+					 
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+						 
+					   <filter name="location_id"  string="Location" domain="[]" context="{'group_by':'location_id'}"/>
+					   <filter name="product_id"  string="Product" domain="[]" context="{'group_by':'product_id'}"/>
+					   <filter name="prod_length"  string="Length" domain="[]" context="{'group_by':'prod_length'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		
+		 <record id="dincelstock_inventoryadjust_customline_tree1" model="ir.ui.view" >
+			<field name="name">dincelstock.inventoryadjust.custom.line.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelstock.journal.line</field>
+			<field name="arch" type="xml">
+			
+				<tree colors="grey:state == 'cancel';">
+					<field name="name"/>
+                    
+					<field name="date"  string="Date"/>
+                 
+                    <field name="state" invisible="1"/>
+					<field name="location_id"/>
+                    <field name="product_id"/>
+					<field name="prod_length"/>
+					 <field name="qty_in" sum="Total1"/>
+					<field name="qty_out" sum="Total2"/>
+					<field name= "qty_balance" sum="Balance"/>
+                </tree>
+				
+			</field>
+			
+		</record>	
+		 <record id="dincelstock_inventory_custom_tree1" model="ir.ui.view" >
+			<field name="name">dincelstock.inventory.custom.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelstock.inventory</field>
+			<field name="arch" type="xml">
+			
+				<tree colors="grey:state == 'cancel';blue:state == 'draft';">
+					<field name="name"/>
+                    <field name="user_id"/>
+					<field name="date"  string="Date"/>
+                 
+                    <field name="state" />
+					<field name="location_id"/>
+                   
+				 
+                </tree>
+				
+			</field>
+			
+		</record>	
+		
+		<record id="dincelstock_inventoryadjust_custom_action1" model="ir.actions.act_window" >
+			<field name="name">Inventory</field>
+			<field name="res_model">dincelstock.inventory</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!--<record model="ir.actions.act_window.view" id="dincelstock_inventoryadjust_custom_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelstock_inventoryadjust_custom_action1"/>
+			
+		</record>
+			<record model="ir.actions.act_window.view" id="dincelstock_inventoryadjust_custom_form">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="act_window_id" ref="dincelstock_inventoryadjust_custom_action1"/>
+			 
+		</record>
+		-->
+		<record id="dincelstock_inventory_lines_custom_action1" model="ir.actions.act_window" >
+			<field name="name">Stock Lines</field>
+			<field name="res_model">dincelstock.journal.line</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('is_acs','=',False)]</field> 
+			<field name="context" eval="{'search_default_location_id': 0}"></field>
+		</record>
+		<!--
+		<record model="ir.actions.act_window.view" id="dincelstock_inventory_lines_custom_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelstock_inventory_lines_custom_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="dincelstock_inventory_lines_custom_form">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="act_window_id" ref="dincelstock_inventory_lines_custom_action"/>
+		</record>-->
+		
+		<menuitem id="dincelstock_adjust_custom_menu" 
+					name="Stock Adjustments Custom" 
+					parent="stock.menu_stock_inventory_control" 
+					action="dincelstock_inventoryadjust_custom_action1" 
+					/>	
+		<menuitem id="dincelstock_lines_custom_menu" 
+					name="Stock Move Lines Custom" 
+					parent="stock.menu_stock_inventory_control" 
+					action="dincelstock_inventory_lines_custom_action1" 
+					/>				
+	</data>
+</openerp>	

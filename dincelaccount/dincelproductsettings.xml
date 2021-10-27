@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+	
+	
+	 
+		 
+		<record id="dincelaccount_productsettings_form_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.productsettings.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">product.template</field>
+			<field name="arch" type="xml">
+				 
+				<form string="Product Settings" version="7.0" >	
+					<sheet>
+						<group> 
+						<group> 
+							<field name="name"/>
+							 
+							 <field name="x_is_calcrate" invisible="1"/>
+							<field name="x_prod_cat" />
+							<field name="x_stock_length" string="Stock Length (mm)"/>
+							<field name="x_m2_factor" />
+							<field name="x_stock_width" string="Face Width (mm)"/>
+							<field name="x_stock_height" string="Thickness (mm)"/>
+							<field name="x_bom_cat" />
+							<field name="x_sort_sn" />
+							<field name="x_dcs_itemcode" readonly="1"/> 
+								<field name="x_prod_type"  readonly="1"/>
+							</group>
+							<group> 
+							 <field name="x_len_min"/> 
+							<field name="x_len_max"/> 
+							<field name="x_len_inc"/> 
+							
+							 <field name="x_pack10"/> 
+							<field name="x_pack12"/> 
+							<field name="x_pack14"/> 
+							<field name="x_pack20"/> 
+							<field name="x_produce_speed" />
+							<field name="x_dcs_group" />
+							<field name="x_pick_journal" /> 
+							
+							</group>
+						</group>
+						 
+						
+						<group>
+						<field name="description" />
+						
+						 <field name="seller_ids" position="replace">
+								<field name="seller_ids" >
+									 <tree>
+										<field name="name"/>
+										<field name="x_cost_price" groups="base.cost_price_view"/>
+									</tree>
+								</field>
+							</field>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>	
+	  <record model="ir.ui.view" id="dincelaccount_productsettings_tree">
+            <field name="name">Products</field>
+            <field name="model">product.template</field>
+            <field name="arch" type="xml">
+                <tree string="Product" >
+                    <field name="name"/>
+							 
+					<field name="x_dcs_group" /> 
+					<field name="x_prod_cat" />
+					<field name="x_stock_length" string="Stock Length (mm)"/>
+					 
+					<field name="x_bom_cat" />
+					<field name="x_produce_speed" invisible="1"/>
+					
+                </tree>
+            </field>
+        </record>
+		
+		<record id="dincelaccount_productsettings_action" model="ir.actions.act_window" >
+			<field name="name">Product Settings</field>
+			<field name="res_model">product.template</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_productsettings_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelaccount_productsettings_action"/>
+				<field name="view_id" ref="dincelaccount_productsettings_tree"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_productsettings_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="act_window_id" ref="dincelaccount_productsettings_action"/>
+			<field name="view_id" ref="dincelaccount_productsettings_form_view"/>
+		</record>
+		
+		<menuitem id="dincelaccount_productsettings_menu" 
+					name="Product Settings" 
+					parent="base.menu_base_config" 
+					action="dincelaccount_productsettings_action" 
+					/>	
+					 		
+	</data>
+</openerp>	

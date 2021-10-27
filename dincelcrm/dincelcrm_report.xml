@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+			
+	  <template id="assets_backend" name="dincelcrm css assets" inherit_id="web.assets_backend">
+		<xpath expr="." position="inside">
+			<link rel="stylesheet" href="/dincelcrm/static/src/css/style.css"/>
+		</xpath>
+		</template>
+		
+		<!--
+		<report
+            id="action_report_quotation_report_new"
+            model="account.analytic.account"
+            report_type="qweb-pdf"
+            string="Quotation Test"
+            name="crm.report_quotation_report_new"
+            file="crm.report_quotation_report_new" />
+			
+		
+        <report
+            id="action_report_quotation_report_new"
+            model="account.analytic.account"
+            report_type="qweb-pdf"
+            string="Quotation Test"
+            name="crm.report_quotation_report_new"
+            file="crm.report_quotation_report_new"
+            menu="False"
+			attachment_use="False"
+			attachment="(''+(object.name or '').replace('/','')+'.pdf')"
+        />
+		-->
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote" model="account.analytic.account" name="account.analytic.account.quote" rml="dincelcrm/report/contract_quotation.rml" string="Quotation"/>
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote_rate1" model="account.analytic.account" name="account.analytic.account.quote_rate1" rml="dincelcrm/report/contract_quotation_rate1.rml" string="Quotation1"/>
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote_rate2" model="account.analytic.account" name="account.analytic.account.quote_rate2" rml="dincelcrm/report/contract_quotation_rate2.rml" string="Quotation2"/>
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote_rate3" model="account.analytic.account" name="account.analytic.account.quote_rate3" rml="dincelcrm/report/contract_quotation_rate3.rml" string="Quotation3"/>
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote_v2" model="account.analytic.account" name="account.analytic.account.quote_v2" rml="dincelcrm/report/contract_quotation_v2.rml" string="V2"/>
+		
+		<report auto="False" header='False'  id="account_analytic_account_quote_275" model="account.analytic.account" name="account.analytic.account.quote_275" rml="dincelcrm/report/contract_quotation_275.rml" string="275"/>
+		
+    </data>
+</openerp>

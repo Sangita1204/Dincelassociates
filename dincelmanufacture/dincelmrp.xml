@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+		
+	  <record id="dincelmrp_mrp_order_form" model="ir.ui.view" >
+			<field name="name">dincelmrp.mrp.order.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">mrp.production</field>
+			<field name="arch" type="xml">
+				<form string="MRP Orders" version="7.0">
+				   <header><div attrs="{'invisible':[('x_sale_order_id','!=',False)]}">
+                    <button name="button_confirm" states="draft" string="Confirm Production"    class="oe_highlight" />
+					
+					<button name="button_produce_item" states="ready,in_production" string="Produce" type="object" class="oe_highlight"/> 
+					 
+					 
+					<button name="473" states="ready,in_production" string="Produce1" invisible="1" type="action" class="oe_highlight"/> 
+					<button name="451" states="ready,in_production" string="Produce" invisible="1" type="action" class="oe_highlight"/> 
+					<button name="button_produce_dcs" states="ready,in_production" string="Produce Stock Panels / Accessories" type="object" class="oe_highlight"/> 
+					 
+                    <button name="action_assign" states="confirmed,picking_except"     string="Check Availability" type="object" class="oe_highlight"/>
+                    <button name="force_production" states="confirmed" string="Force Reservation"    type="object"/>
+                    <button name="button_produce" states="ready" string="Mark as Started"   />
+					
+					<!--<button name="button_produce_start_dcs" type="object" string="Mark as Started 2" attrs="{'invisible':[('state','in',['in_production','done'])]}" /> -->
+                    
+					<button name="button_cancel" states="draft,ready,in_production" string="Cancel Production" />
+                    <button name="action_cancel" type="object" states="confirmed" string="Cancel Production" />
+					
+					</div>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,ready,in_production,done" statusbar_colors="{&quot;confirmed&quot;:&quot;blue&quot;}"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>Manufacturing Order <field name="name" class="oe_inline"/></h1>
+                    </div>
+                    <group>
+                        <group>
+							<field name="x_mo_type" />
+                            <field name="product_id" on_change="product_id_change_new(x_mo_type, product_id, product_qty)" domain="[('bom_ids','!=',False),('bom_ids.type','!=','phantom')]" class="oe_inline" context="{&quot;default_type&quot;: &quot;product&quot;}"/>
+							
+							<field name="x_order_length" on_change="product_qty_change(x_mo_type, x_order_length, x_order_qty)" />
+							<field name="x_order_qty" on_change="product_qty_change(x_mo_type, x_order_length, x_order_qty)"/>
+							
+                            <label for="product_qty"/>
+                            <div>
+                                <field name="product_qty" class="oe_inline" on_change="product_id_change_new(x_mo_type, product_id, product_qty)"/>
+                                <field name="product_uom" groups="product.group_uom" class="oe_inline"/>
+                                <button type="action" name="474" string="Update" states="confirmed" class="oe_edit_only oe_link"/>
+                            </div>
+                            <label for="product_uos_qty" invisible="1" groups="product.group_uos"/>
+                            <div groups="product.group_uos" invisible="1">
+                                <field name="product_uos_qty" class="oe_inline"/>
+                                <label string="-" attrs="{'invisible':[('product_uos','=',False)]}" class="oe_inline"/>
+                                <field name="product_uos" class="oe_inline"/>
+                            </div>
+                            <field name="date_planned"/>
+							
+							 <field name="x_produced_qty"/>
+							<field name="x_region_id" readonly="1"/>
+							<field name="x_sale_order_id" readonly="1"/>
+							<field name="x_tot_lm" invisible="1" readonly="1"/>
+							<field name="x_est_minute" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="bom_id" domain="['|',('product_id','=',product_id), '&amp;',('product_tmpl_id.product_variant_ids','=',product_id),                                                 ('product_id','=',False)]" context="{'default_product_id': product_id}" on_change="bom_id_change(bom_id)" required="1"/>
+                            <field name="routing_id" class="oe_inline" groups="mrp.group_mrp_routings"/>
+                            <field name="user_id" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'mrp.group_mrp_user']}"/>
+                            <field name="origin"/>
+                        </group>
+                        <group groups="stock.group_locations">
+                            <field name="location_src_id" domain="[('usage','=','internal')]" on_change="location_id_change(location_src_id,location_dest_id)" attrs="{'invisible':[('x_mo_type','=','manual')]}"/>
+                            <field name="location_dest_id" domain="[('usage','=','internal')]"/>
+                        </group>
+                    </group>
+                    <notebook >
+                        <page string="Consumed Products" attrs="{'invisible':[('x_sale_order_id','!=',False)]}">
+                            <group>
+                                <group string="Products to Consume">
+                                    <field name="move_lines" nolabel="1" options="{'reload_on_button': true}">
+                                        <tree colors="blue:state == 'draft';black:state in ('ready','assigned','in_production');gray:state in ('cancel','done');red:state in ('confirmed','waiting')" string="Products to Consume">
+                                            <field name="product_id"/>
+                                            <field name="product_uom_qty" string="Quantity"/>
+                                            <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                                            <field name="state" invisible="1"/>
+                                            <button name="477" string="Consume Products" type="action" icon="gtk-go-forward" context="{'consume': True}" states="assigned"/>
+                                            <button name="421" string="Scrap Products" type="action" icon="terp-gtk-jump-to-ltr" context="{'scrap': True}" states="draft,waiting,confirmed,assigned"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Consumed Products">
+                                    <field name="move_lines2" nolabel="1" options="{'reload_on_button': true}">
+                                       <tree colors="red:scrapped==True;blue:state == 'draft';black:state in ('confirmed','ready','in_production');gray:state == 'cancel' " string="Consumed Products" editable="bottom">
+                                           <field name="product_id" readonly="1"/>
+                                           <field name="restrict_lot_id" context="{'product_id': product_id}" groups="stock.group_production_lot"/>
+                                           <field name="product_uom_qty" readonly="1"/>
+                                           <field name="product_uom" readonly="1" string="Unit of Measure" groups="product.group_uom"/>
+                                           <field name="state" invisible="1"/>
+                                           <field name="scrapped" invisible="1"/>
+                                       </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Finished Products" attrs="{'invisible':[('x_sale_order_id','!=',False)]}">
+                            <group>
+                                <group string="Products to Produce">
+                                    <field name="move_created_ids" nolabel="1" options="{'reload_on_button': true}">
+                                        <tree string="Products to Finish">
+                                            <field name="product_id"/>
+                                            <field name="product_uom_qty"/>
+                                            <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+                                            <field name="state" invisible="1"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                                <group string="Produced Products">
+                                    <field name="move_created_ids2" nolabel="1" options="{'reload_on_button': true}">
+                                        <tree colors="red:scrapped==True;blue:state == 'draft';black:state in('confirmed','ready','in_production');gray:state in('cancel','done') " string="Finished Products">
+                                            <field name="product_id" readonly="1"/>
+                                            <field name="product_uom_qty" readonly="1"/>
+                                            <field name="restrict_lot_id" groups="stock.group_production_lot"/>
+                                            <field name="product_uom" readonly="1" string="Unit of Measure" groups="product.group_uom"/>
+                                            <field name="location_dest_id" readonly="1" string="Destination Loc." widget="selection" groups="stock.group_locations"/>
+                                            <field name="scrapped" invisible="1"/>
+                                            <field name="state" invisible="1"/>
+                                            <button name="421" string="Scrap Products" type="action" icon="terp-gtk-jump-to-ltr" states="done,cancel"/>
+                                        </tree>
+                                    </field>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Work Orders" groups="mrp.group_mrp_routings" attrs="{'invisible':[('x_sale_order_id','!=',False)]}">
+                            <button name="action_compute" states="draft" string="Compute Data" type="object" icon="terp-stock_format-scientific"/>
+                            <field name="workcenter_lines">
+                                <form string="Production Work Centers">
+                                    <group col="4">
+                                        <field colspan="4" name="name"/>
+                                        <field name="workcenter_id"/>
+                                        <field name="sequence"/>
+                                        <field name="cycle"/>
+                                        <field name="hour" widget="float_time"/>
+                                    </group>
+                                </form>
+                                <tree string="Production Work Centers">
+                                    <field name="sequence"/>
+                                    <field name="name"/>
+                                    <field name="workcenter_id"/>
+                                    <field name="cycle"/>
+                                    <field name="hour" widget="float_time"/>
+                                </tree>
+                            </field>
+                        </page>
+                        <page string="Scheduled Products" attrs="{'invisible':[('x_sale_order_id','!=',False)]}">
+                            <button name="action_compute" states="draft" string="Compute Data" type="object" icon="terp-stock_format-scientific"/>
+                            <field name="product_lines"/>
+                        </page>
+                        <page string="Extra Information">
+                            <group>
+                                <group>
+                                    <field name="priority"/>
+                                    <field name="date_start"  />
+									<field name="x_dt_produced"  />
+                                    <field name="date_finished"  />
+                                </group>
+                                <group>
+                                    <field name="company_id" groups="base.group_multi_company" widget="selection"/> 
+                                    <field name="move_prod_id" groups="stock.group_locations" invisible="1"/>
+                                </group>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+				</form>
+			</field>
+		</record>	
+		
+	<record model="ir.ui.view" id="dincelmrp_mrp_product_produce_wizard_inherit">
+		<field name="name">MRP Produce</field>
+		<field name="model">mrp.product.produce</field>
+		
+		 <field name="inherit_id" ref="mrp.view_mrp_product_produce_wizard"/>
+			<field name="arch" type="xml">
+			  <button name="do_produce" position="replace">
+				 	<button  string="Produce Item" />
+				   
+			  </button>
+		  </field>
+	</record>
+	
+			<!--
+	 
+		<record id="dincelmrp_production_pending_action" model="ir.actions.act_window">
+            <field name="name">MRP In Production</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">mrp.production</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">gantt,tree,form,calendar,graph</field>
+            <field name="view_id" eval="False"/>
+            
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+            <field name="context">{}</field>
+			<field name="domain">[('state','in',('in_production','confirmed','ready'))]</field> 
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a manufacturing order. 
+              </p><p>
+                A manufacturing order, based on a bill of materials, will
+                consume raw materials and produce finished products.
+              </p><p>
+                Manufacturing orders are usually proposed automatically based
+                on customer requirements or automated rules like the minimum
+                stock rule.
+              </p>
+            </field>
+        </record>
+		 
+	   
+			
+	<menuitem id="dincelmrp_production_pending_menu" 
+			name="Production Schedule" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_production_pending_action" 
+			sequence="1"
+			/>	 -->
+				
+					
+	</data>
+</openerp>	

@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_mo_pqreport">
+    <t t-call="report.html_container">
+        <t t-foreach="docs" t-as="o">
+			 <style type="text/css">
+				 * {-webkit-print-color-adjust:exact;}
+				@media print {
+					body {-webkit-print-color-adjust: exact;}
+				}
+
+                .order_color {
+					background-color: <t t-esc="o.color_code"/> !important;
+					-webkit-print-color-adjust: exact;
+                }
+				
+				@media print {
+				 .order_color {
+						background-color: <t t-esc="o.color_code"/>;
+						-webkit-print-color-adjust: exact;
+					}
+				}
+                 
+            </style>
+	 
+            <div class="page" style="font-size:11px;">
+               
+				 <div class="row mt32 mb32">
+					<div class="col-xs-5">
+					 <div class="col-xs-8">
+						<img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 45px;"/>
+					</div>
+					<div style="clear:both;"/>
+					<div class="col-xs-12" >
+					<span>A.B.N </span> <span t-att-style="style" t-esc="company.vat"/>
+					<br />
+					<span>Postal Address: </span> <span t-att-style="style" t-esc="company.street"/> <span t-att-style="style" t-esc="company.street2"/>  <span t-att-style="style" t-esc="company.city"/>  <span t-att-style="style" t-esc="company.state_id.name"/> <span t-att-style="style" t-esc="company.zip"/> 
+					<br />
+					<span>Site Address:</span> <span t-att-style="style" t-esc="company.x_site_address"/>
+					<br />
+					<span>Ph. </span> <span t-att-style="style" t-esc="company.phone"/>
+					<br />
+					<span>Fax. </span> <span t-att-style="style" t-esc="company.fax"/>
+					<br />
+					 
+					</div>
+					 
+					</div>
+					<div class="col-xs-1" >
+                        <strong> </strong>
+						 
+                    </div>
+					
+					<div class="col-xs-6" >
+					<div class="col-xs-12" style="border:1px solid black;">
+                     <div  class="col-xs-12" style="padding-left:0px;"> <span class="col-xs-3" style="padding-left:0px;">Sale Order: </span> <span t-att-style="style" t-esc="o.order_id.name"/> </div>
+					 
+					  
+					  <div  class="col-xs-12" style="padding-left:0px;"> <span class="col-xs-3" style="padding-left:0px;">Reference: </span> <span t-att-style="style" t-esc="o.name"/> </div>
+				 
+					 <div  class="col-xs-12" style="padding-left:0px;"> <span class="col-xs-3" style="padding-left:0px;">Customer: </span> <span t-att-style="style" t-esc="o.partner_id.name"/> </div>
+					 
+					 <div  class="col-xs-12" style="padding-left:0px;"> <span class="col-xs-3" style="padding-left:0px;">Project: </span> <span t-att-style="style" t-esc="o.project_id.name"/> </div>
+					 
+					 
+					  <div  class="col-xs-12 order_color" style='padding-left:0px;min-height:40px;min-width:200px;&lt;t t-esc="o.color_code"/&gt;'> <span class="col-xs-3" style="padding-left:0px;">DCS Order: </span> <span t-att-style="style" t-esc="o.order_code"/> ( <t t-esc="o.color_name"/> ) </div>
+					 <!-- <t t-esc="o.color_code"/> -->
+					&lt;t t-esc="o.color_code"/&gt;
+					</div> 
+					  
+                    </div>
+					 
+				</div>
+				<t t-set="tot_rows" t-value="0"/>
+				
+				<t t-set="tot_10" t-value="0"/>
+				<t t-set="tot_12" t-value="0"/>
+				<t t-set="tot_14" t-value="0"/>
+				<t t-set="tot_20" t-value="0"/>
+				<t t-set="tot_xtra" t-value="0"/>				
+				<t t-set="tot_lm" t-value="0"/>		
+                <div class="row mt32 mb32">
+				
+				 <t t-if="len(lines_110(data)) > 0">	 
+                <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>110mm Production</th>					 
+							<th>Length</th>           
+							<th class="text-center">Qty</th>
+							<!-- <th class="text-center">10L</th>
+							<th class="text-center">12L</th>
+							<th class="text-center">14L</th> -->
+							<th class="text-center">20L</th>
+							<th class="text-center">Extra</th>
+							<th class="text-center">L/M</th>
+                        </tr>
+                    </thead>
+                     <tbody>
+                             
+							<t t-set="tot_10" t-value="0"/>
+							<t t-set="tot_12" t-value="0"/>
+							<t t-set="tot_14" t-value="0"/>
+							<t t-set="tot_20" t-value="0"/>
+							<t t-set="tot_xtra" t-value="0"/>				
+							<t t-set="tot_lm" t-value="0"/>		
+							 	
+							 <tr t-foreach="lines_110(data)" t-as="b">
+							 
+                                <td class="col-xs-1">  <span t-att-style="style" t-esc="b['x_dcs_itemcode']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_length']))"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_qty']))"/></td>
+								<!-- <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_10']"/></td>
+							 
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_12']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_14']"/></td> -->
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_20']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_xtra']"/></td>
+								<td class="col-xs-1 text-center">   	</td> 
+                            </tr>   
+							
+						<tr>
+                            <th>TOTAL</th>					 
+							<th> </th>         
+							<th> </th>  							
+							<!--  <th class="text-center"><t t-esc="tot_10"/></th>
+							<th class="text-center"><t t-esc="tot_12"/></th>
+							<th class="text-center"><t t-esc="tot_14"/></th> -->
+							<th class="text-center"><t t-esc="tot_20"/></th>
+							<th class="text-center"><t t-esc="tot_xtra"/></th>
+							<th class="text-center"><t t-esc="tot_lm"/></th>
+                        </tr>
+					  </tbody>
+				   </table>
+				   <div class="col-xs-12"><t t-if="o.note_110">Comments: <span t-att-style="style" t-esc="o.note_110"/></t></div>
+				   
+				   <div style="clear:both;">			</div>
+	 
+				</t>
+				
+				 <t t-if="len(lines_155(data)) > 0">
+				 <p style="page-break-after:always"></p>
+				 <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>155mm Production</th>					 
+							<th>Length</th>           
+							<th class="text-center">Qty</th>
+							<!-- <th class="text-center">10L</th>
+							<th class="text-center">12L</th> -->
+							<th class="text-center">14L</th>
+							<!-- <th class="text-center">20L</th> -->
+							<th class="text-center">Extra</th>
+							<th class="text-center">L/M</th>
+                        </tr>
+                    </thead>
+                     <tbody>		
+							<t t-set="tot_10" t-value="0"/>
+							<t t-set="tot_12" t-value="0"/>
+							<t t-set="tot_14" t-value="0"/>
+							<t t-set="tot_20" t-value="0"/>
+							<t t-set="tot_xtra" t-value="0"/>				
+							<t t-set="tot_lm" t-value="0"/>		
+							 
+							 <tr t-foreach="lines_155(data)" t-as="b">
+							 
+                                <td class="col-xs-1">  <span t-att-style="style" t-esc="b['x_dcs_itemcode']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_length']))"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_qty']))"/></td>
+								<!-- <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_10']"/></td>
+							 
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_12']"/></td> -->
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_14']"/></td>
+								<!-- <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_20']"/></td> -->
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_xtra']"/></td>
+								<td class="col-xs-1 text-center">   	</td> 
+                            </tr>   
+							
+						<tr>
+                            <th>TOTAL</th>					 
+							<th> </th>         
+							<th> </th>  							
+							<!--  <th class="text-center"><t t-esc="tot_10"/></th>
+							<th class="text-center"><t t-esc="tot_12"/></th> -->
+							<th class="text-center"><t t-esc="tot_14"/></th>
+							<!-- <th class="text-center"><t t-esc="tot_20"/></th> -->
+							<th class="text-center"><t t-esc="tot_xtra"/></th>
+							<th class="text-center"><t t-esc="tot_lm"/></th>
+                        </tr>
+					  </tbody>
+				   </table>
+				   
+				   <div class="col-xs-12"><t t-if="o.note_155">Comments: <span t-att-style="style" t-esc="o.note_155"/></t></div>
+				   <div style="clear:both;">			</div>
+	 
+			   </t>
+			    <t t-if="len(lines_200(data)) > 0">	
+				<p style="page-break-after:always"></p>
+				 <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>200mm Production</th>					 
+							<th>Length</th>           
+							<th class="text-center">Qty</th>
+							<th class="text-center">10L</th>
+							<th class="text-center">12L</th>
+							<!-- <th class="text-center">14L</th>
+							<th class="text-center">20L</th> -->
+							<th class="text-center">Extra</th>
+							<th class="text-center">L/M</th>
+                        </tr>
+                    </thead>
+                     <tbody>	
+							<t t-set="tot_10" t-value="0"/>
+							<t t-set="tot_12" t-value="0"/>
+							<t t-set="tot_14" t-value="0"/>
+							<t t-set="tot_20" t-value="0"/>
+							<t t-set="tot_xtra" t-value="0"/>				
+							<t t-set="tot_lm" t-value="0"/>		
+							 	
+							 <tr t-foreach="lines_200(data)" t-as="b">
+							 
+                                <td class="col-xs-1">  <span t-att-style="style" t-esc="b['x_dcs_itemcode']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_length']))"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_qty']))"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_10']"/></td>
+							 
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_12']"/></td>
+								<!-- <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_14']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_20']"/></td> -->
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_xtra']"/></td>
+								<td class="col-xs-1 text-center">   	</td> 
+                            </tr>   
+							
+						<tr>
+                            <th>TOTAL</th>					 
+							<th> </th>         
+							<th> </th>  							
+							<th class="text-center"><t t-esc="tot_10"/></th>
+							<th class="text-center"><t t-esc="tot_12"/></th>
+							<!--  <th class="text-center"><t t-esc="tot_14"/></th>
+							<th class="text-center"><t t-esc="tot_20"/></th> -->
+							<th class="text-center"><t t-esc="tot_xtra"/></th>
+							<th class="text-center"><t t-esc="tot_lm"/></th>
+                        </tr>
+				  </tbody>
+				   </table>
+				   
+				   <div class="col-xs-12"><t t-if="o.note_200">Comments: <span t-att-style="style" t-esc="o.note_200"/></t></div>
+				   <div style="clear:both;">			</div>
+	 
+				   </t>
+				    <t t-if="len(lines_275(data)) > 0">	
+					<p style="page-break-after:always"></p>
+				 <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>275mm Production</th>					 
+							<th>Length</th>           
+							<th class="text-center">Qty</th>
+							<!-- <th class="text-center">10L</th> -->
+							<th class="text-center">12L</th>
+							<!-- <th class="text-center">14L</th>
+							<th class="text-center">20L</th> -->
+							<th class="text-center">Extra</th>
+							<th class="text-center">L/M</th>
+                        </tr>
+                    </thead>
+                     <tbody>		
+							<t t-set="tot_10" t-value="0"/>
+							<t t-set="tot_12" t-value="0"/>
+							<t t-set="tot_14" t-value="0"/>
+							<t t-set="tot_20" t-value="0"/>
+							<t t-set="tot_xtra" t-value="0"/>				
+							<t t-set="tot_lm" t-value="0"/>		
+							 
+							 <tr t-foreach="lines_275(data)" t-as="b">
+							 
+                                <td class="col-xs-1">  <span t-att-style="style" t-esc="b['x_dcs_itemcode']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_length']))"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="int(float(b['x_order_qty']))"/></td>
+								<!--  <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_10']"/></td> -->
+							 
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_12']"/></td>
+								<!--  <td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_14']"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_20']"/></td> -->
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="b['x_pack_xtra']"/></td>
+								<td class="col-xs-1 text-center">   	</td> 
+                            </tr>   
+							
+						<tr>
+                            <th>TOTAL</th>					 
+							<th> </th>         
+							<th> </th>  							
+							<!-- <th class="text-center"><t t-esc="tot_10"/></th> -->
+							<th class="text-center"><t t-esc="tot_12"/></th>
+							<!--  <th class="text-center"><t t-esc="tot_14"/></th>
+							<th class="text-center"><t t-esc="tot_20"/></th> -->
+							<th class="text-center"><t t-esc="tot_xtra"/></th>
+							<th class="text-center"><t t-esc="tot_lm"/></th>
+                        </tr>
+						
+                    </tbody>
+                </table>
+				
+				<div class="col-xs-12"><t t-if="o.note_275">Comments: <span t-att-style="style" t-esc="o.note_275"/></t></div>
+					<div style="clear:both;">			</div>
+	 
+				</t>
+				 <t t-if="len(o.reserve_line) > 0">	
+				 <p style="page-break-after:always"></p>
+				 <table class="table table-condensed" style="border:1px solid black">
+                    <thead>
+                        <tr>
+                            <th>Stock Reserve</th>					 
+							<th>Length</th>           
+							<th class="text-center">Qty</th>
+							
+                        </tr>
+                    </thead>
+                     <tbody>
+                           <tr t-foreach="o.reserve_line" t-as="a">
+                                <td><span t-att-style="style" t-esc="a.product_id.name"/></td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="a.order_length"/>    </td>
+								<td class="col-xs-1 text-center">  <span t-att-style="style" t-esc="a.reserve_qty"/>	</td>
+                            </tr>   
+                    </tbody>
+					</table>
+					</t>
+				</div>
+				
+				
+				<div class="row mt32 mb32">
+					 
+               
+				</div>
+				<!--
+			 <div class="row"> 	
+				<div class="col-xs-6">Packs: <span t-att-style="style" t-esc="o.packs"/></div>
+				<div class="col-xs-6">Trucks: <span t-att-style="style" t-esc="o.trucks"/></div>
+			</div>	
+			-->
+		 
+
+          
+           
+			
+		</div>
+       </t>
+    </t>
+</template>
+</data>
+</openerp>

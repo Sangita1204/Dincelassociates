@@ -1,0 +1,857 @@
+<?xml version="1.0"?>
+<document filename="Sales Order Quotation.pdf">
+	
+  <template title="Sales Order Quotation" author="DCS(construction@dincel.com.au)" allowSplitting="20" showBoundary="0">
+     <pageTemplate id="page0">
+		
+	   
+		
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			<image file="addons/dincelcrm/report/images/lightweight_icon_small.png"  x="1.2cm" y="17.0cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/snap_icon_small.png"  x="1.2cm" y="15.5cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/waterproof_icon_small.png"  x="1.2cm" y="14.0cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/material_icon_small.png"  x="1.2cm" y="12.5cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/engineering_icon_small.png"  x="1.2cm" y="11.0cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/australian_icon_small.png"  x="1.2cm" y="9.5cm" height="30"/>
+			<image file="addons/dincelcrm/report/images/environment_icon_small.png"  x="1.2cm" y="8.0cm" height="30"/>
+			
+			
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] </para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			 
+			
+		</pageGraphics>
+		
+		<frame id="header1" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>    
+	    <frame id="p1_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+    </pageTemplate>
+	
+    <pageTemplate id="page1">
+		
+	   
+		
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			 
+			
+			
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] </para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			 
+			
+		</pageGraphics>
+		
+		<frame id="header1" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>    
+	    <frame id="p1_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+    </pageTemplate>
+	
+	
+	<pageTemplate id="page2">
+	
+	   <frame id="header2" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>    
+	   <frame id="p2_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+	  
+	   
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] 
+				
+				</para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			 
+		</pageGraphics>
+	</pageTemplate>
+	
+	<pageTemplate id="page3">
+	   <frame id="header3" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>   
+	   <frame id="p3_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+	  
+	   
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] 
+				
+				</para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			 
+		</pageGraphics>
+	</pageTemplate>
+	
+	<pageTemplate id="page4">
+	   <frame id="header4" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>   
+	   <frame id="p4_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+	  
+	   
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] 
+				
+				</para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			  
+		</pageGraphics>
+	</pageTemplate>
+	
+	<pageTemplate id="page5">
+	   <frame id="header5" x1="11.0cm" y1="28cm"  height="1.0cm" width="9.0cm"/>   
+	   <frame id="p5_first" x1="25.0" y1="3cm" width="545" height="640"/>  
+	  
+	   
+	   <pageGraphics>
+			<image x="0.8cm" y="28.0cm" height="30.0">[[company.logo or removeParentNode('image')]]</image>
+			<place x="1.0cm" y="26.02cm" height="1.8cm" width="15.0cm">
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">[[ display_address(company.partner_id) or  '' ]] 
+				
+				</para>
+				<para fontSize="7.0" fontName="Helvetica" spaceBefore="0" spaceAfter="0">P: 1300 346235 F: 02 9670 6744  E: construction@dincel.com.au</para>
+				 
+			</place>
+			<lines>0.8cm 26.0cm 9.50cm 26.0cm</lines>
+			<lines>0.8cm 27.97cm 20.09cm 27.97cm</lines>
+			<lines>1.0cm 2.5cm 20.0cm 2.5cm</lines>
+			<place x="1.0cm" y="0.3cm" height="1.8cm" width="19.0cm">
+				<para fontSize="7.0" fontName="Helvetica" alignment="CENTER">construction@dincel.com.au</para>
+				<para fontSize="7.0" fontName="Helvetica" alignment="RIGHT">Page: <pageNumber/> of 5</para>
+			</place>
+			  
+		</pageGraphics>
+	</pageTemplate>
+  </template>
+  <stylesheet>
+	<blockTableStyle id="TableMetres">
+      <blockAlignment value="CENTER"/>
+      <blockValign value="CENTER"/>
+	  <lineStyle kind="GRID" colorName="black" thickness="1" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+	<blockTableStyle id="TableMetres2">
+      <blockAlignment value="CENTER"/>
+      <blockValign value="CENTER"/>
+	  <lineStyle kind="GRID" colorName="black" thickness="1" start="0,0" stop="-1,-1" />
+	   <blockSpan start="1,6" stop="2,6"/>
+    </blockTableStyle>
+	
+	 <blockTableStyle id="Table1">
+	
+		<blockValign value="TOP" start="0,0" stop="-1,-1"/>
+    </blockTableStyle>
+	<blockTableStyle id="Table2">
+
+    </blockTableStyle>
+	<blockTableStyle id="Table3">
+    </blockTableStyle>
+	<blockTableStyle id="Table4">
+    </blockTableStyle>
+	<blockTableStyle id="TableDepositTerm">
+		 
+		
+    </blockTableStyle>
+	<blockTableStyle id="TableAccs">
+      
+	  <lineStyle kind="GRID" colorName="black" thickness="1" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+	
+	<blockTableStyle id="TableSub">
+		 
+		<blockValign value="TOP" start="0,0" stop="-1,-1"/>
+	 </blockTableStyle>
+	 <blockTableStyle id="Table_T_C">
+		 
+		<blockValign value="TOP" start="0,0" stop="-1,-1"/>
+	 </blockTableStyle>
+	 
+	 <blockTableStyle id="TableGrid">
+	  <lineStyle kind="GRID" colorName="black" thickness="1" start="0,0" stop="-1,-1" />
+    </blockTableStyle>
+	 <paraStyle name="title_text" fontSize="13" leading="10" spaceAfter="1.0"/>
+	 <paraStyle name="term_text" fontSize="7.0" leading="11"  spaceBefore="0.2" spaceAfter="0.2" />
+	 <paraStyle name="default_Centre_9" fontSize="9.0" leading="11" alignment="CENTER" spaceBefore="0.0" spaceAfter="0.0"  borderWidth="1"/>
+	 <paraStyle name="default_Right_9" fontSize="9.0" leading="11" alignment="RIGHT" spaceBefore="0.0" spaceAfter="0.0"/>
+	 <paraStyle name="header_red" fontSize="11.0" leading="11" alignment="CENTER" spaceBefore="3.0" spaceAfter="3.0" textColor="red"/>
+  </stylesheet>
+  			 
+
+  <story>
+  
+		 
+		
+		<!-- START OF PAGE 1 -->
+	   <setNextTemplate name="page1"/>		
+	   [[repeatIn(objects,'o')]]
+	 [[ setLang(o.partner_id.lang) ]]
+
+	
+		
+	   <para alignment="RIGHT"><b>Quotation [[ o.name ]]</b> DATE: <b>[[ o.x_date_quote ]]</b></para>
+		 <spacer length="0.3cm"/>	
+		 
+		 	<blockTable colWidths="265.0,20.0,255.0" style="Table1" rowHeights="65">
+      <tr>
+        <td>
+          <para ><b>Site Address:</b></para>
+          <para >[[ (o.x_project_id and o.x_project_id.name) or '' ]]</para>
+		   <spacer length="0.3cm"/>	
+		  <para ><b>Site Contact:</b></para>
+          <para >[[ (o.x_contact_id and o.x_contact_id.name) or '' ]] [[ (o.x_contact_id.mobile) or '' ]]</para>
+         
+		  <para >E: [[ (o.x_contact_id and o.x_contact_id.email) or '-' ]]</para>
+          <para ></para>
+         
+          <para>
+            <font color="white"> </font>
+          </para>
+          
+        </td>
+        <td>
+         
+        </td>
+        <td>
+          <para ><b>Invoice Address:</b></para>
+          <para >[[ (o.partner_id and o.partner_id.title) or '' ]] [[ (o.partner_id.name) or '' ]]</para>
+          <para>[[ o.partner_id and display_address(o.partner_id) ]]</para>
+          <para >T: [[ (o.partner_id and o.partner_id.phone) or '-' ]]</para>
+		  
+        </td>
+      </tr>
+    </blockTable>
+	 <para>  <font color="white"> </font> </para>  
+	  <para>  <font color="white"> </font> </para>  
+       <blockTable colWidths="533.0" style="Table1"><tr>        <td> 	 <para alignment="CENTER">		<font size="14">DINCEL CONSTRUCTION SYSTEM SUPPLY QUOTATION</font> </para>
+<para>  <font color="white"> </font> </para>
+<para>  <font color="white"> </font> </para>
+ <para>
+Dear [[ (o.x_contact_id and o.x_contact_id.name) or '']],
+ </para> <para>  <font color="white"> </font> </para> <para>
+Thank you for the opportunity to submit pricing for the supply of DINCEL waterproof panels to your project. Using the Dincel Construction System provides cost savings and superior construction performance:
+ </para>
+ </td>     </tr>    </blockTable> <blockTable colWidths="35,483.0" rowHeights="43,43,43,43,43,43,43" style="Table1">
+		 <tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td> 	<para>   Lightweight  </para> <para> So easy to handle. No cranes, no heavy lifting.     </para>   </td>      
+		 </tr>
+		<tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td> 	<para>   Snap assembly  </para> <para>Simple patented snap together assembly. Fast and easy.    </para>   </td>      
+		 </tr>
+    
+		 
+    
+		<tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td><para>  Waterproof  </para> <para> CSIRO tested to 6 metres of water pressure means that Dincel is waterproof. The world's first waterproof structural wall. </para>   </td>      
+		 </tr>
+    
+		<tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td> 	<para>   Material quality </para> <para>  The polymer used in the Dincel Construction System has been specially formulated to be complaint with all BCA requirements.  </para>   </td>      
+		 </tr>
+    
+		<tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td> <para>   Engineering support </para> <para>  Dincel offers full professional Structural Engineering support. We can provide advice on any application of Dincel.   </para>   </td>      
+		 </tr>
+		<tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td>	<para>   Australian  </para> <para> Made in Australia. Designed in Australia. Fully tested and certified in Australia.   </para>   </td>      
+		 </tr>
+		 <tr>       
+			<td> 	<para>  <font color="white"> </font> </para></td>
+			<td> 	<para>   Environment </para> <para>  Dincel Construction System has been awarded the Best Environment Practice (BEP) Approval Mark after meeting the strict Green Building Council Best Practice Guidelines for PVC.   </para>   </td>      
+		 </tr>
+		</blockTable>
+	<para>  <font color="white"> </font> </para>  <para>
+Please don't hesitate to contact us should you have any queries or require any further information.
+ </para><para>  <font color="white"> </font> </para> <para>
+
+Yours faithfully,
+  </para> 
+  <para>  <font color="white"> </font> </para>  
+  <para>  <font color="white"> </font> </para>  
+  <para>  <font color="white"> </font> </para>  
+  <para> DINCEL Contact :  [[ (o.user_id and o.user_id.name) or '' ]]  [[ (o.user_id and o.user_id.mobile) or '' ]]  </para>
+  <para> Quote Prepared By:  [[ (o.x_prepared_by and o.x_prepared_by.name) or user.name  ]]  <image></image></para>
+ 
+   
+	   <!-- END OF PAGE 1 -->
+	    
+	   <!-- START OF PAGE 2 -->
+	   <condPageBreak height="700"/>
+	   <setNextTemplate name="page2"/>
+	   <para alignment="RIGHT"><b>Quotation [[ o.name ]]</b> DATE: <b>[[ o.date ]]</b></para>
+		 <spacer length="1.3cm"/>	
+		 
+	   <blockTable colWidths="533.0" style="Table2"><tr>  <td> 	 <blockTable colWidths="274.0,300.0" style="Table1">
+      <tr>
+        <td>
+          <para style="terp_default_Bold_9"><b>DINCEL MAIN PROFILE &amp; P-3 CORNER QTY. IN SQ. MTRS.		</b></para>
+          <para style="terp_default_9">As per plans and information supplied</para>
+		  <para><font color="white"> </font> </para>  
+		  <para><font color="white"> </font> </para>  
+		  <para><font color="white"> </font> </para>  
+		 
+        </td>
+       
+       
+		 <td>
+		
+		 <blockTable colWidths="120,70.0,70.0" style="TableMetres2">
+		  <tr>
+        <td><para style="terp_default_9">
+            <font color="white"> </font>
+          </para>		</td>
+		 <td>	<para style="default_Centre_9"><b> 110mm</b></para>	</td>
+		 <td>	<para style="default_Centre_9"><b>200mm</b>
+</para>	</td></tr>
+	 
+		  
+		  <tr>
+          <td>	 <para style="default_Right_9">           [[ (o.x_wall_type_id1 and o.x_wall_type_id1.name) or '' ]]            </para>	</td>
+		  <td>	 <para style="default_Centre_9">            [[ o.x_quote_base_110 or '-' ]]          </para>	</td>
+		  <td>	 <para style="default_Centre_9">             [[ o.x_quote_base_200 or '-' ]]          </para>	</td></tr>
+		 
+		 <tr>
+        <td>	 <para style="default_Right_9"> [[ (o.x_wall_type_id2 and o.x_wall_type_id2.name) or '' ]]    </para>	</td>
+		 <td>	 <para style="default_Centre_9">            [[ o.x_quote_party_110 or '-' ]]          </para>	</td>
+		 <td>	 <para style="default_Centre_9">            [[ o.x_quote_party_200 or '-' ]]          </para>	</td></tr>
+		 
+		 <tr>
+        <td> <para style="default_Right_9">[[ (o.x_wall_type_id3 and o.x_wall_type_id3.name) or '' ]]    </para>		</td>
+		 <td>	 <para style="default_Centre_9">             [[ o.x_quote_lift_110 or '-' ]]          </para>	</td>
+		 <td>	 <para style="default_Centre_9">            [[ o.x_quote_lift_200 or '-' ]]          </para>	</td></tr>
+		 
+		  <tr>
+        <td>	 <para style="default_Right_9"> [[ (o.x_wall_type_id4 and o.x_wall_type_id4.name) or '' ]]     </para>	</td>		
+		<td>	 <para style="default_Centre_9">             [[ o.x_quote_facade_110 or '-' ]]          </para>	</td>
+		 <td>	 <para style="default_Centre_9">             [[ o.x_quote_facade_200 or '-' ]]          </para>	</td></tr>
+		 
+		   <tr>
+          <td>	 <para style="default_Right_9">          [[ (o.x_wall_type_id5 and o.x_wall_type_id5.name) or '' ]]           </para>	</td>
+		  <td>	 <para style="default_Centre_9">            [[ o.x_quote_110 or '-' ]]          </para>	</td>
+		  <td>	 <para style="default_Centre_9">             [[ o.x_quote_200 or '-' ]]          </para>	</td></tr>
+		  
+		 <tr><td>
+		 <para style="default_Right_9"><b> TOTAL FOR THIS PROJECT </b> </para></td>
+ 
+  <td ><para style="default_Centre_9">            [[ o.x_quote_total ]]          m <sup>2</sup>          </para>	</td>	<td><para></para> </td></tr>
+ 
+		</blockTable>
+		   
+       
+		
+		</td>
+      </tr>
+    </blockTable>
+	 <spacer length="1.3cm"/>	
+	
+	<blockTable colWidths="450.0,90.0" style="TableMetres">
+		  <tr>
+		  <td><para style="default_Centre_9">COMPONENTS	 </para>	 </td>
+		   <td><para style="default_Centre_9">		   30 Days EOM		 </para> </td>
+		   
+		  
+		 </tr>
+ 
+ <tr>
+ <td><para>MAIN PROFILES: P-1 &amp; P-3 Corner modules included</para> </td> 
+ <td><para style="default_Centre_9">$[[ formatLang(o.x_rate1) ]]</para> </td>
+ 
+ 
+ </tr>
+ 
+  <tr>
+ <td><para>MAIN ACCESSORY PROFILES : Guide Track (PG) and Joiner (PJ)</para> </td> 
+ <td><para style="default_Centre_9">$[[ formatLang(o.x_rate_accs1) ]]</para> </td>
+ 
+ 
+ </tr>
+ 
+ 
+  <tr>
+ <td><para>[[ (o.x_transport_rate_id and o.x_transport_rate_id.name) or '' ]] </para> </td> 
+ <td><para style="default_Centre_9">$[[ formatLang(o.x_rate_trans1) ]]</para> </td>
+ 
+ 
+ </tr>
+ 
+   <tr>
+ <td><para>[[ (o.x_drawing_txt) or '-' ]] </para> </td> 
+ <td><para style="default_Centre_9"></para> </td>
+ 
+
+ </tr>
+ 
+  <tr>
+ <td><para>ACCESSORY PROFILES : Accessory component cost to be calculated as per project/customer requirements upon receipt of customer order form. If additional accessories required refer to Accessory Price List.
+</para> </td> 
+ <td><para></para> </td>
+ 
+ 
+ </tr>
+ 
+ 
+  <tr>
+ <td><para><b>TOTAL RATE FOR THIS PROJECT per m</b><sup>2</sup><b>:</b></para> </td> 
+ <td><para style="default_Centre_9"><b>$[[ formatLang((o.x_rate1 + o.x_rate_accs1 + o.x_rate_trans1), digits=2)]] + gst</b></para> </td>
+ 
+ 
+ </tr>
+ 
+		</blockTable> 
+		  
+	 
+ <spacer length="2.3cm"/>	
+		  <blockTable colWidths="533.0" style="TableDepositTerm" >
+	 <tr>
+        <td> 
+	 
+	 <para style="header_red">
+	 
+	 NOTE: A 33% confirmation deposit payment is required for custom lengths only.
+ </para>
+ <para style="term_text">
+Please read our General Terms and Conditions of Quotation on the following page and sign the ACCEPTANCE OF QUOTATION and return it to us prior to placing order.
+ </para><para style="term_text">
+> 0.5% per day for late payment. All prices quoted are + gst. </para><para style="term_text">
+> If the Australian Dollar is less than US90Cents the charge may need to be increased on a pro-rata basis. </para><para style="term_text">
+> Account to approved customers only.
+  </para><para style="term_text">
+Telephone 1300 346 235 with your Quote Number if you have any queries.
+
+		 </para>
+		   </td>
+      </tr>
+    </blockTable> 
+
+
+	   </td>     </tr>    
+	   
+	   </blockTable> 
+	   <!-- END OF PAGE 2 -->
+	   
+	   <!-- START OF PAGE 3 -->
+	   <condPageBreak height="700"/>
+	   <setNextTemplate name="page3"/>
+	   <para alignment="RIGHT"><b>Quotation [[ o.name ]]</b> DATE: <b>[[ o.date ]]</b></para>
+		 <spacer length="0.3cm"/>	
+		 
+	   <blockTable colWidths="533.0" style="Table3"><tr>        <td> 	 
+
+
+<para style="title_text">  
+		<b>ACCEPTANCE OF QUOTATION</b>  
+		   
+		  </para>
+		  <spacer length="0.3cm"/>	
+		   <para>
+		 
+		 
+	I, <b>[[ (o.x_contact_id and o.x_contact_id.name) or '' ]] </b> having legal capacity to enter into this agreement, hereby accept the DINCEL Construction System (DCS) Quotation [[ o.name ]] and acknowledge that I have understood this quotation and the terms and conditions. 
+ </para>
+		  <spacer length="0.3cm"/>	
+		   <para >
+
+I understand and accept that the rate and price quoted is only in relation to and only applies to the project specified in this quote.
+  </para>
+		  <spacer length="0.3cm"/>	
+		   <para >
+
+I understand that this price is exclusive to <b>[[ (o.partner_id and o.partner_id.title and o.partner_id.title.name) or '' ]] [[ (o.partner_id and o.partner_id.name) or '' ]] </b> and should be considered as being confidential. It is DCS understanding that <b>[[ (o.partner_id and o.partner_id.title and o.partner_id.title.name) or '' ]] [[ (o.partner_id and o.partner_id.name) or '' ]] </b> will be the entity placing orders and reconciling payment.
+ </para>
+		  <spacer length="0.3cm"/>	
+		   <para >
+
+It is DCS understanding that a total of  <b> [[ o.x_quote_total ]]  </b> Dincel profiles will be purchased to complete the project.
+
+ </para>
+		  <spacer length="0.3cm"/>	
+		   <para>
+This quotation is based on the information provided to DCS by <b>[[ (o.partner_id and o.partner_id.title and o.partner_id.title.name) or '' ]] [[ (o.partner_id and o.partner_id.name) or '' ]] </b> and quoted in good faith based on the quantities identified using DCS installation methodology. 
+ </para>
+		 <spacer length="0.3cm"/>	 
+		   <para >
+
+There are numerous ways of using Dincel to build a wall. While we have applied our normal methodology to this quotation we suggest that installers consider the components required based on their own knowledge and experience.
+ </para>
+		<spacer length="0.3cm"/>	  
+		   <para>
+I request that Dincel Construction System proceed with the supply of DINCEL wall to the above named project.
+ </para>
+		 <spacer length="1.3cm"/>	 
+		   <para>_________________	 </para>
+	 
+		   <para><b>[[ (o.x_contact_id and o.x_contact_id.name) or '' ]] </b> 	 </para>
+	 
+		   <para >Date</para>
+
+	   		   </td>     </tr>    
+	   
+	   </blockTable> 
+	   <!-- END OF PAGE 3-->
+	   
+	   <!-- START OF PAGE 4 -->
+	   <condPageBreak height="700"/>
+	   <setNextTemplate name="page4"/>
+	    <para alignment="RIGHT"><b>Quotation [[ o.name ]]</b> DATE: <b>[[ o.date ]]</b></para>
+		 <spacer length="0.3cm"/>	
+		 
+	   <blockTable colWidths="533.0" style="Table4"><tr>        <td> 		<para style="title_text">	<b>GENERAL TERMS AND CONDITIONS OF QUOTATION</b>		 </para>  
+		 
+		  </td></tr>
+ 
+	   <tr>        <td> 	
+	    <blockTable colWidths="20,520.0" style="Table_T_C">
+		<tr><td><para alignment="LEFT"  style="term_text">1.</para></td>
+		<td>
+		 <para  style="term_text">
+		    All wall areas given in this document are estimates only (estimated wall areas) &amp; Dincel Construction System (DCS) accepts no responsibility either for any consequences arising out of any inaccuracy in these Estimated Wall Areas or for any costs arising out of any discrepancy between the Estimated Wall Area &amp; wall areas actually constructed. </para> 
+		 
+		 <para  style="term_text">
+DCS are not quantity surveyors and this quote only provides a rate for supply and if required, delivery per square metre based on the drawings supplied by you or the square metre area calculated by you.
+ </para>   
+		</td>
+		
+		</tr>
+		
+		<tr>        
+		<td> <para alignment="LEFT"  style="term_text">2.</para> </td>	 
+		<td>	 
+		 <para  style="term_text">
+  This price/ rates quotation is valid for 30 days from the date of this letter.
+ </para>   </td>      </tr>    
+	 <tr>        
+		<td> <para alignment="LEFT"  style="term_text">3.</para> </td>	 
+		<td>	 
+		 <para  style="term_text">  This quotation refers to supply only of Dincel Wall Components, no allowance has been made for installation. </para>   </td>  
+  	 </tr>    	
+	  <tr>        
+		<td> <para alignment="LEFT"  style="term_text">4.</para> </td>	 
+		<td>	 <para  style="term_text"> The m2 area is the total overall wall area, including main panels &amp; P-3 corner modules of the DCS Wall System. </para>   </td>    
+  
+		</tr>   
+		
+		<tr>        <td> 
+		 <para alignment="LEFT"  style="term_text">5.</para> 
+		</td>
+		 <td> 
+		 
+		 <blockTable colWidths="25,490.0" style="Table_T_C">
+		 <tr>        <td> 
+		 <para  style="term_text">(a) </para>
+		</td>
+		 <td> 
+		 <para  style="term_text">
+Set-out drawings &amp; components list (SOD &amp; CL) will only be provided by DCS as an optional requirement &amp; cost (at the rate previously specified) or at a negotiated  charge. </para> 
+		 
+		</td>
+		</tr>
+		
+		 <tr>        <td> 
+		 <para  style="term_text">(b) </para>
+		</td>
+		 <td> 
+		 <para  style="term_text">A lead-time of two (2) weeks applies to all SOD &amp; CL's, taken from the date of receipt of all documentation required to complete the SOD &amp; CL.  </para> 
+		 
+		</td>
+		</tr>
+		 <tr>        <td> 
+		 <para  style="term_text">(c) </para>
+		</td>
+		 <td> 
+		 <para  style="term_text">The customer is responsible to check the SOD &amp; CL's &amp; sign off on the CL's as this is the information that will be entered on your Order Forms. </para> 
+		 
+		</td>
+		</tr>
+		 <tr>        <td> 
+		 <para  style="term_text">(d) </para>
+		</td>
+		 <td> 
+		 <para  style="term_text">Order Forms must be completed, signed &amp; checked by the customer. </para> 
+		 
+		</td>
+		</tr>
+		 <tr>        <td> 
+		 <para  style="term_text">(e) </para>
+		</td>
+		 <td> 
+		 <para  style="term_text">The customer is responsible to supply, at no cost to DCS all relevant drawings &amp; details required in .dwg (AutoCad) format.  </para> 
+		 
+		</td>
+		</tr>
+		</blockTable>
+		  </td>     </tr>     
+		  
+<tr>        
+		<td> <para alignment="LEFT"  style="term_text">6.</para> </td>	 
+		
+		<td  >
+ <para style="term_text">   Once DCS has received approved drawings from the customer, any changes thereafter will incur additional charges. </para> 
+		  </td>     </tr>   
+		 <tr>        
+		<td> <para alignment="LEFT"  style="term_text">7.</para> </td>	 
+		
+		<td  >
+ <para style="term_text">  A lead time of minimum 2 days will be required for stock lengths (subject to availability) &amp; minimum 7 days for custom lengths subject to the following: </para> 
+		  </td>     </tr>    
+		  <tr>
+		  <td><para alignment="LEFT"  style="term_text"> </para> </td>
+		  
+		  <td>
+		  <blockTable colWidths="25,490.0" style="Table_T_C">
+		 <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(a)</para> 	  </td>
+		  <td> 		 <para style="term_text">Quantity estimation check approval by the customer.  </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(b)</para> 	  </td>
+		  <td> 		 <para style="term_text">SOD &amp; CL check by customer.  </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(c)</para> 	  </td>
+		  <td> 		 <para style="term_text">Receipt of duly completed DCS Order Form and 33% confirmation deposit payment for custom lengths only.   </para>   </td>
+		  </tr>
+		  </blockTable>
+		  </td>
+		  
+		  </tr>
+		  
+		  
+		   <tr>        
+		<td> <para alignment="LEFT"  style="term_text">8.</para> </td>	 
+		
+		<td  >
+ <para style="term_text"> TRANSPORTATION</para> 
+		  </td>     </tr>    
+		  <tr>
+		  <td><para alignment="LEFT"  style="term_text"> </para> </td>
+		  
+		  <td>
+		  <blockTable colWidths="25,490.0" style="Table_T_C">
+		 <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(a)</para> 	  </td>
+		  <td> 		 <para style="term_text">Transportation prices quoted outside metro areas are for full trucks without hiab/ lifting/ lowering facility. </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(b)</para> 	  </td>
+		  <td> 		 <para style="term_text">Customers are to arrange on-site equipment to off-load Dincel products. </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(c)</para> 	  </td>
+		  <td> 		 <para style="term_text">A maximum of two (2) hours unloading time is allowed.    </para>   </td>
+		  </tr>
+		  <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(d)</para> 	  </td>
+		  <td> 		 <para style="term_text">Any additional time on site will be charged to the customer at $100.00 +GST per hour or part thereof. </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(e)</para> 	  </td>
+		  <td> 		 <para style="term_text">All deliveries will be made between 10.00am and 5.00pm Monday or 7.00am and 5.00pm Tuesday to Friday. </para>   </td>
+		  </tr>
+		   <tr>        
+		 <td> 	<para alignment="LEFT"  style="term_text">(f)</para> 	  </td>
+		  <td> 		 <para style="term_text">The minimum delivery load for [[ (o.x_transport_rate_id and o.x_transport_rate_id.region) or 'Sydney' ]] metro areas is [[ (o.x_transport_rate_id and o.x_transport_rate_id.min_order) or '125' ]] m2    </para>   </td>
+		  </tr>
+		  </blockTable>
+		  </td>
+		  
+		  </tr>
+		  
+		  
+		  
+		 </blockTable> 
+		 
+	     </td></tr>
+	   
+	   </blockTable> 
+	   <!-- END OF PAGE 4 -->
+	   
+	   
+	   <!-- START OF PAGE 5 -->
+	   <condPageBreak height="700"/>
+	   <setNextTemplate name="page5"/>
+	   <para alignment="RIGHT"><b>Quotation [[ o.name ]]</b> DATE: <b>[[ o.date ]]</b></para>
+	   <spacer length="0.3cm"/>	
+		 
+	   <blockTable colWidths="400.0,133.0" style="Table4"><tr>  
+	    <td><para style="title_text"><b>ACCESSORY PRICE LIST</b></para> 
+		</td>  
+<td> 	
+		<para style="header_red">			<i> 01st November 2014 </i>
+		</para> 
+		</td>  
+		</tr>    
+	   
+	   </blockTable> 
+	    <spacer length="0.3cm"/>
+		 <blockTable colWidths="533.0" style="Table4"><tr>  
+	    <td>
+	   <para>
+	   Dincel Construction System (DCS) is pleased to submit this price list for the supply of Dincel-Forms at the following rates subject to the <b>DCS TERMS AND CONDITIONS OF SALE</b> (available in the DCS website).  The prices shown are ex-Sydney factory and do not include delivery or GST.
+	   </para>
+	   </td>  
+		</tr>    
+	   
+	   </blockTable> 
+	   
+	    <spacer length="0.3cm"/> <blockTable colWidths="533.0" style="Table4"><tr>  
+	    <td>
+	     <para >
+		 <b>Accessory Profiles</b> (available as stock items)
+		 </para>
+		  </td>  
+		</tr>    
+	   
+	   </blockTable> 
+		  <spacer length="0.3cm"/>
+ <blockTable colWidths="250,150.0,133.0" style="TableAccs">
+ <tr>  
+	    <td> 	
+		<para>		200mm (P-EC, P-J, P-G, P-WS, P-WJ, P-TC, P-EG)	</para> 		</td>  		 <td> 	<para>		3.6m Stock Lengths		</para> 		</td>  		 <td> 			<para>		$25.00/piece		</para> 		</td>  
+		</tr>   
+		
+		<tr>  
+	    <td> 	
+		<para>
+		200P-2 and 200P-4
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		3.6m Stock Lengths
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		$35.00/piece
+		</para> 
+		</td>  
+		</tr>   
+		
+		<tr>  
+	    <td> 	
+		<para>
+		200P-3
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		3.6m Stock Lengths
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		As per the P-1 m<sup>2</sup> rate
+		</para> 
+		</td>  
+		</tr>   
+		
+		<tr>  
+	    <td> 	
+		<para>
+		200P-RC
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		Per Bag of 100
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		$50.00/bag
+		</para> 
+		</td>  
+		</tr>   
+		
+		<tr>  
+	    <td> 	
+		<para>
+		110mm (P-EC, P-J, P-G, P-TC, P-WS, P-EG)
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		3.0m Stock Lengths
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		$20.00/piece
+		</para> 
+		</td>  
+		</tr>   
+		
+		<tr>  
+	    <td> 	
+		<para>
+		110P-3
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		3.0m Stock Lengths
+		</para> 
+		</td>  
+		 <td> 	
+		<para>
+		As per the P-1 m<sup>2</sup> rate
+		</para> 
+		</td>  
+		</tr>   
+		
+	   
+	   </blockTable> 
+	   <!-- END OF PAGE 5 -->
+	   
+  </story>
+</document>

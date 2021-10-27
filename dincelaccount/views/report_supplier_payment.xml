@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+<template id="report_supplier_payment">
+    <t t-call="report.html_container">
+        <t t-call="report.internal_layout">
+              <t t-foreach="docs" t-as="o">
+				<t t-call="report.external_layout">
+					<div class="page">
+						<h2>Electronic Payments Register</h2>
+						 
+						<div class="row mt32 mb32">
+							<div class="col-xs-3">
+								<strong>Date:</strong>
+								<span t-field="o.date"/> 
+							</div>
+							<div class="col-xs-3">
+								<strong>Reference:</strong>
+								<span t-field="o.reference"/> 
+							</div>
+							<div class="col-xs-3">
+								<strong>EFT Description:</strong>
+								<span t-field="o.comment"/> 
+							</div>
+					 </div>
+					<table class="table table-condensed">
+						<thead>
+							<tr>
+								<th>Partner</th>
+								<th>Reference</th>
+								<th>Amount Paid</th> 
+							</tr>
+						</thead>
+						<t t-set="tot_amount" t-value="0"/>
+						<tbody>
+                           <tr t-foreach="o.x_payline_ids" t-as="line">
+						   
+						  <td><span t-att-style="style" t-esc="line.partner_invoice.name"/></td>
+						  <td><span t-att-style="style" t-esc="line.supplier_inv_no"/> <span t-att-style="style" t-esc="line.reference"/> </td>
+						  <td class="text-right"> 
+						  <span t-field="line.amount"
+                                        t-field-options='{"widget": "monetary", "display_currency": "o.currency_id"}'/>
+										 <t t-set="tot_amount" t-value="tot_amount+line.amount"/> 
+							</td>	 
+							</tr>
+						   </tbody>
+						   
+							<tr>
+								<th> </th>
+								<th>TOTAL: </th>
+								<th class="text-right"> 
+								<span   t-esc="formatLang(tot_amount, currency_obj=res_company.currency_id)"/>
+								</th> 
+							</tr>
+					 
+					   </table>
+					</div>
+				</t>
+			</t>
+			</t>
+    </t>
+</template>
+</data>
+</openerp>

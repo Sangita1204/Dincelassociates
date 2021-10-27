@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record	 id="dincelaccount_partner_form_new_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.partner.new.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">res.partner</field>
+			<field name="arch" type="xml">
+				<form string="Contact" version="7.0">
+					<header>
+						<button string="DCS Partner Update" groups="base.group_update_dcs" name="updatelink_partner_dcs" invisible="1" type="object"/>
+						
+						<button string="Save &amp; Update DCS" attrs="{'invisible': [('supplier','=', True)]}" groups="base.group_update_dcs" name="save_n_update_partner_dcs" type="object"/>
+					</header>
+					
+					<sheet>
+					<field name="image" widget="image" class="oe_left oe_avatar" options="{&quot;preview_image&quot;: &quot;image_medium&quot;, &quot;size&quot;: [90, 90]}"/>
+                    <div class="oe_title">
+                        <div class="oe_edit_only">
+                           <label for="is_company" string="Is a Company?" />
+                            <field name="is_company" class="oe_inline" /> 
+                        </div>  
+						<div class="oe_edit_only"  attrs="{'invisible': ['|',('x_is_project','=', True),('supplier','=', True)]}">
+						<label for="x_is_client" string="Is a Client?" />
+						<field name="x_is_client" class="oe_inline" eval="Client" /> 
+						</div>
+						<div class="oe_edit_only" attrs="{'invisible': [('supplier','=', True)]}" >
+						<label for="x_is_project" string="Is a Site / Project?" />
+						<field name="x_is_project"  class="oe_inline"  />  
+						</div>
+
+                        <h1>
+							<label for="name" string="Company" attrs="{'invisible': [('is_company','=', False)]}" class="oe_inline oe_edit_only"/>
+							<label for="name" attrs="{'invisible': [('x_is_project','=', True)]}" class="oe_inline oe_edit_only"/>
+							<label for="name" string="Site Address"  attrs="{'invisible': [('x_is_project','=', False)]}" class="oe_inline oe_edit_only"/>
+                            <field name="name" default_focus="1" placeholder=""  on_change="onchange_sitename(x_is_project,x_is_client,is_company,name)" />
+							<label string="Project / Site" attrs="{'invisible': [('x_is_project','=', False)]}" invisible="1" class="oe_save_only"/>
+                        </h1>
+						
+						<label string=" " /><br />
+						<label string="Credit Limit Exceeded" style="color:red; border:2px solid red; padding:10px;" attrs="{'invisible': [('x_cr_limit_over','=',False)]}"/>
+						<field name="x_cr_limit_over" string="Over Credit Limit" invisible="1" readonly="1"/>  
+						
+						<field name="x_display_rate" invisible="1"/>
+                        <field name="category_id" widget="many2many_tags" placeholder="Tags..." invisible="1"/>
+						<!--<field name="x_contact_type" invisible="1"/-->  
+						<div class="oe_edit_only">
+						 <label for="parent_id" string="Parent Company" class="oe_edit_only"  attrs="{'invisible': ['|',('x_is_client','=',True), ('x_is_project','=', True)]}"/> </div> 
+						 <field name="parent_id" placeholder="Company" attrs="{'invisible': ['|',('x_is_client','=',True), ('x_is_project','=', True)]}"/>
+						 
+						 
+						 
+                    </div>
+					
+					<div class="oe_right oe_button_box" name="buttons"> 
+					 <!--<button type="action" 
+                        class="oe_stat_button"
+                        id="invoice_button"
+                        icon="fa-pencil-square-o"
+                        name="%(account.action_invoice_tree)d" 
+                        attrs="{'invisible': [('customer', '=', False)]}" 
+                        context="{'search_default_partner_id': active_id,'default_partner_id': active_id}" groups="account.group_account_invoice">
+                        <div><strong><field name="total_invoiced" widget="monetary"/></strong><br/>Invoiced</div>
+                    </button> -->
+					 <button class="oe_inline oe_stat_button" type="action" name="%(sale.act_res_partner_2_sale_order)d" 
+                        attrs="{'invisible': [('customer', '=', False)]}"
+                        icon="fa-strikethrough">
+                        <field string="Sales" name="sale_order_count" widget="statinfo"/>
+                    </button>   
+					<button class="oe_inline oe_stat_button" name="%(purchase.act_res_partner_2_supplier_invoices)d" type="action"
+                        attrs="{'invisible': [('supplier', '=', False)]}" icon="fa-pencil-square-o" help="Supplier Invoices">
+                        <field string="Supplier Inv." name="supplier_invoice_count" widget="statinfo"/>
+                    </button>
+					
+					 <button class="oe_inline oe_stat_button" name="%(purchase.act_res_partner_2_purchase_order)d" type="action"
+                        attrs="{'invisible': [('supplier', '=', False)]}" icon="fa-shopping-cart">
+                        <field string="Purchases" name="purchase_order_count" widget="statinfo"/>
+                    </button>
+					
+					</div>
+						<group attrs="{'invisible': [('x_is_project','=', True)]}" > 
+                            <group> 
+								<field name="x_ctype"  attrs="{'invisible': [('is_company','=', True)]}"/>
+								<field name="title"  attrs="{'invisible': [('is_company','=', True)]}"/>
+								<field name="function" placeholder="e.g. Sales Director"  attrs="{'invisible': [('is_company','=', True)]}" />
+								<field name="phone" placeholder="e.g. 02 9670 1633" attrs="{'required': [('is_company','=', True)]}"/>
+								<field name="mobile"  attrs="{'invisible': [('is_company','=', True)]}" />
+								<field name="fax"  />
+								<field name="email" widget="email" attrs="{'required': [('is_company','=', True)]}"/>
+								
+								 <field name="website" widget="url" placeholder="e.g. www.dincel.com" attrs="{'invisible': [('is_company','=', False)]}" />
+								 
+						   </group>
+						   
+						    <group>
+								<group>
+									<field name="x_architect"/>                                    
+									<field name="x_formwork"/>
+									<field name="x_builder"/>
+								</group>
+								<group>
+
+
+									<field name="x_certifier"/>
+									<field name="x_engineer"/>
+
+								  <!-- <field name="x_contact_type" string="Profession" invisible="1"/>-->
+								 <!-- <field name="x_profession_id" string="Profession" invisible="1"/-->
+								 </group>
+                                </group>
+							</group>
+							 
+							 
+							 <group attrs="{'invisible': [('supplier','=', True)]}">	
+								<group>	
+									<field name="x_dcs_id" readonly="1"  />
+									</group>
+								
+									<group>	
+									<field name="x_dcs_clientid" domain="[('is_company', '=', True),('x_is_project', '=', False),('customer', '=', True)]"  attrs="{'invisible': [('x_is_project','=', False)]}"/>
+									</group>
+								 </group>
+								 
+						
+						<group>	
+								<!--<label for="street" string="Address"  attrs="{'invisible': [('x_is_project','=', True)]}"/> -->
+								<!-- <div class="address_format"></div> -->
+								<field name="street" placeholder="Street Address"  attrs="{'required': [('x_is_project','=', True)]}" />
+								<field name="x_suburb_id" string ="Suburb" placeholder="Suburb" style="width: 37%%"  on_change="onchange_suburb(x_suburb_id,state_id,zip)" />
+								<field name="city" string ="Suburb" placeholder="Suburb" style="width: 37%%"  invisible="1"  />
+								 
+								<field name="state_id" placeholder="State" style="width: 42%%" on_change="onchange_province(x_suburb_id,state_id)"  options="{'limit': 10, 'create': false, 'create_edit': false,'m2o_dialog':false}"   />
+								
+								<field name="zip" string="Postcode"  placeholder="Postcode" style="width: 20%%"  on_change="onchange_postcode(x_suburb_id,zip,city,state_id)"/>
+								
+								<field name="country_id" placeholder="Country"   />
+								
+								<field name="street2" invisible="1"/>
+							
+								<field name="x_post_address" string="Postal Address"  attrs="{'invisible': [('x_is_project','=', True)]}" />     
+						</group>
+						
+							 
+					 <group> 
+						<field name="vat" string="ABN" attrs="{'required': [('is_company','=',True)]}"/>
+						<field name="property_payment_term" widget="selection" attrs="{'invisible': [('x_is_project','=', True)]}"/>
+						<field name="user_id"  attrs="{'readonly': [('x_edit_rate','=', False)]}"/>
+						<field name="x_source_id" attrs="{'invisible': [('x_is_project','=', False)]}"/>
+						<field name="comment" placeholder="Internal note..."  attrs="{'readonly': [('x_edit_rate','=', False)]}"/>
+						<field name="customer" invisible="1"/>
+						<field name="supplier" invisible="1"/> 
+						<field name="x_edit_rate" invisible="1"/>		
+					</group>
+						
+					 <notebook colspan="4"> 
+							<page  string="Site Info" attrs="{'invisible': [('x_is_project','=', False)]}">	
+								<group>
+								 
+								   <field name="x_project_size" street="Project Size (m2)" />
+								   <field name="x_project_value" street="Project Value ($)" />
+								   <field name="x_likely_sale_dt"  attrs="{'required': [('x_is_project','=', True)]}" />
+								   <field name="x_formwork_id" string="Formworker" invisible="1"/>
+								   <field name="x_architect_id" invisible="1"/>
+								   <field name="x_builder_id" invisible="1"/>
+								   <field name="x_engineer_id" invisible="1"/>
+									
+									
+								  </group>
+							 </page>
+								
+							<page string="Tendering/Customers"  attrs="{'invisible': [('x_is_project','=', False)]}">
+								<field name="x_role_partner_ids" string="Tendering/Customers"  domain="[('is_company', '=', True),('x_is_project', '=', False)]" context="{'default_is_company': True,'default_user_id':user_id}"> 
+									<tree delete="False">
+										 <field name="name"  />
+										 <field name="email"  />
+										 <field name="phone"  />
+										 <field name="x_architect"  invisible="1" string="Architect" />
+										 <field name="x_certifier"  invisible="1" string="Certifier" />
+										 <field name="x_formwork" invisible="1" string="Formworker" />
+										 <field name="x_builder" invisible="1" string="Builder" />
+										 <field name="x_engineer" invisible="1" string="Engineer" />
+									</tree>
+								 </field>
+							</page>
+							
+							<page string="Sites"  attrs="{'invisible': ['|',('x_is_project','=', True),('supplier','=', True)]}">
+
+								<group>
+									<field name="x_role_site_ids" attrs="{'invisible': [('is_company','=', False)]}" domain="[('x_is_project', '=', True)]" context="{'default_x_is_project': True,'default_user_id':user_id}">
+											<tree>
+												 <field name="name" string="Site Address" />
+											</tree>
+									 </field>
+									
+								</group>
+							 </page>
+								 
+							<page string="Contacts"  >
+								<field name="child_ids" domain="[('x_is_project', '=', False)]" context="{'default_x_is_project': False,'default_parent_id': active_id, 'default_street': street, 'default_city': city, 'default_state_id': state_id, 'default_zip': zip, 'default_country_id': country_id, 'default_supplier': supplier, 'default_customer': customer,'default_user_id':uid}">
+								<tree>
+								<field name="name"/>
+								<field name="mobile"/>
+								<field name="phone"/>
+								<field name="email"/>
+								</tree>
+								</field>
+							</page>
+								 
+							<page string="History" attrs="{'invisible': [('x_is_project','=', False)]}">
+									<field name="x_phonecall_ids" readonly="1" >
+									<tree>
+										<field name="date"  />
+										<!--<field name="partner_id" string="Company" /-->
+										<!-- <field name="x_instruction" string="Instruction"/-->
+										<field name="description"  string="Comments" />
+										<field name="user_id" string="Salesperson" />
+										</tree>
+									</field>
+							</page>
+								<!-- attrs="{'invisible': ['|',('is_company','=', False),('x_display_rate','=', '0')]}"-->
+						   <page name="rate_history" string="Rate History" attrs="{'invisible': ['|',('x_is_project','=', True),('supplier','=', True)]}">
+								<div>
+								<field name="x_customer_rate_ids" context="{'default_partner_id': active_id}"  attrs="{'readonly': [('x_edit_rate','=', False)]}">
+									<form>  
+									<group> 
+									<field name="date_from"/>
+									<field name="date_to"/>
+									
+									<field name="rate_cod"/>
+									<field name="rate_acct"/>
+									<field name="partner_id" invisible="1"/>
+									</group>
+									</form>
+									<tree>
+									<field name="date_from"/>
+									<field name="date_to"/>
+									
+									<field name="rate_cod"/>
+									<field name="rate_acct"/>
+									<field name="partner_id" invisible="1"/>
+									</tree>
+								</field>
+								</div>
+						 
+							</page>
+							
+					<page string="Accounting" col="4" name="accounting" attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}" groups="account.group_account_invoice">
+                    <group>
+                        <group>
+                            <field name="property_account_position" widget="selection"/>
+							 <field name="customer"/>
+                        </group>
+                        <group>
+                            <field name="last_reconciliation_date"/>
+							 <field name="supplier"/>
+                        </group>
+                        <group>
+                            <field name="property_account_receivable" groups="account.group_account_invoice" />
+                            <!-- <field name="property_payment_term" widget="selection"/> -->
+                            <field name="credit"/>
+                            <field name="credit_limit"/>
+							<field name="x_acn" />
+							<field name="x_approved_by"/>
+							<field name="x_approved_dt" />
+                        </group>
+                        <group>
+                            <field name="property_account_payable" groups="account.group_account_invoice"/>
+                            <field name="property_supplier_payment_term" widget="selection"  attrs="{'invisible': [('supplier','=', False)]}"/>
+                            <field name="debit"/>
+							<field name="x_accs_m2convert" groups="base.group_settings_manager" />
+							<field name="x_deposit_exmpt" groups="base.group_settings_manager" />
+							<field name="x_select_customer" groups="base.group_settings_manager" />
+							<field name="x_mrp_exmpt" groups="base.group_settings_manager" />
+							<field name="active" groups="base.group_settings_manager" />
+							
+                        </group>
+                    </group>
+                    <field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">
+                        <tree string="Bank Details">
+                            <field name="state" invisible="1"/>
+                            <field name="sequence" invisible="1"/>
+                            <field name="acc_number"/>
+                            <field name="bank_name"/>
+                            <field name="owner_name"/>
+                        </tree>
+                    </field>
+					
+                </page>
+                <page string="Accounting" name="accounting_disabled" attrs="{'invisible': ['|',('is_company','=',True),('parent_id','=',False)]}" groups="account.group_account_invoice">
+                    <div>
+                        <p>Accounting-related settings are managed on <button name="open_commercial_entity" type="object" string="the parent company" class="oe_link"/></p>
+                    </div>
+                </page>
+			</notebook>
+			
+		  
+		 </sheet>      
+					 
+		 <div class="oe_chatter">
+			<field name="message_follower_ids" widget="mail_followers"/>
+			<field name="message_ids" widget="mail_thread"/>
+		</div>
+		
+				</form>
+			</field>
+		</record>
+		     
+		<record id="dincelaccount_contact_form_new_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelaccount.contact.form.inherit</field>
+			<field name="model">res.partner</field>
+			<field name="inherit_id" ref="dincelcrm.dincelcrm_contact_form_new_view" />
+			<field name="arch" type="xml">
+				<field name="category_id" position="after">
+				 <label string="Delivery Exempt (COD Invoices)" style="color:green; border:1px solid green; padding:10px;" attrs="{'invisible': [('x_delivery_exmpt','=',False)]}"/>     
+
+				<label string="Stop Supply" style="color:red; border:1px solid red; padding:10px;" attrs="{'invisible': [('x_stop_supply','=',False)]}"/>
+				<label string="Hold Supply/Legal" style="color:red; border:1px solid red; padding:10px;" attrs="{'invisible': [('x_hold_supply','=',False)]}"/>
+				
+				<label string="Select Customer" style="color:green; border:1px solid green; padding:10px;" attrs="{'invisible': [('x_select_customer','=',False)]}"/>
+				<label string="Inactive/Blocked" style="color:red; border:1px solid green; padding:10px;" attrs="{'invisible': [('x_is_blocked','=',False)]}"/>
+				</field>
+				 <page name="rate_history" position="after">
+					 
+				 <page string="Accounting" col="4" name="accounting" attrs="{'invisible': [('is_company','=',False),('parent_id','!=',False)]}" groups="account.group_account_invoice">
+                 <group>
+                        <group>
+							<field name="property_account_position" widget="selection"/>
+							<field name="customer"/>
+							<field name="supplier"/>
+							<field name="x_site_branch"/>
+							<field name="last_reconciliation_date"/>
+							<field name="x_has_custref"/>
+                        </group>
+                        <group groups="account.partner_acount_tab_super">
+							 <field name="x_delivery_exmpt" string="Delivery Exempt (COD Invoices)" groups="base.group_settings_manager" />
+							 <field name="x_stop_supply" groups="base.group_settings_manager" />
+							 <field name="x_hold_supply" groups="base.group_settings_manager" />
+							<field name="x_mrp_exmpt" groups="base.group_settings_manager" />
+							<field name="active" groups="base.group_settings_manager" />
+                        </group>
+						
+                        <group>
+                            <field name="property_account_receivable" groups="account.group_account_invoice" />
+                            <!-- <field name="property_payment_term" widget="selection"/> -->
+                            <field name="credit"/>
+                            <field name="credit_limit"/>
+							<field name="x_crlimit_expiry_dt" />
+							
+							<field name="x_acn" />
+							<field name="x_approved_by"/>
+							<field name="x_approved_dt" />
+							<field name="x_select_customer" groups="base.group_settings_manager" />
+							<field name="x_is_blocked"/>
+                        </group>
+						
+                        <group>
+                            <field name="property_account_payable" groups="account.group_account_invoice"/>
+                            <field name="property_supplier_payment_term" widget="selection"  attrs="{'invisible': [('supplier','=', False)]}"/>
+                            <field name="debit"/>
+							<field name="x_accs_m2convert" groups="base.group_settings_manager" />
+							<field name="x_rego_dt" />
+							<field name="x_expiry_dt" />
+							
+							<field name="x_is_not_active" string="Is Not Active?"/><!-- boolean field to make customer active/inactive -->	
+							<field name="x_deposit_exmpt" groups="base.group_settings_manager" />
+							<field name="x_deposit_exmpt_dt" groups="base.group_settings_manager" />
+							 <label string="Deposit Exempt" style="color:green; border:1px solid red; padding:10px;" attrs="{'invisible': [('x_deposit_exmpt','=',False)]}"/>
+							
+                        </group>
+                    </group>
+						<field name="bank_ids" context="{'default_partner_id': active_id, 'form_view_ref': 'base.view_partner_bank_form'}">
+                        <tree string="Bank Details">
+                            <field name="state" invisible="1"/>
+                            <field name="sequence" invisible="1"/>
+                            <field name="acc_number"/>
+                            <field name="bank_name"/>
+                            <field name="owner_name"/>
+                        </tree>
+						</field>
+					 <field name="x_document_ids" >
+						  <tree string="Documents"  >
+								
+								<field name="name"/>
+								<field name="user_id"/>
+								<field name="create_date"/>
+							</tree>
+					 </field>
+                </page>
+					   
+				</page>
+			</field>
+		</record>
+
+
+			 
+		<record id="dincelaccount_partner_new_action" model="ir.actions.act_window" >
+			<field name="name">Customers</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">kanban,tree,form</field>
+		    <field name="domain">[('customer','=',True),('x_is_project','=',False)]</field>
+			<field name="context">{'default_customer': True,'default_x_is_client': True,'default_is_company': True,'search_default_customer': True}</field> 
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_partner_new_kanban">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">kanban</field>
+			<field name="act_window_id" ref="dincelaccount_partner_new_action"/>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_partner_new_tree">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelaccount_partner_new_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_partner_new_form">
+			<field eval="3" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelaccount_partner_form_new_view"/>
+			<field name="act_window_id" ref="dincelaccount_partner_new_action"/>
+		</record>
+		
+		<menuitem id="dincelaccount_partner_new_menu" 
+					name="Customers " 
+					parent="account.menu_finance_receivables" 
+					action="dincelaccount_partner_new_action" 
+					 
+					/>	 
+		
+	</data>
+</openerp>	

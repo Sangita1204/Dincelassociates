@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	  <record id="view_dincelmrp_accessories_filter" model="ir.ui.view">
+			<field name="name">Search</field>
+			<field name="model">dincelmrp.accessories</field>
+			<field name="arch" type="xml">
+				<search string="Search">
+					 <field name="order_code" string="DCS Order No"/>
+					 <field name="partner_id" string="Customer" />
+					 <field name="project_id" string="Project / Site" />
+					 
+					 <field name="name" />
+					 <field name="state" />
+					 
+					 <filter   string="Draft" name="draft" domain="[('state','=','draft')]" help="Draft" />
+					 <filter   string="Printed" name="printed" domain="[('state','=','printed')]" help="Printed" />
+                    
+                    <filter   string="Packed" name="packed" domain="[('state','=','packed')]" help="Packed" />
+					<filter   string="Checked" name="checked" domain="[('state','=','Checked')]" help="Checked" />
+					
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+					 
+					   <filter name="Site"  string="Site" icon="terp-personal" domain="[]" context="{'group_by':'project_id'}"/>
+					   <filter name="Status"  string="Status" icon="terp-personal" domain="[]" context="{'group_by':'state'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+	  
+		<record	 id="dincelmrp_accessories_form_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.accessories.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelmrp.accessories</field>
+			<field name="arch" type="xml">
+				<form string="Accessories" >
+				 <header>
+				 <button string="Preview"  name="button_preview" type="object"/>
+				  <button string="Generate Pdf"  name="button_pdf_generate" type="object"/>
+				   <field name="state" widget="statusbar"  />
+				 </header>
+					 <sheet>
+					  <group>
+						<group>
+							<field name="order_id" readonly="1"/>  
+							<field name="product" readonly="1"/>  
+							<field name="name" invisible="1" string="Name"/>
+							<field name="partner_id" readonly="1"/> 
+							<field name="project_id" readonly="1"/>
+							<field name="x_dt_actual" readonly="1"/>
+							<field name="deli_status"  readonly="1"/> 
+							<field name="color_code"  widget="color" readonly="1"/> 
+							<field name="order_code" readonly="1"/> 
+						 </group>
+						 
+						 <group>
+						 
+							<field name="packs"  attrs="{'invisible': [('product','=','200')]}"/> 
+								<field name="packs_10" attrs="{'invisible': [('product','!=','200')]}"/> 
+								<field name="packs_12" attrs="{'invisible': [('product','!=','200')]}"/> 
+								<field name="packed_by"/> 
+							<field name="packed_date"/>  
+							<field name="checked_by"/> 
+							<field name="is_order_changed" readonly="1"/>
+							<label colspan="2" string="Order has been changed, so requires to sync the quantity again." style="color:green; border:1px solid red; padding:10px;" attrs="{'invisible': [('is_order_changed','=',False)]}"/>
+							 <button colspan="2"  name="button_sync_qty" string="Sync Accessories Data / Qty" type="object" attrs="{'invisible': [('is_order_changed','=',False)]}" />
+							 
+							 <button colspan="2" name="mark_as_printed" string="Mark as Printed" type="object" attrs="{'invisible': [('state','!=','draft')]}" />
+							 
+						 </group>
+					 </group>
+					 <group>
+					 <field name="accessories_line"> 
+					 <tree create="false" edit="false" delete="false">
+						<field name="product_id"/>  
+						<field name="qty"/>  
+					 </tree>
+					 </field>
+					 </group>
+					 <group>
+					 
+					 <field name="note"/>
+					 </group>
+					  </sheet>
+				</form>
+			</field>
+		</record>	
+		
+		<record	 id="dincelmrp_accessories_tree_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.accessories.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelmrp.accessories</field>
+			<field name="arch" type="xml">
+				<tree string="Accessories" colors="blue:state in ('draft');grey:state in ('checked') " >
+					
+					<field name="order_code"/>  
+					<field name="order_id" invisible="1"/>  
+					<field name="color_code"   widget="color" readonly="1"/> 
+					<field name="name" invisible="1" string="Name"/>
+					<field name="product"/> 
+					 
+					<field name="partner_id"/> 
+					<field name="project_id" />
+					<field name="x_dt_actual"/> 
+					<field name="deli_status"/> 
+					<field name="packs"/> 
+					<field name="packs_10"/> 
+					<field name="packs_12"/> 
+					<field name="packed_by"/> 
+					<field name="packed_date"/>  
+					<field name="checked_by"/> 
+					<field name="state"/>   
+					
+				</tree>
+			</field>
+		</record>
+		
+		<record id="dincelmrp_accessories_action" model="ir.actions.act_window" >
+			<field name="name">Accessories</field>
+			<field name="res_model">dincelmrp.accessories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain"></field> 
+			<field name="limit">80</field>
+			<field name="search_view_id" ref="view_dincelmrp_accessories_filter"/>
+			<field name="context">{'search_default_draft':1,'search_default_printed': 1,'search_default_packed': 1}</field>
+		</record>		
+		
+	  <record id="dincelmrp_accessories110_action" model="ir.actions.act_window" >
+			<field name="name">Accessories 110mm</field>
+			<field name="res_model">dincelmrp.accessories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('product','=','110')]</field> 
+			<field name="search_view_id" ref="view_dincelmrp_accessories_filter"/>
+			<field name="context">{'search_default_draft':1,'search_default_printed': 1,'search_default_packed': 1}</field>
+		</record>			
+		<record id="dincelmrp_accessories200_action" model="ir.actions.act_window" >
+			<field name="name">Accessories 200mm</field>
+			<field name="res_model">dincelmrp.accessories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('product','=','200')]</field> 
+			<field name="search_view_id" ref="view_dincelmrp_accessories_filter"/>
+			<field name="context">{'search_default_draft':1,'search_default_printed': 1,'search_default_packed': 1}</field>
+		</record>						
+		<record id="dincelmrp_accessories155_action" model="ir.actions.act_window" >
+			<field name="name">Accessories 155mm</field>
+			<field name="res_model">dincelmrp.accessories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('product','=','155')]</field> 
+			<field name="search_view_id" ref="view_dincelmrp_accessories_filter"/>
+			<field name="context">{'search_default_draft':1,'search_default_printed': 1,'search_default_packed': 1}</field>
+		</record>			
+		<record id="dincelmrp_accessories275_action" model="ir.actions.act_window" >
+			<field name="name">Accessories 275mm</field>
+			<field name="res_model">dincelmrp.accessories</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('product','=','275')]</field> 
+			<field name="search_view_id" ref="view_dincelmrp_accessories_filter"/>
+			<field name="context">{'search_default_draft':1,'search_default_printed': 1,'search_default_packed': 1}</field>
+		</record>								
+		<menuitem id="dincelmrp_accessories_menu" 
+						name="Accessories All" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_accessories_action" 
+						 
+						/>	
+		<menuitem id="dincelmrp_accessories100_menu" 
+						name="Accessories 110mm" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_accessories110_action" 
+						 
+						/>	
+		<menuitem id="dincelmrp_accessories155_menu" 
+						name="Accessories 155mm" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_accessories155_action" 
+						 
+						/>	
+		<menuitem id="dincelmrp_accessories200_menu" 
+						name="Accessories 200mm" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_accessories200_action" 
+						 
+						/>	
+		<menuitem id="dincelmrp_accessories275_menu" 
+						name="Accessories 275mm" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_accessories275_action" 
+						 
+						/>	
+				
+						
+	</data>
+</openerp>	

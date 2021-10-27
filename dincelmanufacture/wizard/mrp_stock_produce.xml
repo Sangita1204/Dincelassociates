@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelmrp_mrp_produce_stock1_form" model="ir.ui.view">
+            <field name="name">Produce Stock MO</field>
+            <field name="model">dincelmrp.stock.produce</field>
+            <field name="arch" type="xml">
+                <form >
+                     
+                    <group>
+					
+						
+						<group  >
+							<field name="produced_other" attrs="{'invisible': [('is_other','=',False)]}"/>
+							<field name="produced_qty" attrs="{'invisible': [('is_other','=',True)]}"/>
+							<field name="date" required="1" />
+						  	<field name="routing_id" attrs="{'invisible': [('is_other','=',True)]}"/>
+							<field name="is_other" invisible="1"/>
+							<field name="remaining_other" invisible="1" />
+						</group>
+						
+                         <group attrs="{'invisible': [('is_other','=',True)]}" >
+                      
+						<field name="qty" on_change="on_change_qty(qty, mrp_id, context)" invisible="1"/> 
+						<field name="product_id" readonly="1"/>
+						<field name="mrp_id" readonly="1"/>
+						<field name="ordered_qty" readonly="1"/>
+						
+						
+						<field name="produced_qty_ytd" readonly="1"/>
+						
+						<field name="stock_length" readonly="1"/>
+						<field name="qty_lm" readonly="1"/>
+						</group>
+						
+					</group>
+					 
+					
+                    <footer>
+                        <button  string="Save Production" name="button_stock_produce_dcs" attrs="{'invisible': [('is_other','=',True)]}"  type="object" class="oe_highlight"   />
+						<button  string="Produce" name="button_stock_produce_item" attrs="{'invisible': [('is_other','=',False)]}"  type="object" class="oe_highlight"   />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		 
+		
+    </data>
+</openerp>

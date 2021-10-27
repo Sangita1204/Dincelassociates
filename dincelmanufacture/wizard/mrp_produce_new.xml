@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelmrp_mrp_produce_new_form" model="ir.ui.view">
+            <field name="name">Produce MO</field>
+            <field name="model">dincelmrp.produce.new</field>
+            <field name="arch" type="xml">
+                <form string="MO">
+                     
+                    <group>
+                        <group>
+						<field name="date" invisible="1"/>
+                       <field name="is_full" string="Mark as all produced" on_change="on_change_is_full(is_full, item_lines, context)"/>
+						 
+						<field name="qty" on_change="on_change_qty(qty, item_lines, context)" invisible="1"/> 
+						<field name="routing_id"   on_change="on_change_routing(routing_id, item_lines, context)" />
+						</group>
+						<group>
+						
+						
+						<field name="dt_start" required="1"  />
+						<field name="dt_stop" required="1" />
+						</group>
+					</group>
+					<group>
+						<div>
+						<field name="item_lines">
+							<tree create="false" editable="bottom"	 >
+								<field name="mrp_id"  invisible="1"/>
+								<field name="name" invisible="1" readonly="1"/>
+								<field name="project_id"  readonly="1"/>
+								<field name="product_id" readonly="1"/>
+								
+								
+								<field name="order_length" readonly="1" />
+								
+								<field name="product_uom" invisible="1" />
+								<field name="region_id" invisible="1" />
+								<field name="order_id" invisible="1" />
+								<field name="qty_order"  readonly="1"  />
+								<field name="qty_ytd_produced" string="Produced YTD" readonly="1" />	
+								<field name="qty_remain" string="Remain" readonly="1" />
+								<field name="qty_curr_produce"  />
+								<field name="routing_id"   />
+								<field name="dt_start" invisible="1" />
+								<field name="dt_stop" invisible="1" />
+								
+								
+								
+							</tree>  
+							
+						
+						</field>
+						</div>
+                    </group>
+					
+                    <footer>
+                        <button  string="Save Production"  class="oe_highlight" name="save_production" type="object"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+ 
+		  <record id="action_create_mrp_produce_new_list" model="ir.actions.act_window">
+            <field name="name">MRP Produce Partial</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelmrp.produce.new</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+		
+		  <record id="action_create_mrp_produce_full_list" model="ir.actions.act_window">
+            <field name="name">MRP Produce Full</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelmrp.produce.new</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+			 
+        </record>
+		
+		
+		 <record model="ir.values" id="create_dincelmrp_produce_new">
+			<field name="model_id" ref="mrp.model_mrp_production" />
+            <field name="name">MRP Produce Partial</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_create_mrp_produce_new_list'))" />
+            <field name="key">action</field>
+            <field name="model">mrp.production</field>
+        </record>
+		
+		 <record model="ir.values" id="create_dincelmrp_produce_full">
+			<field name="model_id" ref="mrp.model_mrp_production" />
+            <field name="name">MRP Produce Full</field>
+            <field name="key2">client_action_multi</field>
+            <field name="value" eval="'ir.actions.act_window,' + str(ref('action_create_mrp_produce_full_list'))" />
+            <field name="key">action</field>
+            <field name="model">mrp.production</field>
+			
+        </record>
+		
+    </data>
+</openerp>

@@ -1,0 +1,95 @@
+[data-field="x_sold_jul"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_aug"] { text-align : left; color:blue; }
+[data-field="x_sold_sep"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_oct"] { text-align : left; color:blue; }
+[data-field="x_sold_nov"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_dec"] { text-align : left; color:blue; }
+[data-field="x_sold_jan"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_feb"] { text-align : left; color:blue; }
+[data-field="x_sold_mar"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_apr"] { text-align : left; color:blue; }
+[data-field="x_sold_may"] { text-align : left; color:blue; background-color:#EFE;}
+[data-field="x_sold_jun"] { text-align : left; color:blue; }
+[data-id="x_sold_jul"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_aug"]{  text-align : left; color:blue;}
+[data-id="x_sold_sep"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_oct"]{  text-align : left; color:blue;}
+[data-id="x_sold_nov"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_dec"]{  text-align : left; color:blue;}
+[data-id="x_sold_jan"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_feb"]{  text-align : left; color:blue;}
+[data-id="x_sold_mar"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_apr"]{  text-align : left; color:blue;}
+[data-id="x_sold_may"]{  text-align : left; color:blue;background-color:#EFE;}
+[data-id="x_sold_jun"]{  text-align : left; color:blue;}
+[data-field="x_month_jul"] { background-color:#EFE;}
+[data-field="x_month_aug"] { }
+[data-field="x_month_sep"] { background-color:#EFE;}
+[data-field="x_month_oct"] { }
+[data-field="x_month_nov"] { background-color:#EFE;}
+[data-field="x_month_dec"] { }
+[data-field="x_month_jan"] { background-color:#EFE;}
+[data-field="x_month_feb"] { }
+[data-field="x_month_mar"] { background-color:#EFE;}
+[data-field="x_month_apr"] { }
+[data-field="x_month_may"] { background-color:#EFE;}
+[data-field="x_month_jun"] { }
+[data-id="x_month_jul"]{ background-color:#EFE;}
+[data-id="x_month_aug"]{ }
+[data-id="x_month_sep"]{ background-color:#EFE;}
+[data-id="x_month_oct"]{ }
+[data-id="x_month_nov"]{ background-color:#EFE;}
+[data-id="x_month_dec"]{ }
+[data-id="x_month_jan"]{ background-color:#EFE;}
+[data-id="x_month_feb"]{ }
+[data-id="x_month_mar"]{ background-color:#EFE;}
+[data-id="x_month_apr"]{ }
+[data-id="x_month_may"]{ background-color:#EFE;}
+[data-id="x_month_jun"]{ }
+
+
+.quote_lbl{padding-top:33px;}
+ 
+ 
+.special_note{color:#fff;background:#dc5f59 none repeat scroll 0 0;}
+
+.quote_110{min-width:100px;margin-top:2px;}
+.quote_155{min-width:100px;}
+.quote_200{min-width:100px;}
+.quote_275{min-width:100px;margin-top:14px;}
+
+/* Popup screen */
+div.modal-content.openerp{
+ width: 1200px !important; 
+}
+
+@media screen and (max-width: 1480px) {
+  div.modal-content.openerp{
+  width: 1024px !important; 
+  }
+}
+
+@media screen and (max-width: 1280px) {
+  div.modal-content.openerp{
+  width: 1024px !important; 
+  }
+}
+
+@media screen and (max-width: 1180px) {
+  div.modal-content.openerp{
+  width: 1024px !important; 
+  }
+}
+
+@media screen and (max-width: 1024px) {
+  div.modal-content.openerp{
+  width: 980px !important; 
+  }
+}
+
+@media screen and (max-width: 980px) {
+  div.modal-content.openerp{
+  width: 900px !important; 
+  }
+}
+/* Popup screen */

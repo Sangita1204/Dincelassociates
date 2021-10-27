@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	<!--
+		<record id="dincelpurchase_items_action" model="ir.actions.act_window" >
+			<field name="name">Item/Parts</field>
+			<field name="res_model">product.template</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record> -->
+		
+		
+		<record id="dincelpurchase_order_action" model="ir.actions.act_window" >
+			<field name="name">Purchase Order</field>
+			<field name="res_model">purchase.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<record id="actnew_dincelpurchase_order_tree" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field> 
+            <field name="act_window_id" ref="dincelpurchase_order_action"/>
+        </record>
+		
+        <record id="actnew_dincelpurchase_order_form" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelpurchase_new_order_form"/>
+            <field name="act_window_id" ref="dincelpurchase_order_action"/>
+        </record>
+		
+		<record id="dincelpurchase_receipt_action" model="ir.actions.act_window" >
+			<field name="name">Receipt Purchase Order</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		  <field name="domain">[('type','=','receipt')]</field>
+            <field name="context">{'default_type':'receipt'}</field>
+		</record>
+		
+		<record id="dincelpurchase_invoice_action" model="ir.actions.act_window">
+            <field name="name">Supplier Bills</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+           
+            <field name="domain">[('type','=','in_invoice')]</field>
+            <field name="context">{'default_type':'in_invoice', 'type':'in_invoice', 'journal_type': 'purchase'}</field>
+            
+            
+        </record>
+		<record model="ir.actions.act_window.view" id="action_dincelpurchase_invoice_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelaccount.dincelaccount_supplier_invoice_tree_view"/>
+			<field name="act_window_id" ref="dincelpurchase_invoice_action"/>
+		</record>
+		
+		
+		<record id="action_dincelpurchase_invoice_formview" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount.dincelaccount_supplier_invoice_form"/>
+            <field name="act_window_id" ref="dincelpurchase_invoice_action"/>
+        </record>
+		
+		<record id="dincelpurchase_invoice_pay_action" model="ir.actions.act_window" >
+			<field name="name">Invoice Payments</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		    <field name="domain">[('type','=','payment')]</field>
+            <field name="context">{'default_type': 'payment', 'type': 'payment'}</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelpurchase_invoice_pay_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelpurchase_payment_voucher_new_tree"/>
+			
+			<field name="act_window_id" ref="dincelpurchase_invoice_pay_action"/>
+		</record>
+		
+		
+		<record model="ir.actions.act_window.view" id="action_dincelpurchase_invoice_pay_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelaccount.dincelaccount_supplier_payment_form"/>
+			<field name="act_window_id" ref="dincelpurchase_invoice_pay_action"/>
+		</record>
+		
+		
+		<record id="dincelpurchase_supplier_action" model="ir.actions.act_window" >
+			<field name="name">Supplier</field>
+			<field name="res_model">res.partner</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain">[('supplier','=',True)]</field>
+			<field name="context">{'default_supplier': 1}</field>
+		</record>
+	 
+		
+		<record id="dincelpurchase_nonstock_action1" model="ir.actions.act_window" >
+			<field name="name">Purchase Order - Non Stock</field>
+			<field name="res_model">account.voucher</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		    <field name="domain">[('journal_id.type','in',['purchase','purchase_refund']), ('type','=','purchase')]</field>
+            <field name="context">{'default_type': 'purchase', 'type': 'purchase'}</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_receipt1_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="act_window_id" ref="dincelpurchase_nonstock_action1"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelaccount_purchase_receipt1_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincelpurchase_nonstock_form"/>
+			<field name="act_window_id" ref="dincelpurchase_nonstock_action1"/>
+		</record>
+		
+		
+		
+	  <!-- Purchase Menu Starts -->
+		<menuitem id="dincelpurchase_menu" name="Purchasing" sequence="1"/>
+		<menuitem id="dincelpurchase_menu_sub" name="Purchasing"  parent="dincelpurchase_menu"/>
+		<!--
+		<menuitem id="dincelpurchase_items" 
+					name="Items/Parts" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_items_action"  sequence="1" 
+					/>		 -->		
+		<menuitem id="dincelpurchase_order" 
+					name="Purchase Orders" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_order_action"  sequence="2" 
+					/>	
+		<menuitem id="dincelpurchase_receipt" 
+					name="Receipt Purchase Order" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_receipt_action"  sequence="3" 
+					/>	
+					
+		<menuitem id="dincelpurchase_invoice" 
+					name="Supplier Bills" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_invoice_action" sequence="3" 
+					/>	
+		<menuitem id="dincelpurchase_invoice_pay" 
+					name="All Supplier Invoice Payments" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_invoice_pay_action" sequence="3" 
+					/>	
+					
+		<menuitem id="dincelpurchase_supplier" 
+					name="Supplier" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_supplier_action" sequence="4" 
+					/>	
+					
+			<menuitem id="dincelapurchase_nonstock_menu1" 
+					name="Purchase Order - Non Stock" 
+					parent="dincelpurchase_menu_sub" 
+					action="dincelpurchase_nonstock_action1" 
+					 
+					/>	 
+						
+	</data>
+</openerp>	

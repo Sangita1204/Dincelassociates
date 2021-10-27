@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<openerp>
+    <data>
+	
+			<record	 id="dincel_accountconfig_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.config.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelaccount.config.settings</field>
+			<field name="arch" type="xml">
+				<form string="Contact" version="7.0" create="false" delete="false">
+					<sheet>
+				
+						<group > 
+							<group> <field name="name" readonly="1"/>					  </group>
+                        </group>
+							  <notebook>
+							    <page  string="Sales">		
+									<group>
+										<group>
+											<field name="sale_receiveable"/>
+											<field name="sale_payment"/>
+											<field name="sale_cash_onhand"/>
+											<field name="sale_overunder_payment"  />
+											<field name="sale_advance_payment"/>
+											<field name="sale_exchange_loss"/>
+											<field name="sale_exchange_gain"/>
+											<field name="sale_cash_discount"/>
+											<field name="sale_sale"/>
+											<field name="sale_return"/>
+											<field name="sale_cogs"/>
+											<field name="sale_finished_goods"/>
+											<field name="sale_unrealised"  />
+											<field name="sale_unrealised_discount"/>
+											<field name="sale_freight"  />
+											<field name="sale_freight_unrealised"/>
+										</group>
+										
+										<group>
+											<field name="sale_receiveable_tax"/>       
+											<field name="sale_payment_tax"/>						
+											<field name="sale_cash_onhand_tax"/>		
+											<field name="sale_overunder_payment_tax"/>	
+											<field name="sale_advance_payment_tax"/>
+											<field name="sale_exchange_loss_tax"/>
+											<field name="sale_exchange_gain_tax"/>
+											<field name="sale_cash_discount_tax"/>
+											<field name="sale_sale_tax"/>
+											<field name="sale_return_tax"/>
+											<field name="sale_cogs_tax"/>
+											<field name="sale_finished_goods_tax"/>
+										</group>
+								  
+								   </group>
+								  
+								 </page>
+								<page string="Purchase">
+									<group>
+										<group>
+											<field name="buy_payable"/>
+											<field name="buy_payable_tax"/>
+											<field name="buy_payment"/>
+											<field name="buy_cash_onhand"/>
+											<field name="buy_overunder_payment"  />
+											<field name="buy_advance_payment"/>
+											<field name="buy_exchange_loss"/>
+											<field name="buy_exchange_gain"/>
+											<field name="buy_cash_discount"/>
+											<field name="buy_expense"/>
+											<field name="buy_credit"/> 
+										</group>
+										<!--
+										<group>
+											<field name="buy_payable_tax"/>       
+											<field name="buy_payment_tax"/>						
+											<field name="buy_cash_onhand_tax"/>		
+											<field name="buy_overunder_payment_tax"/>	
+											<field name="buy_advance_payment_tax"/>
+											<field name="buy_exchange_loss_tax"/>
+											<field name="buy_exchange_gain_tax"/>
+											<field name="buy_cash_discount_tax"/>
+											<field name="buy_expense_tax"/>
+											<field name="buy_credit_tax"/> 
+										</group>
+								     -->
+								   </group>
+								  
+								</page>
+								<page string="Inventory">
+									<group>
+										<group>
+											<field name="stock_inventory"/>
+											<field name="stock_finished_goods"/>
+											<field name="stock_cost_sale"/>
+											<field name="stock_received_notinvoiced"  />
+											<field name="stock_purchase_variance"/>
+											<field name="stock_price_variance"/>
+											<field name="stock_adjustment"/>
+											<field name="stock_take_variance"/>
+											<field name="stock_sale_return"/>
+											<field name="stock_sale_return_tax"/> 
+											
+											<field name="stock_exchange_rate_diff"/>
+											<field name="stock_revaluation"/>
+											<field name="stock_wip"/>
+											<field name="stock_wip_variance"/>
+											<field name="stock_transit"/>
+											
+											<field name="stock_journal"/>
+										
+											
+										</group>
+										
+									 
+								  
+								   </group>
+								  
+								</page>
+								
+								<page string="General">
+									<group>
+										<group>
+										
+											<field name="gen_card_fees"/> 
+											<field name="gen_overpayments"/> 
+											<field name="gen_closing"/> 	
+										</group>
+					  
+									</group>
+									<group>
+										
+										<field name="dcs_api_url"/> 
+										<field name="odoo_api_url"/> 
+										<field name="dcs_archive_url"/> 
+										<field name="order_attachment"/> 
+										<field name="dep_inv_cc"/> 
+										<field name="authorise_cc"/> 
+										<field name="manager_cc" />
+										<field name="invoice_cc_ids"/> 
+										
+									</group>
+								</page>
+							</notebook>
+                       
+						
+						  
+                     </sheet>      
+					 
+					  
+				</form>
+			</field>
+		</record>
+		 
+		 
+        <record model="ir.ui.view" id="dincel_accountconfig_tree">
+            <field name="name">Dincel Account Settings</field>
+            <field name="model">dincelaccount.config.settings</field>
+            <field name="arch" type="xml">
+                <tree string="Dincel Account Settings" create="false" delete="false">
+                   
+                    <field name="name" string="Dincel Account Settings"/> 
+                </tree>
+            </field>
+        </record>
+		
+		<!--
+		 <record model="ir.ui.view" id="dincelaccount_journal_form_inerit">
+            <field name="name">Account Journal</field>
+            <field name="model">account.journal</field>
+			
+			 <field name="inherit_id" ref="account.view_account_journal_form"/>
+				<field name="arch" type="xml">
+				  <field name="type" position="after">
+				  <field name="x_purchase" />
+				  <field name="x_sale" />
+				</field>
+			</field>
+			</record> -->
+				  
+		
+		 <record id="action_dincelaccount_postcode_setting"  model="ir.actions.act_window">
+            <field name="name">Postcode (All) Settings</field>
+            <field name="res_model">dincelbase.postcode</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+        </record>
+		
+		 <record id="action_dincelaccount_suburb_setting"  model="ir.actions.act_window">
+            <field name="name">Suburb (Unique) Settings</field>
+            <field name="res_model">dincelbase.suburb</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+        </record>
+		
+		 <record id="action_dincelaccount_color_setting"  model="ir.actions.act_window">
+            <field name="name">DCS Colour Settings</field>
+            <field name="res_model">dincelbase.color</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+        </record>
+		
+		 <record id="action_dincel_accountregion"  model="ir.actions.act_window">
+            <field name="name">Account Region / State</field>
+            <field name="res_model">dincelaccount.region</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+        </record>
+		
+        <record id="action_dincel_accountconfig"  model="ir.actions.act_window">
+            <field name="name">Dincel Account Settings</field>
+            <field name="res_model">dincelaccount.config.settings</field>
+            <field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+        </record>
+
+		<record model="ir.actions.act_window.view" id="action_dincel_accountconfig_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincel_accountconfig_tree"/>
+			<field name="act_window_id" ref="action_dincel_accountconfig"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincel_accountconfig_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="view_id" ref="dincel_accountconfig_view"/>
+			<field name="act_window_id" ref="action_dincel_accountconfig"/>
+		</record>
+		
+		<menuitem id="menu_dincelaccount_account_region"
+                  name="Account Region / State"
+                  parent="account.account_account_menu"
+                  action="action_dincel_accountregion" />
+				  
+        <menuitem id="menu_dincelaccount_account_settings"
+                  name="Dincel Account Settings"
+                  parent="account.account_account_menu"
+                  action="action_dincel_accountconfig" />
+			
+		<menuitem id="menu_dincelaccount_color_setting"
+                  name="DCS Colour Settings"
+                  parent="account.account_account_menu"
+                  action="action_dincelaccount_color_setting" />		
+
+		<menuitem id="menu_dincelaccount_suburb_setting"
+                  name="Suburb (Unique) Settings"
+                  parent="account.account_account_menu"
+                  action="action_dincelaccount_suburb_setting" />			
+
+		<menuitem id="menu_dincelaccount_postcode_setting"
+                  name="Postcode (All) Settings"
+                  parent="account.account_account_menu"
+                  action="action_dincelaccount_postcode_setting" />						  
+	 					  
+				  		
+    </data>
+</openerp>

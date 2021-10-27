@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	 
+	  <record id="view_dincelmrp_routing_avail_filter" model="ir.ui.view">
+			<field name="name">MRP Routing Search</field>
+			<field name="model">dincelmrp.routing.available</field>
+			<field name="arch" type="xml">
+				<search string="MRP Routing Search">
+					 
+					 <field name="name" />
+					  
+					 
+					 
+					<separator/>
+	
+					<group expand="0" string="Group By...">
+						<filter name="name_week"  string="Week" icon="terp-personal" domain="[]" context="{'group_by':'name_week'}"/>	 
+						<filter name="routing"  string="Routing" icon="terp-personal" domain="[]" context="{'group_by':'routing_id'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+	 <record model="ir.ui.view" id="dincelmrp_mo_routing_tree_inherit">
+		<field name="name">MO Routes</field>
+		<field name="model">mrp.routing</field>
+		
+		 <field name="inherit_id" ref="mrp.mrp_routing_tree_view"/>
+			<field name="arch" type="xml">
+			  <field name="name" position="after">
+				<field name="x_default_prod"/> 
+				<field name="note" string="Note"/>
+				<field name="x_default_start"/>
+				<field name="x_planned_start" invisible="1"/>
+				
+				<field name="x_open_day" invisible="1"/> 
+				<field name="x_open_hr" invisible="1"/> 
+				<field name="x_close_day"/> 
+				<field name="x_close_hr"/> 
+				<field name="x_current_product" invisible="1"/> 
+				<field name="x_product_till" invisible="1"/> 
+				   
+			  </field>
+		  </field>
+	</record>
+	
+		
+	 <record model="ir.ui.view" id="dincelmrp_mo_routing_form_inherit">
+            <field name="name">MO Routes</field>
+            <field name="model">mrp.routing</field>
+			
+			 <field name="inherit_id" ref="mrp.mrp_routing_form_view"/>
+            <field name="arch" type="xml">
+				  <field name="code" position="after">
+					<field name="x_default_prod"/> 
+					<field name="x_default_start"/>
+					<field name="x_planned_start" invisible="1"/>
+					<field name="x_open_day" invisible="1"/> 
+					<field name="x_open_hr" invisible="1"/> 
+					<field name="x_close_day"/> 
+					<field name="x_close_hr"/> 
+				  </field>
+					<page string="Work Center Operations" position="before">
+						<page string="Routing available plan" >
+							<field name="x_available_ids" context="{'default_routing_id': active_id}"   string="Routing available  plan">
+							<tree string="Routing available plan" >
+					
+								
+								<field name="name" invisible="1" string="Name"/>
+								<field name="prod_group"/> 
+								<field name="dt_from"/> 
+								<field name="dt_to"/> 
+								<field name="comments"/> 
+								<field name="active"/>  
+								 
+								
+							</tree>
+							<!--<form string="Routing Availability" >
+							
+							 <group>
+								
+								<field name="name" invisible="1" string="Name"/>
+								<field name="prod_group" required="1"/> 
+								<field name="dt_from" required="1"/> 
+								<field name="dt_to" required="1"/> 
+								<field name="comments"/> 
+								<field name="active"/>   
+							 </group>
+						</form> -->
+							</field>
+						</page>
+					</page>
+                        
+                
+            </field>
+        </record>
+	
+		<record	 id="dincelmrp_routing_available_form_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.routing.available.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelmrp.routing.available</field>
+			<field name="arch" type="xml">
+				<form string="Routing Availability" >
+					 <sheet>
+					  <group>
+						<group>
+							<field name="routing_id" required="1"/> 
+							<field name="dt_from"  on_change="on_change_date(dt_from, context)"  required="1"/> 
+							<field name="dt_to" /> 
+							<field name="product_id" string="Specific Product" invisible="1"/> 
+							
+							<field name="comments"/> 
+							<field name="name" invisible="1" string="Name"/>
+						 </group>
+						 
+						 <group>
+						 
+							 <field name="prod_group" required="1"/> 
+							<field name="dt_year" invisible="1"/> 
+							<field name="dt_week"/> 
+							
+							<field name="is_ever" invisible="1"/> 
+							<field name="active" invisible="1"/>  
+						 </group>
+					 </group>
+					  </sheet>
+				</form>
+			</field>
+		</record>	
+		
+		<record	 id="dincelmrp_routing_available_tree_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.routing.available.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelmrp.routing.available</field>
+			<field name="arch" type="xml">
+				<tree string="Routing Availability" >
+					<field name="name_week"/>  
+					<field name="dt_week" invisible="1"/>  
+					<field name="routing_id"/>  
+					<field name="name" invisible="1" string="Name"/>
+					<field name="prod_group"/> 
+					<field name="product_id" string="Specific Product" invisible="1"/> 
+					
+					<field name="dt_from"/> 
+					<field name="dt_to"/> 
+					<field name="comments"/> 
+					<field name="is_ever" invisible="1"/> 
+					
+					<field name="active" invisible="1"/>  
+					 
+					
+				</tree>
+			</field>
+		</record>
+					
+	</data>
+</openerp>	

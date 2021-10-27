@@ -1,0 +1,324 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<record id="dincelstock_view_move_tree" model="ir.ui.view" >
+			<field name="name">dincelstock.stock.move.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">stock.move</field>
+			<field name="arch" type="xml">
+			
+				<tree colors="grey:state == 'cancel';red:(state not in ('cancel','done')) and date &gt; current_date" string="Moves">
+					<field name="date"  string="Date"/>
+                    <field name="product_id" string="Product" on_change="onchange_product_id(product_id,location_id,location_dest_id, False)"/>
+					<field name="product_uom_qty"  string="Qty (in-out)"  on_change="onchange_quantity(product_id, product_uom_qty, product_uom, product_uos)"/>
+					 <field name="product_uom" string="Unit of Measure" groups="product.group_uom"/>
+					 <field name="x_order_length"  />
+					<field name="x_quantity"  />
+					<field name="origin" string="Source"/>
+					<field name="name" string="Description"/>
+					<field name="location_id" groups="stock.group_locations"/>
+                    <field name="location_dest_id" groups="stock.group_locations"/>
+                    
+					
+                    <field name="picking_id" string="Reference"/>
+                    
+                    <field name="picking_type_id" invisible="1"/>
+                    <field name="create_date" invisible="1" groups="base.group_no_one"/>
+                    
+					 
+					 
+                   
+                    <field name="product_uos_qty" groups="product.group_uos" invisible="1"/>
+                    <field name="product_uos" groups="product.group_uos" invisible="1"/>
+                    <button name="399" string="Scrap Products" invisible="1" type="action" icon="terp-gtk-jump-to-ltr" context="{'scrap': True}" states="draft,waiting,confirmed,assigned" groups="stock.group_stock_user"/>
+                    
+                    <field name="date_expected" invisible="1"/>
+                    <field name="state"/>
+                    <button name="action_done" states="confirmed,assigned" string="Process" type="object" groups="stock.group_stock_user" icon="gtk-go-forward" help="Done"/>
+                </tree>
+				
+			</field>
+			
+		</record>	
+		
+		<!--
+		 <record id="dincelstock_sale_order_view" model="ir.ui.view">
+            <field name="name">Stock Sale Order</field>
+            <field name="model">sale.order</field>
+            <field name="inherit_id" ref="dincelaccount.dincelaccount_sale_order_form"/>
+            <field name="arch" type="xml">
+                 
+                <button name="create_balance_invoice" position="after">
+                   	<button string="Delivery List TEST" name="confirm_delivery_sales_order"  type="object" />
+                </button>
+              
+            </field>
+        </record> -->
+		
+		 <record id="dincelstock_view_inventory_form_inherit" model="ir.ui.view">
+            <field name="name">Stock Inventory</field>
+            <field name="model">stock.inventory</field>
+            <field name="inherit_id" ref="stock.view_inventory_form"/>
+            <field name="arch" type="xml">
+                 
+                <field name="date" position="after">
+                   	<field name="x_date"   />
+                </field>
+              
+            </field>
+        </record>
+		
+
+		<record	 id="dincelstock_delivery_form_view" model="ir.ui.view" >
+			<field name="name">dincelstock.delivery.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelstock.pickinglist</field>
+			<field name="arch" type="xml">
+			<form string="Delivery Form" create="false" version="7.0">
+				<header>
+					<button string="Mark as delivered" name="mark_as_delivered"  type="object" attrs="{'invisible': [('state','not in',('draft','progress'))]}" /> <!-- attrs="{'invisible': [('state','not in',('draft','progress'))]}" -->
+					 <button string="Preview Docket" name="docket_print_dcs"  type="object"/> 
+					 <button string="Print Docket Pdf" name="docket_print_dcs_pdf" type="object"/> 
+					 <button string="Update DCS" name="update_docket_dcs" type="object"/> 
+					 <!--
+					 <button string="Mark as closed" attrs="{'invisible': [('state','not in',('closed','done'))]}" /> -->
+					 
+					<field name="state" widget="statusbar" statusbar_visible="draft,cancel,progress,done"/>
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+								<field name="name" invisible="1" readonly="1"/>
+								<field name="dcs_refcode" string="DCS Docket No."  readonly="1"/>
+								<field name="order_code" readonly="1" />
+								<field name="color_code"  widget="color"  string="Colour" readonly="1" />
+								<field name="date_picking" string="Date Actual" invisible="1" />
+								<field name="time_picking" string="Time Actual" on_change="change_picktime(time_picking,context)"   />
+								<field name="user_id"/>
+								<field name="partner_id" readonly="1"/>
+							
+								<field name="schedule_id" />
+								<field name="print_transport" string="Transport Copy"/>    
+								<field name="pudel"/>   
+								<field name="origin" readonly="1" invisible="1"/>
+							</group>
+							
+						    <group>
+								<field name="pick_order_id" readonly="1"/>    
+  								<field name="schedule_id" readonly="1" />
+								<field name="company_id" invisible="1"/>
+								<field name="warehouse_id" readonly="1" />
+								<field name="source_location_id" readonly="1" />
+								<field name="destination_location_id" readonly="1" />
+								<field name="x_project_id" invisible="1"/>    
+								<field name="project_id" readonly="1"/>    
+								<field name="pick_total_amount"  />	
+							</group>
+						</group>
+						<group>
+							<group>
+								<field name="delivery_to"/>  
+								<field name="contact_id" domain="['&amp;', ('x_is_project','=',False),'|',('parent_id', '=', partner_id),('parent_id', '=', project_id)]" context="{'default_parent_id': partner_id}" widget="selection"  on_change="onchange_contact(contact_id)"/>
+								<field name="phone" readonly="1"/>    
+								<field name="mobile" readonly="1"/>  
+								<field name="vehicle_type" required="1"/>  
+								<field name="note"/>
+							</group>
+							<group attrs="{'invisible': [('pudel','!=','pu')]}">
+								<field name="recipient_full_name" attrs="{'required': [('pudel','=','pu')]}" />
+								<field name="recipient_license"  />
+								<field name="vehicle_rego" attrs="{'required': [('pudel','=','pu')]}" />    
+								<field name="trailer_rego" attrs="{'required': [('trailer_rego_na','=', False),('pudel','=','pu')]}" />
+								<field name="trailer_rego_na"  />
+							</group>
+						</group>
+						<notebook>
+						    <page string="Delivery Lines">	
+								<field name="picking_line" > 
+									<tree editable="bottom" delete="false">
+										<field name="sequence"  widget="handle"/>
+										<field name="region_id" invisible="1" /> 
+										<field name="coststate_id" readonly="1" /> 
+										<field name="location_id" readonly="1" /> 
+										<field name="product_id" on_change="onchange_product_id(product_id,context)"  readonly="1"/> 
+										<field name="name"  invisible="1" />
+										<field name="order_length" string="Length (mm)" readonly="1"/>
+										<field name="qty_order" readonly="1"/> 
+										<field name="ship_qty" readonly="1" /> 
+										<field name="qty_remain" readonly="1"/> 
+										<field name="packs" /> 
+										<field name="price_unit" invisible="1"/> 
+									</tree>
+									<!-- <form string="Delivery Order Lines">
+										<group>
+											<group>
+												<field name="sequence"/>
+												<field name="region_id"  /> 
+												<field name="product_id"  /> 
+												<field name="name" invisible="1" />
+												<field name="order_length" string="Length (mm)" readonly="1"/>
+												<field name="ship_qty" /> 
+												<field name="packs" /> 
+												<field name="price_unit" invisible="1"/> 
+											</group>
+										</group>
+									</form> -->
+								</field>
+							</page>
+						</notebook>
+                     </sheet>      
+					 
+				</form>
+			</field>
+		</record>
+		
+		<record	 id="dincelstock_delivery_tree_view" model="ir.ui.view" >
+			<field name="name">dincelstock.delivery.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelstock.pickinglist</field>
+			<field name="arch" type="xml">
+				<tree string="Sales Order" create="false" >
+					<field name="dcs_refcode" string="DCS Docket No." readonly="1"/>
+					<field name="name" invisible="1"/>
+					<field name="date_picking" widget="date" string="Date Actual"/> 
+					<field name="pick_order_id"/>
+					<field name="pick_total_amount" sum="total"/>					
+					<field name="order_code"/>
+					<field name="color_code" widget="color" string="Colour" readonly="1"/>
+					<field name="partner_id"/> 
+					
+					
+					<field name="project_id"/> 
+					<field name="pudel"/>  
+					<field name="project_suburb_id" invisible="1"/> 
+					<field name="origin" invisible="1"/> 
+					
+					<field name="user_id"/> 
+			
+					<field name="state"/> 
+				</tree>
+			</field>
+		</record>	
+	
+	 <record id="view_dincelstock_docket_filter" model="ir.ui.view">
+			<field name="name">Docket Search</field>
+			<field name="model">dincelstock.pickinglist</field>
+			<field name="arch" type="xml">
+			<search string="Docket Search">
+				 <field name="dcs_refcode" string="DCS Docket No." />
+				 <field name="project_id" string="Site" />
+				 <field name="partner_id" string="Customer" />
+				 <field name="name" />
+				 <field name="pick_order_id" />
+				<separator/>
+					<group expand="0" string="Group By...">
+					   <filter name="salesorder"  string="Sales Order" icon="terp-personal" domain="[]" context="{'group_by':'pick_order_id'}"/>
+				   </group>
+			   </search>
+			</field>
+		</record>
+		
+		<record id="dincelstock_location_form_view" model="ir.ui.view">
+            <field name="name">Stock Location</field>
+            <field name="model">stock.location</field>
+            <field name="inherit_id" ref="stock.view_location_form"/>
+            <field name="arch" type="xml">
+                 
+                <field name="active" position="after">
+                   	<field  name="x_warehouse_id"   />
+					<field  name="x_holdyard"   />
+					<field  name="x_primary"   />
+					<field  name="x_sequence"   />
+					<field  name="x_ibt"   />
+                </field>
+              
+            </field>
+        </record>
+	
+	<record id="dincelstock_view_move_tree_inherit" model="ir.ui.view">
+            <field name="name">dincelstock.move.tree.inherit</field>
+            <field name="model">stock.move</field>
+            
+            <field name="inherit_id" ref="stock.view_move_tree"/>
+            <field name="arch" type="xml">
+                <field name="product_uos" position="after">
+					<field name="x_order_length"  />
+					<field name="x_quantity"  />
+                 </field>     
+            </field>
+        </record>
+		
+		<record id="dincelstock_view_quants_tree_inherit" model="ir.ui.view">
+            <field name="name">dincelstock.quants.tree.inherit</field>
+            <field name="model">stock.quant</field>
+            <field name="inherit_id" ref="stock.view_stock_quant_tree"/>
+            <field name="arch" type="xml">
+                <field name="qty" position="after">
+					<field name="x_order_length"  />
+					<field name="x_quantity"  />
+                 </field>     
+            </field>
+        </record>
+	
+		<report
+            id="action_report_docket_report"
+            model="dincelstock.pickinglist"
+            report_type="qweb-html"
+            string="Docket"
+            name="dincelstock.report_docket_report"
+            file="dincelstock.report_docket_report"
+        />	
+		
+	<report
+            id="action_report_dcs_deliveryreport_pdf"
+            model="dincelstock.pickinglist"
+            report_type="qweb-pdf"
+            string="Docket Pdf"
+            name="dincelstock.report_docket_report_pdf"
+            file="dincelstock.report_docket_report"
+        />		
+		
+	<record id="dincelstock_delivery_action" model="ir.actions.act_window" >
+		<field name="name">Dockets</field>
+		<field name="res_model">dincelstock.pickinglist</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('type', '=', 'order'),('state', '!=', 'done')]</field>
+		<field name="search_view_id" ref="view_dincelstock_docket_filter"/>
+		
+	</record>
+	
+	<record id="dincelstock_delivery_done_action" model="ir.actions.act_window" >
+		<field name="name">Delivered Dockets</field>
+		<field name="res_model">dincelstock.pickinglist</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('type', '=', 'order'),('state', '=', 'done')]</field>
+		<field name="search_view_id" ref="view_dincelstock_docket_filter"/>
+	</record>
+	
+		
+	<menuitem id="dincelstock_delivery_menu" 
+					name="Dockets" 
+					parent="stock.menu_stock_warehouse_mgmt" 
+					action="dincelstock_delivery_action" 
+					sequence="2"
+					/>			
+		
+		<menuitem id="dincelstock_delivery_menu2" 
+					name="Dockets" 
+					parent="dincelwarehouse.dincelwarehouse_menu_sub" 
+					action="dincelstock_delivery_action" 
+					sequence="2"
+					/>		
+
+		<menuitem id="dincelstock_delivery_done_menu2" 
+					name="Delivered Dockets" 
+					parent="dincelwarehouse.dincelwarehouse_completed_menu_sub" 
+					action="dincelstock_delivery_done_action" 
+					sequence="2"
+					/>						
+							
+	</data>
+</openerp>	

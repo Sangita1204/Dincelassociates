@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+		
+		<record id="dincelmrp_productionlist_110mm_action" model="ir.actions.act_window" >
+			<field name="name">MO 110mm</field>
+			<field name="res_model">mrp.production</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="limit">80</field>
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+			<field name="domain">[('x_prod_group','=',('P110')),('state','not in',['done','cancel'])]</field>
+		</record>
+		<record id="dincelmrp_productionlist_155mm_action" model="ir.actions.act_window" >
+			<field name="name">MO 155mm</field>
+			<field name="res_model">mrp.production</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="limit">80</field>
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+			<field name="domain">[('x_prod_group','=',('P155')),('state','not in',['done','cancel'])]</field>
+		</record>
+		<record id="dincelmrp_productionlist_200mm_action" model="ir.actions.act_window" >
+			<field name="name">MO 200mm</field>
+			<field name="res_model">mrp.production</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="limit">80</field>
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+			<field name="domain">[('x_prod_group','=',('P200')),('state','not in',['done','cancel'])]</field>
+		</record>
+		
+		<record id="dincelmrp_productionlist_275mm_action" model="ir.actions.act_window" >
+			<field name="name">MO 275mm</field>
+			<field name="res_model">mrp.production</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="limit">80</field>
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+			<field name="domain">[('x_prod_group','=',('P275')),('state','not in',['done','cancel'])]</field>
+		</record>
+		
+		<record id="dincelmrp_saleorder_form_delibook_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelmrp.saleorder.delibook.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="dincelmrp_sale_order_form" />
+			<field name="arch" type="xml">
+				 <button name="button_schedule_mo" position="after">
+					 <button string="Book Delivery" name="button_schedule_delivery"  type="object"/>
+				</button>
+			</field>
+		</record>
+		
+		
+		<record id="dincelmanufact_items_action" model="ir.actions.act_window" >
+			<field name="name">Items/Parts</field>
+			<field name="res_model">product.template</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		 <record id="view_dincelmrp_production_gantt" model="ir.ui.view">
+            <field name="name">dincelmrp.production.gantt</field>
+            <field name="model">mrp.production</field>
+            <field name="arch" type="xml">
+                <gantt date_stop="date_finished" date_start="date_planned" progress="progress" string="Schedule" default_group_by="routing_id">
+                </gantt>
+            </field>
+        </record>
+		
+		<!--
+		<record id="dincelmanufact_sale_order_action" model="ir.actions.act_window" >
+			<field name="name">Schedule Delivery</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmanufact_sale_order_tree">
+			<field eval="1" name="sequence"/>
+			<field name="view_mode">tree</field>
+			<field name="view_id" ref="dincelmanufacture.dincelmrp_sale_order_tree"/>
+			<field name="act_window_id" ref="dincelmanufact_sale_order_action"/>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_dincelmanufact_sale_order_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			 <field name="view_id" ref="dincelmrp_sale_order_form" />
+			<field name="act_window_id" ref="dincelmanufact_sale_order_action"/>
+		</record>
+		-->
+		<record id="dincelmanufact_order_edit_action" model="ir.actions.act_window" >
+			<field name="name">MO All Pending/In Production</field>
+			<field name="res_model">mrp.production</field>
+			<field name="view_type">form</field>
+			<!--  <field name="view_mode">tree,form</field> -->
+			<field name="view_mode">calendar,tree,form,graph,gantt</field>
+			<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+			<field name="context" eval="{'default_x_tree_edit': 1}"></field>
+			<!-- <field name="context" eval="{'search_default_salesorder': 1}"></field> -->
+			<field name="domain">[('state','in',('draft','ready','confirmed','in_production'))]</field>
+		</record>
+		
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_mo_order_edit_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="act_window_id" ref="dincelmanufact_order_edit_action"/>
+		<field name="view_id" ref="dincelmrp_mo_order_edit_tree"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_mo_order_edit_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		<!-- <field name="view_id" ref="dincelmrp_mrp_order_form" /> -->
+		<field name="act_window_id" ref="dincelmanufact_order_edit_action"/>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_dincelmrp_mo_production_gantt">
+		<field eval="3" name="sequence"/>
+		<field name="view_mode">gantt</field>
+		<field name="view_id" ref="view_dincelmrp_production_gantt" /> 
+		<field name="act_window_id" ref="dincelmanufact_order_edit_action"/>
+	</record>
+	
+		<!--
+		<record id="dincelmanufact_picking_list_action" model="ir.actions.act_window" >
+			<field name="name">Picking List</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		
+		<record id="dincelmanufact_delivery_action" model="ir.actions.act_window" >
+			<field name="name">Delivery</field>
+			<field name="res_model">dincelstock.pickinglist</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record> -->
+		
+		<record id="dincelmanufact_inventory_action" model="ir.actions.act_window" >
+			<field name="name">Inventory</field>
+			<field name="res_model">dincelproduct.product</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<!--
+		<record id="dincelmanufact_sales_invoice_action" model="ir.actions.act_window" >
+			<field name="name">Invoices</field>
+			<field name="res_model">account.invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale','default_x_edit_so':True}</field>
+		</record>
+		-->
+		<record id="dincelmrp_warehouse_sale_order_all_action" model="ir.actions.act_window" >
+			<field name="name">Sale Orders All</field>
+			<field name="res_model">sale.order</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="domain"></field> 
+		<field name="limit">80</field>
+		</record>
+		
+		<record model="ir.actions.act_window.view" id="action_warehouse_sale_order_active_tree">
+		<field eval="1" name="sequence"/>
+		<field name="view_mode">tree</field>
+		<field name="view_id" ref="dincelmrp_sale_order_admin_tree"/>
+		<field name="act_window_id" ref="dincelmrp_warehouse_sale_order_all_action"/>
+	</record>
+	
+	<record id="dincelmrp_mo_manual_all_action" model="ir.actions.act_window" >
+		<field name="name">MO Manual ALL</field>
+		<field name="res_model">mrp.production</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('x_mo_type','=','manual')]</field> 
+		<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+		<field name="context" eval="{'search_default_x_mo_type': 'manual','default_x_mo_type': 'manual'}"></field>
+	</record>
+	
+	<record id="dincelmrp_mo_done_order_all_action" model="ir.actions.act_window" >
+		<field name="name">MO Done ALL</field>
+		<field name="res_model">mrp.production</field>
+		<field name="view_type">form</field>
+		<field name="view_mode">tree,form</field>
+		<field name="domain">[('state','=','done')]</field> 
+		<field name="search_view_id" ref="view_dincelmrp_production_filter"/>
+		<field name="context" eval="{}" ></field>
+	</record>
+	
+	<record model="ir.actions.act_window.view" id="action_warehouse_sale_order_active_form">
+		<field eval="2" name="sequence"/>
+		<field name="view_mode">form</field>
+		 
+		<field name="act_window_id" ref="dincelmrp_warehouse_sale_order_all_action"/>
+	</record>
+		<!-- Manufacturing Menu Starts -->
+		<menuitem id="dincelmanufact_menu" name="Manufacturing" sequence="4"/>
+		<menuitem id="dincelmanufact_menu_sub" name="Manufacturing"  parent="dincelmanufact_menu"/>
+		 <!--
+		<menuitem id="dincelmanufact_items" 
+					name="Items/Parts" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_items_action" 
+					sequence="11" 
+					/>	
+		
+		<menuitem id="dincelmanufact_order_schdule_menu" 
+			name="Schedule Orders" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_order_schdule_action" 
+			sequence="1"
+			/>	
+			-->
+			
+			
+			
+		<menuitem id="dincelmanufact_productionlist_menu" 
+			name="Production Qty" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_productionlist_action" 
+			sequence="1"
+			/>	
+						
+		<menuitem id="dincelmanufact_order" 
+					name="MO ALL" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_order_edit_action" 
+					sequence="3"
+					/>	
+					<menuitem id="dincelmanufact_productionlist_155mm_menu" 
+			name="MO 155mm" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_productionlist_155mm_action" 
+			sequence="5"
+			/>	
+			
+			<menuitem id="dincelmanufact_productionlist_110mm_menu" 
+			name="MO 110mm" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_productionlist_110mm_action" 
+			sequence="4"
+			/>	
+			
+			<menuitem id="dincelmanufact_productionlist_200mm_menu" 
+			name="MO 200mm" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_productionlist_200mm_action" 
+			sequence="6"
+			/>	
+			
+			<menuitem id="dincelmanufact_productionlist_275mm_menu" 
+			name="MO 275mm" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincelmrp_productionlist_275mm_action" 
+			sequence="7"
+			/>	
+			<!--
+		<menuitem id="dincelmanufact_sale_order" 
+					name="Schedule Delivery" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_sale_order_action" 
+					/>	-->	
+		
+							
+	<menuitem id="dincelmrp_mo_done_order_all_menu" 
+					name="MO Done ALL" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmrp_mo_done_order_all_action" 
+					sequence="8" 
+					/>	
+		<menuitem id="dincelmrp_mo_manual_all_menu" 
+					name="MO Manual ALL" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmrp_mo_manual_all_action" 
+					sequence="9" 
+					/>					
+					
+		<!--	<menuitem id="dincelmanufact_picking_list" 
+					name="Picking List" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_picking_list_action" 
+					/>	
+
+		<menuitem id="dincelmanufact_delivery" 
+					name="Delivery" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_delivery_action" 
+					/>	 
+
+		<menuitem id="dincelmanufact_inventory" 
+					name="Inventory" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_inventory_action" 
+					/>	 -->						
+		<!--
+		<menuitem id="dincelmanufact_sales_invoice" 
+					name="Invoices" 
+					parent="dincelmanufact_menu_sub" 
+					action="dincelmanufact_sales_invoice_action" 
+					/>	
+		
+		-->
+		<record id="dincelmrp_warehouse_pq_action" model="ir.actions.act_window" >
+			<field name="name">PQ Reserve Qty</field>
+			<field name="res_model">dincelmrp.production</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		<field name="limit">80</field>
+		 </record>		
+		
+			<menuitem id="dincelmrp_warehouse_menu" name="Production"  parent="dincelwarehouse.dincelwarehouse_menu"/>
+	
+			<menuitem id="dincelmrp_warehouse_pq_menu" 
+						name="PQ Reserve Qty" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_warehouse_pq_action" 
+						sequence="1"
+						/>	
+					
+		<menuitem id="dincelmrp_warehouse_sale_order_menu" 
+						name="All Sale Orders" 
+						parent="dincelmrp_warehouse_menu" 
+						action="dincelmrp_warehouse_sale_order_all_action" 
+						sequence="1"
+						/>	
+	</data>
+</openerp>	

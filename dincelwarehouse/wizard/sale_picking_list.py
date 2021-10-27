@@ -1,0 +1,490 @@
+from openerp.osv import fields, osv
+from openerp.tools.translate import _
+import openerp.addons.decimal_precision as dp
+import logging
+_logger = logging.getLogger(__name__)
+
+class dincelwarehouse_picking_list(osv.osv_memory):
+	_name = "dincelwarehouse.picking.list"
+	#_description = "Sales Make MRP"
+	_columns = {
+		'date': fields.date('Picking Date'),
+		'picking_lines':fields.one2many('dincelwarehouse.picking.line', 'picking_id', 'Picking Lines'),
+		'reserve_lines':fields.one2many('dincelwarehouse.reserve.line', 'picking_id', 'Reserve Lines'),
+		'qty':fields.float("Qty test"),
+		'sale_order_id': fields.many2one('sale.order', 'Order Id'),
+		'source_location_id': fields.many2one('stock.location', 'Source Location'),
+		'destination_location_id': fields.many2one('stock.location', 'Destination Location'),
+		'warehouse_id': fields.many2one('stock.warehouse','Dispatch Location'),	
+		'pudel':fields.selection([
+			('pu','Pickup'),
+			('del','Delivery'),
+			], 'Pickup/Delivery'),
+		'delivery_to': fields.char('Deliver To'),	
+		'contact_id': fields.many2one('res.partner', 'Contact', domain=[('x_is_project', '=', False)]),
+	}
+
+	def on_change_qty(self, cr, uid, ids, _qty, _lines, context=None):
+		
+		new_lines = []
+		res_lines = []
+		active_id = context and context.get('active_id', False) or False
+		if context and active_id:
+			line_obj 	= self.pool.get('dincelstock.pickinglist.line')
+			
+			_obj = self.pool.get('sale.order').browse(cr, uid, active_id, context=context)
+			
+			for line in _obj.order_line:
+				if line.product_id.x_prod_cat not in['freight','deposit']  and line.product_id.type !="service":#='freight':	
+					_prod = self.pool.get('dincelproduct.product')
+					
+					order_length=line.x_order_length
+					
+					if line.product_id.x_prod_cat not in['stocklength','customlength']:
+						order_length = False
+						
+					qty_delivered =_prod.qty_delivered_net(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+							 
+					_qtyonhand = _prod.qty_produced_net(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+					_qtyonhand = _qtyonhand - qty_delivered#_prod.qty_delivered_net(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+					
+					vals = {
+						'qty_panel':line.x_order_qty,
+						'qty':line.product_uom_qty,
+						'qty_onhand':_qtyonhand,
+						'qty_delivered':qty_delivered,
+						'qty_remain':line.x_order_qty-qty_delivered,
+						'product_id': line.product_id.id or False,
+						'order_length':line.x_order_length or 0.0,
+						'product_uom':line.product_uom.id or False,
+						'price_unit': line.price_unit,
+						'disc_pc':line.discount,
+						'sale_order_id':_obj.id,
+						}
+					
+					qty_delivered =_prod.qty_reserved_delivered_net(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+					#		 qty_stock_reserved_new(self, cr, uid, ids, product_id, order_length, order_id, context=None)
+					_qtyonhand = _prod.qty_stock_reserved_new( cr, uid, ids,line.product_id.id,order_length, _obj.id)#.qty_stock_reserved(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+					_qtyonhand = _qtyonhand - qty_delivered#_prod.qty_delivered_net(cr, uid, ids, line.product_id.id, order_length, _obj.id)
+					_qty_remain=line.x_order_qty-qty_delivered
+					vals_res = {
+						'qty_panel':line.x_order_qty,
+						'qty':line.product_uom_qty,
+						'qty_onhand':_qtyonhand,
+						'qty_delivered':qty_delivered,
+						'qty_remain':_qty_remain,
+						'product_id': line.product_id.id or False,
+						'order_length':line.x_order_length or 0.0,
+						'product_uom':line.product_uom.id or False,
+						'price_unit': line.price_unit,
+						'disc_pc':line.discount,
+						'sale_order_id':_obj.id,
+						}
+						
+					if line.x_region_id:
+						vals['region_id']= line.x_region_id.id	
+						vals_res['region_id']= line.x_region_id.id	
+					new_lines.append(vals)
+					if _qtyonhand>0:
+						res_lines.append(vals_res)
+				
+				vals= {'picking_lines': new_lines, 'reserve_lines': res_lines}
+				if _obj.x_pudel:
+					vals['pudel']=_obj.x_pudel
+				_addr = ""	
+				if _obj.x_street:
+					_addr = _obj.x_street
+				if _obj.x_suburb:
+					_addr += " " + _obj.x_suburb
+				if _obj.x_state_id:
+					_addr += " " + self.pool.get('res.country.state').browse(cr, uid, _obj.x_state_id.id, context=context).code
+				if _obj.x_postcode:
+					_addr += " " + _obj.x_postcode
+				vals['delivery_to']=_addr
+				
+				if _obj.x_warehouse_id:
+					vals['warehouse_id']=_obj.x_warehouse_id.id
+					_ptype	=self.pool.get('stock.picking.type')
+					_ids	=_ptype.search(cr, uid, [('code', '=', 'outgoing'),('warehouse_id', '=', _obj.x_warehouse_id.id)], limit=1) 	
+					if _ids:
+						_ptype 	= _ptype.browse(cr, uid, _ids[0], context=context)
+						vals['source_location_id']		=_ptype.default_location_src_id.id
+						vals['destination_location_id']	=_ptype.default_location_dest_id.id
+					#select * from stock_picking_type where code='outgoing' and 	warehouse_id='1'
+				
+		return {'value':vals }
+		
+ 
+	def _get_init_qty(self, cr, uid, context=None):
+		return 1
+		
+		
+	def _get_sale_order_id(self, cr, uid, context=None):
+		if context is None:
+			context = {}
+	 
+		active_id = context and context.get('active_id', False) or False
+		if not active_id:
+			return False
+		return active_id
+		
+	def make_picking_list_dcs(self, cr, uid, ids, context=None):
+		record = self.browse(cr, uid, ids[0], context=context)
+		#if record.picking_lines:
+		err_found	= False
+		err_line 	= 0
+		err_msg 	= ""
+		qty_picked	= 0
+
+		for line in record.picking_lines:
+			err_line+=1
+			if line.product_id.type != "service":
+				if line.qty_picked and line.qty_picked > 0:
+					qty_picked+=line.qty_picked
+					
+					if not line.qty_remain or line.qty_remain==0:
+						err_msg ='Invalid remaining qty found at line '+str(err_line)+'.'
+						raise osv.except_osv(_('Error!'),_(err_msg))
+						return False
+					else:
+						qty_remain = line.qty_remain
+						if line.qty_onhand < line.qty_picked or qty_remain < line.qty_picked:
+							err_msg ='Error in pickup qty at line '+str(err_line)+'.'	
+							raise osv.except_osv(_('Error!'),_(err_msg))
+							return False
+				else:
+					qty_picked+=line.qty_picked
+		err_line 	= 0
+		for line in record.reserve_lines:
+			err_line+=1
+			if line.product_id.type != "service":
+				if line.qty_picked and line.qty_picked > 0:
+					qty_picked+=line.qty_picked
+					if not line.qty_remain or line.qty_remain==0:
+						err_msg ='Invalid remaining qty found at reserve line '+str(err_line)+'.'
+						raise osv.except_osv(_('Error!'),_(err_msg))
+						return False
+					else:
+						qty_remain = line.qty_remain
+						if line.qty_onhand < line.qty_picked or qty_remain < line.qty_picked:
+							err_msg ='Error in pickup qty at reserve line '+str(err_line)+'.'	
+							raise osv.except_osv(_('Error!'),_(err_msg))
+							return False
+				else:
+					qty_picked+=line.qty_picked
+					
+		if qty_picked == 0 and not err_found:
+			err_msg ='Please select at least on picking item!'
+			raise osv.except_osv(_('Error!'),_(err_msg))
+			return False
+	
+		if not err_found:
+
+			line_sn		= 0
+			
+			_oprod 		= self.pool.get('dincelproduct.product')
+			pick_obj 	= self.pool.get('dincelstock.pickinglist')
+			line_obj 	= self.pool.get('dincelstock.pickinglist.line')
+			
+			_ids_done 	= pick_obj.search(cr, uid, [('origin','=',record.sale_order_id.name)], context=context)
+			_count 		= len(_ids_done) + 1
+			_name 		= record.sale_order_id.name +"-"+ str(_count)
+			
+			vals ={
+				'name': _name,
+				'pick_no': _count,
+				'origin': record.sale_order_id.name,
+				'state': 'draft',
+				'date_picking': record.date,
+				'user_id': uid,
+				'partner_id': record.sale_order_id.partner_id.id,
+				'pick_order_id': record.sale_order_id.id,
+				'pudel':record.pudel,
+				'delivery_to':record.delivery_to,
+			}
+			_dest_id=None
+			if record.warehouse_id:
+				vals['warehouse_id']=record.warehouse_id.id
+			if record.source_location_id:
+				vals['source_location_id']=record.source_location_id.id
+			if record.destination_location_id:
+				_dest_id=record.destination_location_id.id
+				vals['destination_location_id']=_dest_id
+			
+			pick_id = pick_obj.create(cr, uid, vals, context=context)
+			
+			myDict = {}
+			for line1 in record.picking_lines:
+				_key = str(line1.product_id.id)+"_"+str(int(line1.order_length))
+				_qty1=line1.qty_picked 
+				_remain1=line1.qty_remain-_qty1
+				if line1.qty_picked and line1.qty_picked > 0:
+					if line1.order_length and (line1.product_id.x_prod_cat in['stocklength','customlength']):
+						qty_moved1=line1.order_length*line1.qty_picked *0.001
+					else:
+						qty_moved1=line1.qty_picked 
+				else:
+					qty_moved1=0
+					
+				vals = {
+						'product_id': line1.product_id.id,
+						'ship_qty': _qty1, #>>no matter what UOM, LM or Each, put the picking qty here for dispatch
+						'pickinglist_id': pick_id,
+						'origin': record.sale_order_id.name,
+						'order_length': line1.order_length,
+						'price_unit': line1.price_unit,
+						'disc_pc':line1.disc_pc,
+						'qty_order':line1.qty_panel,
+						'qty_remain':_remain1,
+						'qty_moved':qty_moved1,
+						'product_uom':line1.product_uom.id,
+						'region_id':0,
+						'packs':'',
+					}
+					
+				vals['name']= line1.product_id.name
+				if line1.region_id:
+					vals['region_id']= line1.region_id.id	
+				if line1.packs:
+					vals['packs']=line1.packs 
+				myDict[_key]=vals
+				#_logger.error("destination_location_item_qty_movedqty_movedqty_moved-sales-line1["+str(line1)+"]]")
+				if qty_moved1 > 0:#>>here the act qty can be in LM or each depending upon >> for account purpose...
+					_oprod.record_stock_shipped(cr, uid, record.sale_order_id.id, line1.product_id.id, line1.product_uom.id, qty_moved1, _qty1, line1.order_length, _dest_id,'sales', context=context)
+					#self.pool.get('dincelproduct.inventory').qty_decrement(cr, uid, line1.product_id.id, line1.order_length, _qty1, context = context)
+					#>> only required stock decrement when reserve 
+					
+					#_logger.error("destination_location_item_qty_movedqty_movedqty_moved-sales["+str(qty_moved1)+"]]")
+			#_logger.error("destination_location_item_myDictmyDictmyDict["+str(myDict)+"]]")	
+			for line in record.reserve_lines:
+				_key = str(line.product_id.id)+"_"+str(int(line.order_length))
+				_qty=line.qty_picked 
+	
+				if line.qty_picked and line.qty_picked > 0:
+					if line.order_length and (line.product_id.x_prod_cat in['stocklength','customlength']):
+						qty_moved=line.order_length*line.qty_picked *0.001
+					else:
+						qty_moved=line.qty_picked 
+				else:
+					qty_moved=0
+					
+				vals= myDict[_key]
+
+				vals['ship_qty']=	float(vals['ship_qty'])+_qty
+				vals['qty_moved']=	float(vals['qty_moved'])+qty_moved
+				vals['qty_remain']=	float(vals['qty_remain'])-_qty
+				#_logger.error("destination_location_item_qty_movedqty_movedqty_moved-reserve-line["+str(line)+"]]")
+				myDict[_key]=vals
+				if qty_moved > 0:#>>here the act qty can be in LM or each depending upon >> for account purpose...
+					_oprod.record_stock_shipped(cr, uid, record.sale_order_id.id, line.product_id.id, line.product_uom.id, qty_moved, _qty, line.order_length, _dest_id,'reserve-deliverd', context=context)
+					#self.pool.get('dincelproduct.inventory').qty_decrement(cr, uid, line.product_id.id, line.order_length, _qty, context = context)
+					#>> only required stock decrement when reserve 
+					
+					#_logger.error("destination_location_item_qty_movedqty_movedqty_moved-reserve["+str(qty_moved)+"]]")
+			for _key in myDict:
+				_item=myDict[_key]
+				#_logger.error("destination_location_item_itemicklist_key["+str(_item)+"]["+str(_key)+"]")
+				vals = {
+					'product_id': int(_item['product_id']),
+					'ship_qty': float(_item['ship_qty']), #>>no matter what UOM, LM or Each, put the picking qty here for dispatch
+					'pickinglist_id': int(_item['pickinglist_id']),
+					'origin': _item['origin'],
+					'order_length': _item['order_length'],
+					'price_unit': float(_item['price_unit']),
+					'disc_pc':float(_item['disc_pc']),
+					'qty_order':float(_item['qty_order']),
+					'qty_remain':float(_item['qty_remain']),
+					'qty_moved':float(_item['qty_moved']),
+					'product_uom':int(_item['product_uom']),
+					'name':_item['name'],
+				}
+					
+			
+				if _item['region_id']:
+					vals['region_id']= int(_item['region_id'])
+				if _item['packs']:
+					vals['packs']=_item['packs']
+				#_logger.error("destination_location_iddestination_location_id_savepicklist["+str(vals)+"]]")	
+				
+				line_obj.create(cr, uid, vals, context=context) #>> this is docket line items..so qty is not in LM, but as per picking items
+				#>> qty_moved=float(_item['qty_moved']) :already done above.....reserve and pickup....>>>
+				#if qty_moved and qty_moved>0:
+				#	_oprod.record_stock_shipped(cr, uid, record.sale_order_id.id, line.product_id.id, line.product_uom.id, qty_moved, _qty, line.order_length, _dest_id, context=context)
+			
+			view_id	= self.pool.get('ir.ui.view').search(cr, uid, [('name', '=', 'dincelstock.delivery.form.view')], limit=1) 	
+			
+			value = {
+				'domain': str([('id', 'in', pick_id)]),
+				'view_type': 'form',
+				'view_mode': 'form',
+				'res_model': 'dincelstock.pickinglist',
+				'view_id': view_id,
+				'type': 'ir.actions.act_window',
+				'name' : _('Delivery'),
+				'res_id': pick_id
+			}
+			
+			return value		 
+				
+		#_logger.error("make_picking_list_dcsmake_picking_list_dcs["+str(record.picking_lines)+"]line_sn["+str(line_sn)+"]")	
+		return {}
+ 
+	_defaults = {
+		'date': fields.date.context_today,
+		'sale_order_id': _get_sale_order_id,
+		'qty': _get_init_qty,
+		}
+
+class dincelwarehouse_reserve_line(osv.osv_memory):
+	_name = "dincelwarehouse.reserve.line"
+	_columns = {
+		'picking_id': fields.many2one('dincelwarehouse.picking.list', 'Picking Reference'),
+		'product_id': fields.many2one('product.product', 'Product'),
+		'order_length':fields.float("Stock Length",digits_compute= dp.get_precision('Int Number')),	
+		'qty':fields.float("Qty Ordered",digits_compute= dp.get_precision('Int Number')),	
+		'qty_panel':fields.float("Qty Panel",digits_compute= dp.get_precision('Int Number')),	
+		'qty_remain':fields.float("Qty Remain",digits_compute= dp.get_precision('Int Number')),	
+		'pick_source':fields.selection([('reserve', 'Reserve'),('stock', 'Stock')], 'Source'),
+		'qty_onhand':fields.float("Qty Available",digits_compute= dp.get_precision('Int Number')),	
+		'qty_delivered':fields.float("Qty Delivered",digits_compute= dp.get_precision('Int Number')),	
+		'qty_picked':fields.float("Qty  Picked",digits_compute= dp.get_precision('Int Number')),	
+		'product_uom': fields.many2one('product.uom', 'Unit of Measure'),
+		'price_unit':fields.float("Unit Price"),	
+		'disc_pc':fields.float("Discount"),	
+		'sale_order_id': fields.many2one('sale.order', 'Order Id'),
+		'region_id': fields.many2one('dincelaccount.region', 'A/c Region'),
+		'packs': fields.char('Packs'),
+	}
+	
+	def get_stock_qty_source(self, cr, uid, ids,product_id,order_length, _source, order_id, context=None):
+		product_obj = self.pool.get('product.product')
+		_soo = self.pool.get('sale.order').browse(cr, uid, order_id, context=context)		
+		_obj = self.pool.get('dincelproduct.product')
+		prod = product_obj.browse(cr, uid, product_id, context=context)	
+		if prod.x_prod_cat not in['stocklength','customlength']:
+			order_length = False
+		if _source == "reserve":#todo check later...
+			_qty = _obj.qty_stock_reserved(cr, uid, ids, product_id, order_length,_soo.name)
+		else:
+			_qty = _obj.qty_produced_net(cr, uid, ids, product_id, order_length, order_id)
+			_qty = _qty - _obj.qty_delivered_net(cr, uid, ids, product_id, order_length, order_id)
+			'''sql ="SELECT SUM(product_qty) FROM stock_move_tmp WHERE move_type='mo-stock' AND product_id='"+str(product_id)+"'  "
+			if order_length:
+				sql += " AND order_length='"+str(order_length)+"'"
+			cr.execute(sql)
+			res = cr.fetchone()
+			if res and res[0]!= None:
+				_qty=(res[0])
+				if order_length:
+					_qty = int(_qty/((order_length)/1000))
+			else:
+				_qty=0'''
+			#_qty = _obj.qty_stock_onhand(cr, uid, ids, product_id, order_length)
+		return _qty
+		
+	def on_change_source(self, cr, uid, ids,product_id,order_length, _source,order_id, context=None):
+		if context is None:
+			context = {}
+		#_qty  =0	
+		#for data in self.browse(cr, uid, ids, context=context):#data = self.browse(cr, uid, ids[0], context=context)
+		#product_id=data.product_id.id
+		#order_length=data.order_length
+		#_logger.error("on_change_sourceon_change_source["+str(product_id)+"]["+str(order_length)+"]")
+		_qty = self.get_stock_qty_source(cr, uid, ids, product_id, order_length, _source, order_id, context=context)
+		
+		return {'value': {'qty_onhand': _qty}}
+		
+	
+	def on_change_pickqty(self, cr, uid, ids, product_id, qty_onhand, qty_pick, context=None):
+		product_obj = self.pool.get('product.product')
+		prod = product_obj.browse(cr, uid, product_id, context=context)	
+		if prod.type != "service":
+			if qty_onhand < qty_pick:
+				raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+				return False
+			
+	def on_change_qty(self, cr, uid, ids, qty_org,qty_order, qty_stock,qty_produce,qty_reserve, context=None):
+		if qty_order < qty_produce:
+			raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+			return False
+		if qty_order < qty_reserve:
+			raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+			return False
+		return True
+		
+class dincelwarehouse_picking_line(osv.osv_memory):
+	_name = "dincelwarehouse.picking.line"
+	_columns = {
+		'picking_id': fields.many2one('dincelwarehouse.picking.list', 'Picking Reference'),
+		'product_id': fields.many2one('product.product', 'Product'),
+		'order_length':fields.float("Stock Length",digits_compute= dp.get_precision('Int Number')),	
+		'qty':fields.float("Qty Ordered",digits_compute= dp.get_precision('Int Number')),	
+		'qty_panel':fields.float("Qty Panel",digits_compute= dp.get_precision('Int Number')),	
+		'qty_remain':fields.float("Qty Remain"),	
+		'pick_source':fields.selection([('reserve', 'Reserve'),('stock', 'Stock')], 'Source'),
+		'qty_onhand':fields.float("Qty Available",digits_compute= dp.get_precision('Int Number')),	
+		'qty_delivered':fields.float("Qty Delivered",digits_compute= dp.get_precision('Int Number')),	
+		'qty_picked':fields.float("Qty  Picked",digits_compute= dp.get_precision('Int Number')),	
+		'product_uom': fields.many2one('product.uom', 'Unit of Measure'),
+		'price_unit':fields.float("Unit Price"),	
+		'disc_pc':fields.float("Discount"),	
+		'sale_order_id': fields.many2one('sale.order', 'Order Id'),
+		'region_id': fields.many2one('dincelaccount.region', 'A/c Region'),
+		'packs': fields.char('Packs'),
+	}
+	
+	def get_stock_qty_source(self, cr, uid, ids,product_id,order_length, _source, order_id, context=None):
+		product_obj = self.pool.get('product.product')
+		_soo = self.pool.get('sale.order').browse(cr, uid, order_id, context=context)		
+		_obj = self.pool.get('dincelproduct.product')
+		prod = product_obj.browse(cr, uid, product_id, context=context)	
+		if prod.x_prod_cat not in['stocklength','customlength']:
+			order_length = False
+		if _source == "reserve":#todo check later...
+			_qty = _obj.qty_stock_reserved(cr, uid, ids, product_id, order_length,_soo.name)
+		else:
+			_qty = _obj.qty_produced_net(cr, uid, ids, product_id, order_length, order_id)
+			_qty = _qty - _obj.qty_delivered_net(cr, uid, ids, product_id, order_length, order_id)
+			'''sql ="SELECT SUM(product_qty) FROM stock_move_tmp WHERE move_type='mo-stock' AND product_id='"+str(product_id)+"'  "
+			if order_length:
+				sql += " AND order_length='"+str(order_length)+"'"
+			cr.execute(sql)
+			res = cr.fetchone()
+			if res and res[0]!= None:
+				_qty=(res[0])
+				if order_length:
+					_qty = int(_qty/((order_length)/1000))
+			else:
+				_qty=0'''
+			#_qty = _obj.qty_stock_onhand(cr, uid, ids, product_id, order_length)
+		return _qty
+		
+	def on_change_source(self, cr, uid, ids,product_id,order_length, _source,order_id, context=None):
+		if context is None:
+			context = {}
+		#_qty  =0	
+		#for data in self.browse(cr, uid, ids, context=context):#data = self.browse(cr, uid, ids[0], context=context)
+		#product_id=data.product_id.id
+		#order_length=data.order_length
+		#_logger.error("on_change_sourceon_change_source["+str(product_id)+"]["+str(order_length)+"]")
+		_qty = self.get_stock_qty_source(cr, uid, ids, product_id, order_length, _source, order_id, context=context)
+		
+		return {'value': {'qty_onhand': _qty}}
+		
+	
+	def on_change_pickqty(self, cr, uid, ids, product_id, qty_onhand, qty_pick, context=None):
+		product_obj = self.pool.get('product.product')
+		prod = product_obj.browse(cr, uid, product_id, context=context)	
+		if prod.type != "service":
+			if qty_onhand < qty_pick:
+				raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+				return False
+			
+	def on_change_qty(self, cr, uid, ids, qty_org,qty_order, qty_stock,qty_produce,qty_reserve, context=None):
+		if qty_order < qty_produce:
+			raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+			return False
+		if qty_order < qty_reserve:
+			raise osv.except_osv(_('Error!'),_('Invalid quantity found!'))
+			return False
+		return True

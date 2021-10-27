@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<openerp>
+    <data>
+    
+      <record id="dincel_mrp_report_view_tree" model="ir.ui.view">
+            <field name="name">dincelmrp.log.records.tree.view</field>
+            <field name="model">dincelmrp.log.records</field>
+			<field name="view_type">tree</field>
+            <field name="arch" type="xml">
+                <tree string="MRP Log Records">
+                 
+                    <field name="log_date" />
+					<field name="name" />
+					<field name="user_id" />
+					
+                    <!--<field name="line_id" />
+                    <field name="category_id" />
+                    <field name="duration" />-->
+                </tree>
+            </field>
+        </record>
+        
+		<record id="dincel_mrp_report_view_form1" model="ir.ui.view">
+            <field name="name">dincelmrp.log.records.form.view</field>
+            <field name="model">dincelmrp.log.records</field>
+			<field name="view_type">form</field>
+            <field name="arch" type="xml">
+				<form name="log_records">
+				<header>
+					<button name="mrp_log_records" string="Print Log Records" type="object" />
+				</header>
+				<sheet>
+				<div class="oe_title">
+					<h1><field name="name" class="oe_inline" readonly="1" /></h1>
+				</div>
+				
+				<group>
+				<group>
+					<field name="log_date" /></group>
+					<group>
+					<field name="user_id" /></group>
+				</group>
+				
+				<div>
+				<field name="log_record_line">
+					<!-- <form>
+						<group string="Log Records Lines"> 
+						<field name="line_id" />
+						<field name="category_id" />
+						<field name="duration" />
+						<field name="duration_unit" />
+						</group>
+					</form> -->
+					<tree string="Log Records Lines" editable="bottom">
+						<field name="line_id" required="1" />
+						<field name="category_id" required="1" />
+						<field name="start_time" required="1" on_change="with_start_end(start_time, end_time, duration, duration_unit)" />
+						<field name="end_time" on_change="with_start_end(start_time, end_time, duration, duration_unit)" />
+						<field name="duration" on_change="with_duration(start_time, end_time, duration, duration_unit)" />
+						<field name="duration_unit" on_change="with_duration(start_time, end_time, duration, duration_unit)" />
+					</tree>
+					
+				</field>
+				</div>
+				</sheet>
+				 <div class="oe_chatter">
+					 <field name="message_follower_ids" widget="mail_followers"/>
+					 <field name="message_ids" colspan="4" widget="mail_thread" nolabel="1"/>
+				</div>
+				</form>
+				
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="view_dincelmrp_production_dashboard">
+            <field name="name">Production Dashboard</field>
+            <field name="model">dashboard.sales</field>
+            <field name="arch" type="xml">
+			<form string="Embedded Webpage">
+                <div style="position:absolute; left:0; top:0; width:100%; height:100%; border:none"> 
+                <iframe src="http://erp.dincel.com.au/odoo/web/report/mrp.php" style="border:none; width:100%; height:100%;"> 
+                    <p>Your browser does not support iframes.</p>
+                </iframe>
+                <!--<object data="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;">
+                    <embed src="http://erp.dincel.com.au:8069/" style="border:1px solid #000: width::600px; height:400px;"> </embed>
+                    Error: Embedded data could not be displayed.
+                </object>-->
+                </div>
+			</form>
+            </field>
+        </record>
+        
+        <record model="ir.actions.act_window" id="action_dincelmrp_production_dashboard">
+            <field name="name">Production Dashboard</field>
+            <field name="res_model">dashboard.sales</field>
+			<field name="view_id" ref="view_dincelmrp_production_dashboard"/>
+			<field name="view_mode">form</field>
+        </record>
+		
+		
+        <record model="ir.actions.act_window" id="dincel_mrp_report_view_link">
+            <field name="name">MRP Log Records</field>
+            <field name="res_model">dincelmrp.log.records</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+
+
+        <menuitem id="dincelmrp_mrp_report_menu" 
+			name="MRP Log Records" 
+			parent="dincelmanufact_menu_sub" 
+			action="dincel_mrp_report_view_link" />
+
+		<menuitem id="dincelmrp_production_dashboard" 
+			name="Production Dashboard" 
+			parent="dincelmanufact_menu_sub" 
+			action="action_dincelmrp_production_dashboard" 
+			/>
+			
+		<report
+            id="action_report_mrp_log_records"
+            model="dincelmrp.log.records"
+            report_type="qweb-pdf"
+            string="Log Records"
+            name="dincelmanufacture.report_mrp_log_records"
+            file="dincelmanufacture.report_mrp_log_records" />	
+    </data>
+</openerp>

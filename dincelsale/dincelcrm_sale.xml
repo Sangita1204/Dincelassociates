@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record	 id="dincelsale_order_form_view" model="ir.ui.view" >
+			<field name="name">dincelsale.order.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelsale.ordersale</field>
+			<field name="arch" type="xml">
+				<form string="Order Form" version="7.0">
+					<header>
+					<button string="Convert to LM Sales Order"  type="object" name="create_sales_order" class="oe_highlight" attrs="{'invisible': [('state','in', ['done','cancel'])]}" />
+					<field name="state" widget="statusbar" statusbar_visible="draft,cancel,progress,done"/>
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+								<field name="name" readonly="1"/>
+								<field name="origin"/>
+								<field name="date_order" />
+								<field name="user_id"/>
+								<field name="partner_id" on_change="onchange_partner_id(partner_id, context)"/>
+								<field name="project_id"/>
+							</group>
+							
+						    <group>
+								<field name="note"/>                                    
+								<field name="payment_term"/>
+								<field name="company_id" invisible="1"/>
+							</group>
+							
+                        </group>
+						
+						<notebook>
+						    <page string="Order Lines">	
+								 
+								<field name="order_line" > 
+									<tree editable="bottom">
+											<field name="sequence"  widget="handle"/>
+											<field name="product_id" on_change="product_id_change(product_id, parent.partner_id,context)"/> 
+											<field name="name"/>
+											<field name="order_length" string="Length (mm)"/>
+											<field name="order_qty" /> 
+											
+									</tree>
+									<form string="Sales Order Lines">
+								   
+										<group>
+											<group>
+												<field name="sequence"/>
+												<field name="product_id"/> 
+												<field name="name"/>
+												<field name="order_length" string="Length (mm)"/>
+												<field name="order_qty" /> 
+												
+											</group>
+										</group>
+									</form>
+								</field>
+								 
+							</page>
+						</notebook>
+                     </sheet>      
+				</form>
+			</field>
+		</record>
+		
+		<record	 id="dincelsale_sales_tree_view" model="ir.ui.view" >
+			<field name="name">dincelsale.sales.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelsale.ordersale</field>
+			<field name="arch" type="xml">
+				<tree string="Sales Order" >
+					
+					 
+					<field name="name"/>
+					<field name="origin"/> 
+					<field name="date_order"/> 
+					<field name="user_id"/> 
+					<field name="partner_id"/> 
+					<field name="project_id"/> 
+					<field name="payment_term"/>  
+					
+				</tree>
+			</field>
+		</record>	
+		
+	<record id="dincelsale_sale_action" model="ir.actions.act_window" >
+			<field name="name">DINCEL Order</field>
+			<field name="res_model">dincelsale.ordersale</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+	</record>
+		
+	<menuitem id="dincelsale_sale_menu" 
+					name="DINCEL Order Test" 
+					parent="base.menu_sales" 
+					action="dincelsale_sale_action" 
+					/>	
+					
+	</data>
+</openerp>	

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+		<record id="dincelcrm_complaints_filter" model="ir.ui.view">
+            <field name="name">Complaints Search</field>
+            <field name="model">dincelcrm.complaints</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Title"/>
+                    <field name="entry_dt"/>
+					<field name="user_id"/>
+					<field name="report_to"/>
+					
+                    <filter   string="New" name="new" domain="[('state','=','draft')]" help="New Complaints" />
+                    <filter   string="Open" name="open" domain="[('state','=','open')]" help="Open Complaints" />
+                    <filter   string="Pending" name="pending" domain="[('state','=','pending')]" help="Pending Complaints" />
+					<filter   string="Closed" name="closed" domain="[('state','=','close')]" help="Closed Complaints" />
+					
+					<separator/>
+					
+                    <filter string="Assigned to Me" icon="terp-personal+" domain="[('report_to','=',uid)]"
+                            help="Complaints requests that are assigned to me." />
+                   
+				   <field name="partner_id" />
+					<field name="project_id"/>
+                  
+                    <group expand="0" string="Group By">
+                        <filter string="Partner" icon="terp-partner" domain="[]" help="Partner" context="{'group_by':'partner_id'}" />
+                        <filter string="Responsible" icon="terp-personal" domain="[]" help="Responsible User" context="{'group_by':'report_to'}" />
+                        <filter string="Requested By" icon="terp-personal" domain="[]" help="Requested By" context="{'group_by':'user_id'}" />
+                       
+                        <filter string="Status" icon="terp-stock_effects-object-colorize" domain="[]" context="{'group_by':'state'}" />
+                 
+                    </group>
+                </search>
+            </field>
+        </record>
+		
+	 <record id="view_dincelcrm_complaint_form" model="ir.ui.view">
+            <field name="name">dincelcrm.complaints.form</field>
+            <field name="model">dincelcrm.complaints</field>
+            <field name="arch" type="xml">
+                <form string="Complaints">
+                    <sheet string="Complaints">
+					
+						<group>
+							<field name="name" string="Title" required="1" attrs="{'readonly':[('state', '=', 'close')]}"/>
+					   
+					   </group>
+					   
+                        <group  >
+                            <group>
+                                <field name="user_id" required="1" string="Entry By" attrs="{'readonly':[('state', '=', 'close')]}"/>
+								 <field name="report_to" required="1" attrs="{'readonly':[('state', '=', 'close')]}"/>
+                                
+                            </group>
+                            <group>
+                                
+                                <field name="entry_dt" attrs="{'readonly':[('state', '=', 'close')]}"/>
+							
+                                 <field name="priority" widget="priority" attrs="{'readonly':[('state', '=', 'close')]}"/>
+                            </group>
+                        </group>
+						<group>
+							<field name="project_id" attrs="{'readonly':[('state', '=', 'close')]}"  on_change="onchange_project(project_id,partner_id)" options="{'limit': 20, 'create': false,'m2o_dialog':false}"/>
+						    <field name="partner_id" attrs="{'readonly':[('state', '=', 'close')]}"  on_change="onchange_client(project_id,partner_id)" options="{'limit': 20, 'create': false,'m2o_dialog':false}"/>
+						    <field name="contact_id" attrs="{'readonly':[('state', '=', 'close')]}" on_change="onchange_contact(contact_id)" options="{'limit': 10, 'create': false,'m2o_dialog':false}"/>
+						    <field name="mobile" readonly="1"/>
+							<field name="phone" string="Phone"   readonly="1" /> 
+							<field name="email" string="Email"  readonly="1"/> 					 
+					   </group>
+					   
+					     <group>
+								<group>
+									<field name="type" string="Complaint type"/>
+								</group >
+							  
+							   <group>
+									<field name="type_other" attrs="{'invisible':[('type', '!=', 'other')]}" /> 
+								</group>
+							  
+                            </group>
+                       <group>
+					   
+					   <field name="description" string="Details of complaint" required="1"  attrs="{'readonly':[('state', '=', 'close')]}" />
+					   
+					   <field name="investigation" string="Investigation activities"   attrs="{'required':[('state', '=', 'close')]}"   />
+					   
+			   
+					   </group>
+					   
+					    <group>
+                            <group>
+                                <field name="action_rqd" string="Preventive action required?" attrs=""  />                           
+                            </group>
+                            
+                        </group>
+						
+						 <group>
+						  <field name="actiontext"   attrs="{'required':[('action_rqd', '=', True)],'invisible':[('action_rqd', '=', False)]}"   />
+						 </group>
+						 
+						   <group >
+                            <group>
+                                <field name="action_dt" attrs="{'invisible':[('action_rqd', '=', False)]}" />
+                            </group>
+                            <group>
+                             	 
+                                 <field name="completed" string="Completed?" attrs="{'invisible':[('action_rqd', '=', False)]}"  />
+								 
+                            </group>
+                        </group>
+						
+						
+						   <group>
+                            <group>
+                              <field name="state" /> <!--  groups="base.group_sale_manager"-->
+                            </group>
+                            <group>
+                            </group>
+                        </group>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+		
+		<record model="ir.ui.view" id="view_dincelcrm_complaint_tree">
+            <field name="name">Complaints</field>
+            <field name="model">dincelcrm.complaints</field>
+            <field name="arch" type="xml">
+                <tree  colors="blue:state in ('draft');green:state =='close';orange:state =='open';grey:state=='cancel'">
+					<field name="name" />
+					<field name="entry_dt"/>
+					<field name="project_id"/>
+					<field name="partner_id"/>
+					<field name="user_id" string="Entry By"/>
+					<field name="report_to"/>
+					<field name="state"/>
+				 
+                </tree>
+            </field>
+        </record>
+		
+		
+		<record	 id="dincelcrm_mycomplaint_action" model="ir.actions.act_window" >
+			<field name="name">Customer Complaints</field>
+			<field name="res_model">dincelcrm.complaints</field>
+			<field name="context">{'default_user_id': uid,'search_default_new':1,'search_default_open': 1,'search_default_pending': 1}</field>
+			 
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_mycomplaint_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            
+            <field name="act_window_id" ref="dincelcrm_mycomplaint_action"/>
+        </record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_mycomplaint_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			
+			<field name="act_window_id" ref="dincelcrm_mycomplaint_action"/>
+		</record>
+		
+
+		<record	 id="dincelcrm_allcomplaints_action" model="ir.actions.act_window" >
+			<field name="name">All Complaints</field>
+			<field name="res_model">dincelcrm.complaints</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+			<field name="context">{'default_user_id': uid,'search_default_new':1,'search_default_open': 1,'search_default_pending': 1}</field>
+		</record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_allcomplaints_tree">
+            <field name="sequence" eval="1"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="dincelcrm_allcomplaints_action"/>
+        </record>
+		<record model="ir.actions.act_window.view" id="action_dincelcrm_allcomplaints_form">
+			<field eval="2" name="sequence"/>
+			<field name="view_mode">form</field>
+			<field name="act_window_id" ref="dincelcrm_allcomplaints_action"/>
+		</record>
+		
+		<!--
+       <menuitem id="dincelcrm_mycomplaint_menu" 
+					name="Customer Complaints" 
+					parent="dincelcrm_menu_sub" 
+					action="dincelcrm_mycomplaint_action"
+					
+					/>	
+					
+       <menuitem id="dincelcrm_allcomplaints_menu" 
+					name="All Complaints" 
+					parent="crm.menu_crm_case_phone" 
+					action="dincelcrm_allcomplaints_action"
+					
+					/>	
+			-->		
+    </data>
+</openerp>

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_bill_payment_reverse" model="ir.ui.view">
+            <field name="name">Reverse Payment</field>
+            <field name="model">dincelaccount.bill.reverse</field>
+            <field name="arch" type="xml">
+                <form string="Reverse Payment">
+					<group>
+					
+					<field name="voucher_id" readonly="1"/>
+					<field name="date"  />
+					<field name="comment" required="1"  />
+					<field name="amount"  readonly="1"/>
+					</group>
+                    <group>
+ 						 
+						  
+                    </group>
+					
+					 
+                    <footer>
+					<button name="make_payment_reverse" type="object"  class="oe_highlight" string="Reverse Payment"/>
+                       
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+
+        
+    </data>
+</openerp> 

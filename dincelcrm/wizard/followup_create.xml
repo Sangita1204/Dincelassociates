@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record id="view_dincelcrm_folowup_create_form" model="ir.ui.view">
+            <field name="name">Follow up create</field>
+            <field name="model">dincelcrm.followup</field>
+            <field name="arch" type="xml">
+                <form string="Follow up">
+					
+				 <group>
+						
+						<field name="project_id"  />
+						<field name="partner_id"  />
+						<field name="contact_id"  />
+						<field name="quote_id"  />
+						<field name="date_from" invisible="1"/>
+						<field name="interval" string="Every" invisible="1" />
+						<field name="interval_type" string ="Interval Of" invisible="1"/>
+						<field name="qty"  invisible="1" />
+						<field name="comments" invisible="1" />
+				  </group>
+					  <group invisible="1">
+					  <button name="add_items" type="object" string="Add Items"/>
+					  </group>
+                    <group>
+					
+					
+ 						<field name="lines" nolabel="1" >
+							<tree  editable="bottom"	>
+								
+								<field name="sequence" invisible="1" />
+								<field name="fw_date" string="Follow-up date" required="1"/>
+								<field name="notes" string="Instruction / Notes " required="1" />
+								 
+							</tree>
+						</field>
+                    </group>
+					 
+					
+                    <footer>
+					
+						<button name="confirm_save" type="object" string="Save"/>
+                      
+                        or
+						
+                        <button string="Cancel" class="oe_link" special="cancel" />
+						
+                    </footer>
+               </form>
+            </field>
+        </record>
+	 
+	 
+	 <record id="view_dincelcrm_approval_request_form" model="ir.ui.view">
+            <field name="name">Send Approval Request</field>
+            <field name="model">dincelcrm.approval.request</field>
+            <field name="arch" type="xml">
+                <form string="Approval Request">
+				 <group>
+						<field name="partner_id" required="1"  />
+						<field name="comments" required="1" />
+						<field name="quotation_id" invisible="1" />
+						<field name="name" invisible="1" />
+				  </group>
+					<footer>
+						<button name="send_approval_request" type="object" string="Send Request"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+               </form>
+            </field>
+        </record>
+       
+		
+    </data>
+</openerp> 

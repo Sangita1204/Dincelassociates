@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+	
+	
+	<record id="view_sale_make_picking_list" model="ir.ui.view">
+            <field name="name">Picking List</field>
+            <field name="model">dincelwarehouse.picking.list</field>
+            <field name="arch" type="xml">
+                <form string="Picking List">
+                      <group>
+					    <group>
+					  
+							<field name="date" />
+						    <field name="warehouse_id"  widget="selection"  />
+						    <field name="delivery_to" />
+							
+					     </group>
+						 
+						   <group>
+							<field name="pudel" widget="selection" />
+							<field name="source_location_id" widget="selection"  />
+							<field name="destination_location_id" widget="selection"  />
+							  
+							<field name="qty" invisible="1" 
+								on_change="on_change_qty(qty,picking_lines,context)"/>
+								
+							<field name="sale_order_id" invisible="1" />
+							
+					     </group>
+					  
+					 </group>
+	   
+					 <label string="Produced Lines" for="picking_lines"/>
+					 
+						<field name="picking_lines">
+							<tree create="false" editable="bottom"	>
+								<field name="product_id" readonly="1"/>
+								<field name="qty" readonly="1" string="M2" invisible="1" />
+								<field name="qty_panel" readonly="1" string="Qty"/>
+								<field name="qty_delivered" readonly="1" string="Delivered"/>
+								<field name="qty_remain" readonly="1" string="Remain"/>
+								<field name="order_length" string="Length (mm)" readonly="1"/>
+								<field name="pick_source"   invisible="1"  />
+								<field name="qty_onhand" readonly="1" string="Available" />
+								<field name="qty_picked" string="Picking" on_change="on_change_pickqty(product_id,qty_onhand,qty_picked,context)" />
+								<field name="price_unit" invisible="1"/>
+								<field name="disc_pc" invisible="1"/>
+								<field name="product_uom" readonly="1"/>
+								<field name="sale_order_id" invisible="1"/>
+								<field name="packs"  />
+								<field name="region_id"  invisible="1"/>
+							</tree>
+						</field>
+					  
+					  
+					 <label string="Reserve Lines" for="reserve_lines"/>
+					<field name="reserve_lines" >
+							<tree create="false" editable="bottom"	>
+								<field name="product_id" readonly="1"/>
+								<field name="qty" readonly="1" string="M2" invisible="1" />
+								<field name="qty_panel" readonly="1" string="Qty"/>
+								<field name="qty_delivered" readonly="1" string="Delivered"/>
+								<field name="qty_remain" readonly="1" string="Remain"/>
+								<field name="order_length" string="Length (mm)" readonly="1"/>
+								<field name="pick_source"   invisible="1"  />
+								<field name="qty_onhand" readonly="1" string="Available" />
+								<field name="qty_picked" string="Picking" />
+								<field name="price_unit" invisible="1"/>
+								<field name="disc_pc" invisible="1"/>
+								<field name="product_uom" readonly="1"/>
+								<field name="sale_order_id" invisible="1"/>
+								<field name="packs"  />
+								<field name="region_id" invisible="1" />
+							</tree>
+						</field>
+                      
+                    <footer>
+                        <button name="make_picking_list_dcs" string="Make Picking List" type="object"
+                            class="oe_highlight" />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+		
+        <record id="action_create_sale_picking_list" model="ir.actions.act_window">
+            <field name="name">Picking List</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelwarehouse.picking.list</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+		
+		
+    </data>
+</openerp>

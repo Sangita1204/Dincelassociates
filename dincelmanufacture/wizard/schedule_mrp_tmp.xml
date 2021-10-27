@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+    <data>
+        <record	 id="dincelmrp_routing_schedule_form_tmp_view" model="ir.ui.view" >
+			<field name="name">dincelmrp.routing.schedule.form.tmp.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelmrp.routing.schedule.tmp</field>
+			<field name="arch" type="xml">
+			<form string="Move to Schedule Form" >
+				 <sheet>
+					  
+				  <group >
+							<label string="110mm Production Schedule" style="padding:10px;" attrs="{'invisible': [('name','!=','110')]}"/>
+							<label string="155mm Production Schedule" style="padding:10px;" attrs="{'invisible': [('name','!=','155')]}"/>
+							<label string="200mm Production Schedule" style="padding:10px;" attrs="{'invisible': [('name','!=','200')]}"/>
+							<label string="275mm Production Schedule" style="padding:10px;" attrs="{'invisible': [('name','!=','275')]}"/>
+							<field name="name" string="Product" invisible="1"/> 
+							<field name="qty" on_change="on_change_qty(qty, name, context)" invisible="1"/> 
+						
+					 </group>
+					   <notebook>
+					   <page string="Schedule" >
+							<label for="process_flag" string="All"/>
+							<field name="process_flag" string="All"  on_change="on_change_processflag(process_flag, schedule_line, context)"  />
+							<field name="schedule_line"  string="Schedule">
+								<tree  create="false"  editable="bottom">
+									<field name="sequence"  widget="handle"/>
+									<field name="process_flag" />
+									
+									<field name="order_id" invisible="1" />
+									<field name="order_code" readonly="1" /> 
+									<field name="color_code" widget="color" readonly="1"/>
+									<field name="partner_id" readonly="1"/>
+									<field name="project_id" readonly="1"/>
+									<field name="actual_start" invisible="1" />
+									<field name="schedule_start" invisible="1"/>
+									<field name="date_deposit" readonly="1" />
+									<field name="date_request" />
+									<field name="priority" />
+									<field name="notes" />
+									
+									
+									
+									<field name="len_order" string="Ordered L/M" sum="Total L/M" readonly="1"/>
+									<field name="hrs_order"  sum="Total Hrs" readonly="1"/>
+									<field name="produce_speed" />
+									<field name="len_complete" string="Produced L/M" readonly="1"/>
+									<field name="product" invisible="1"/>
+									<field name="production_id" invisible="1"/>
+									
+								  </tree>
+							</field>
+					   </page>
+					    
+						  </notebook>
+						 
+						   <footer>
+                        <button  string="Move to Schedule"  class="oe_highlight" name="save_production" type="object"  />
+						
+						<button  string="Move to Planned"   name="plan_production" type="object"  />
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel" />
+                    </footer>
+					
+					  </sheet>
+					 
+					
+				</form>
+			</field>
+		</record>	
+ 
+		
+    </data>
+</openerp>

@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		
+		<record id="dincelsale_saleorder_view_inherit" model="ir.ui.view" >
+			<field name="name">dincelsale.saleorder.form.inherit</field>
+			<field name="model">sale.order</field>
+			<field name="inherit_id" ref="dincelaccount.dincelaccount_sale_order_form" />
+			<field name="arch" type="xml">
+			 
+				 <xpath expr="//page[@string='Deliveries']" position="after">
+					<page string="Returns" groups="base.group_user">
+					  <div>
+						<field name="x_return_ids">
+						<tree create="false" >
+							<field name="name" invisible="1"/>
+							<field name="date_order" />
+							<field name="state" />
+						</tree>
+						</field>
+						
+					  </div>
+					</page>
+				</xpath>
+			</field>
+		</record>
+		
+		<record	 id="dincelsale_order_form_view" model="ir.ui.view" >
+			<field name="name">dincelsale.order.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelsale.ordersale</field>
+			<field name="arch" type="xml">
+				<form string="Order Return Form" version="7.0">
+					<header>
+					
+					<button string="Validate Returns"  type="object" name="button_validate_return" class="oe_highlight" attrs="{'invisible': [('state','in', ['draft','done','cancel'])]}"  />
+					<button string="Mark as print"  type="object" name="button_mark_printed" attrs="{'invisible': [('state','in', ['done','printed'])]}" />
+					<button string="Print"  type="object" name="button_print_pdf" />
+					<button string="Create Credit Note"  type="object" name="button_create_crn" />
+					
+					<field name="state" widget="statusbar" statusbar_visible="draft,printed,done"/>
+					</header>
+					<sheet>
+						<group> 
+                            <group> 
+								<field name="name" string="Ref No" readonly="1"/>
+								<field name="origin" invisible="1"/>
+								<field name="date_order" string="Date" />
+								<field name="user_id" invisible="1"/>
+								<field name="partner_id" on_change="onchange_partner_id(partner_id, project_id,True, context)"/>
+								<field name="project_id" on_change="onchange_partner_id(partner_id, project_id,False, context)"/>
+								<field name="origin_id"  on_change="onchange_origin_id(origin_id,partner_id, project_id,context)"/>
+								<field name="order_code" readonly="1"/> 
+								<field name="picking_id" readonly="1"/> 
+							</group>
+							
+						    <group>
+								<field name="picking_type_id"/>
+								<field name="location_id" domain="[('usage', '=', 'internal')]"/>
+								<field name="note"/>           
+								<field name="site_address"/>           
+								
+								<field name="payment_term" invisible="1"/>
+								<field name="company_id" invisible="1"/>
+							</group>
+							
+                        </group>
+						
+						<notebook>
+						    <page string="Order Lines">	
+								 
+								<field name="order_line" attrs="{'readonly': [('state','in', ['done'])]}"> 
+									<tree editable="bottom" create="false">
+											<field name="sequence"  widget="handle"/>
+											<field name="product_id" readonly="1"/> 
+											<field name="name" invisible="1" />
+											<field name="order_length" string="Length (mm)" readonly="1"/>
+											<field name="order_qty" readonly="1" string="Qty Ordered (each)"/> 
+											<field name="qty_return" string="Qty Return (each)" on_change="product_qty_changed(product_id,qty_return, order_length,context)"/> 
+											<field name="product_uom_id" invisible="1" />
+											<field name="order_line_id" invisible="1" />
+											<field name="price_unit" />
+											<field name="qty_price" string="M2/each" />
+											<field name="taxes_id" widget="many2many_tags" />
+											<field name="sub_total" />
+									</tree>
+									<!--<form string="Sales Order Lines">
+								   
+										<group>
+											<group>
+												<field name="sequence"/>
+												<field name="product_id"/> 
+												<field name="name"/>
+												<field name="order_length" string="Length (mm)"/>
+												<field name="order_qty" /> 
+												<field name="qty_return" /> 
+												
+											</group>
+										</group>
+									</form> -->
+								</field>
+								 
+							</page>
+						</notebook>
+                     </sheet>      
+					  <div class="oe_chatter">
+							<field name="message_follower_ids" widget="mail_followers"/>
+							<field name="message_ids" widget="mail_thread"/>
+						</div>
+				</form>
+			</field>
+		</record>
+		
+		<record	 id="dincelsale_sales_tree_view" model="ir.ui.view" >
+			<field name="name">dincelsale.sales.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelsale.ordersale</field>
+			<field name="arch" type="xml">
+				<tree string="Sales Order" colors="grey:state in ('cancel', 'done');blue:state in ('draft')">
+					
+					 
+					<field name="name"/>
+					<field name="picking_id"/> 
+					<field name="origin" invisible="1"/> 
+					<field name="order_code"/> 
+					
+					<field name="date_order"/> 
+					<field name="user_id" invisible="1"/> 
+					<field name="partner_id"/> 
+					<field name="project_id"/> 
+					<field name="state"/>  
+					
+				</tree>
+			</field>
+		</record>	
+		
+	<record id="dincelsale_sale_action" model="ir.actions.act_window" >
+			<field name="name">Order Returns</field>
+			<field name="res_model">dincelsale.ordersale</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">tree,form</field>
+	</record>
+	
+	<menuitem id="dincelsale_sales_return_menu" 
+				name="Order Returns" 
+				parent="dincelwarehouse.dincelwarehouse_stock_menu" 
+				action="dincelsale_sale_action" 
+				sequence="2"
+				/>		
+				
+	<menuitem id="dincelsale_sale_menu" 
+					name="Order Returns" 
+					parent="base.menu_sales" 
+					action="dincelsale_sale_action" 
+					/>	
+					
+	</data>
+</openerp>	

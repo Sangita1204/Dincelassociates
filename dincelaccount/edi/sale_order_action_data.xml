@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<openerp>
+	
+	<data>
+ 
+	<record id="email_template_edi_saleorder_invoice" model="email.template">
+		<field name="name">Sale Order Invoice - Send by Email</field>
+		<field name="email_from"></field>
+		<field name="subject">${object.x_project_id.name or ''} Order (Ref ${object.name or 'n/a' })</field>
+		<field name="partner_to">${object.partner_id.id}</field>
+		<field name="model_id" ref="sale.model_sale_order"/>
+		<field name="auto_delete" eval="True"/>
+		<field name="lang">${object.partner_id.lang}</field>
+		<field name="body_html"><![CDATA[
+<div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+
+	<p>Hello ${object.partner_id.name},</p>
+
+	<p> 111</p>
+
+	<br/>
+	<p>If you have any question, do not hesitate to contact us.</p>
+	<p>Thank you!</p>
+	<br/>
+	<br/>
+
+
+	</div>
+	]]></field>
+	</record>
+</data>
+</openerp>

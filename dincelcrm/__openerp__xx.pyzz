@@ -1,0 +1,30 @@
+{
+	'name': 'DINCEL CRM ',
+	'version':'1.0',
+	'description':"""
+		DINCEL CRM
+		Custom Module
+		""",
+	'author':'Shukra Rai',
+	'website':'www.dincel.com.au',
+	'depends':['base','base_setup','sale', 'crm'],
+	'data':[
+		'dincelcrm_quotation.xml',
+		'dincelcrm_contractquote.xml',
+		'dincelcrm_view.xml',
+		'dincelcrm_report.xml',
+		'dincelcrm_report_views.xml',
+		'views/report_quotation_new.xml',
+		'crmcomplaints.xml',
+		'crmcomplaints_data.xml',
+		],
+	'init_xml': [],
+	'js': [],
+	'css': ['static/src/css/style.css'],
+	'qweb': [], 
+	'demo':[],
+	'installable':True,
+	'auto_install':False,
+}
+
+

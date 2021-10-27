@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+		<record	 id="dincelhr_form_view" model="ir.ui.view" >
+			<field name="name">dincelhr.employee.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">hr.employee</field>
+			<field name="inherit_id" ref="hr.view_employee_form" />
+			<field name="arch" type="xml">
+				 <page string="Personal Information" position="after">
+						 
+					<page string="Devices">	
+						 
+						<field name="device_ids"  > 				</field>
+							 
+						 
+					</page>
+						 
+					</page>
+				</field>
+		</record>
+		<record	 id="dincelhr_employee_device_form_view" model="ir.ui.view" >
+			<field name="name">dincelhr.employee.device.form.view</field>
+			<field name="view_type">form</field>
+			<field name="model">dincelhr.employee.device</field>
+			<field name="arch" type="xml">
+				<form string="Devices" >
+					
+					 <group>
+						<field name="name" string="Device Name"/>
+						<field name="brand"/> 
+						<field name="model"/> 
+						<field name="serialno"/> 
+						<field name="given_date"/> 
+						<field name="parts"/> 
+						<field name="keys1"/>  
+						<field name="keys2"/>  
+						<field name="simcard"/>		
+						<field name="comments"/>  
+					 </group>
+				</form>
+			</field>
+		</record>	
+		
+		<record	 id="dincelhr_employee_device_tree_view" model="ir.ui.view" >
+			<field name="name">dincelhr.employee.device.tree.view</field>
+			<field name="view_type">tree</field>
+			<field name="model">dincelhr.employee.device</field>
+			<field name="arch" type="xml">
+				<tree string="Devices" >
+					
+					 
+					<field name="name"/>
+					<field name="brand"/> 
+					<field name="model"/> 
+					<field name="serialno"/> 
+					<field name="given_date"/> 
+					<field name="parts"/> 
+					<field name="keys1"/>  
+					<field name="keys2"/>  
+					<field name="simcard"/>		
+					<field name="comments"/>  
+					
+				</tree>
+			</field>
+		</record>	
+		
+	 
+					
+	</data>
+</openerp>	

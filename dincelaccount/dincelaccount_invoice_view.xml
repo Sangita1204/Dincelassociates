@@ -1,0 +1,404 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+	<data>
+	
+		<record id="dincelaccount_account_invoice_tree_inherit_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.account.invoice.treee.inherit</field>
+			<field name="model">account.invoice</field>
+			<field name="inherit_id" ref="account.invoice_tree" />
+			<field name="arch" type="xml">
+				
+				<field name="date_due" position="after">
+					<field name="x_order_code" />
+					<field name="payment_term" />
+					<field name="x_credit_limit" />
+				</field>
+				<field name="residual" position="replace">
+					<field name="x_inv_type" />
+				</field>
+				<field name="amount_total" position="after">
+					<field name="x_balance_amt" string="Balance" sum="Balance"/>
+				</field>
+			</field>
+		</record>
+		<record id="dincelaccount_account_invoice_form_inherit_view" model="ir.ui.view" >
+			<field name="name">dincelaccount.account.invoice.form.inherit</field>
+			<field name="model">account.invoice</field>
+			<field name="inherit_id" ref="account.invoice_form" />
+			<field name="arch" type="xml">
+				<field name="partner_id" position="replace">
+				<field string="Customer" name="partner_id"
+							on_change="onchange_partner_id(type, partner_id, date_invoice, payment_term, partner_bank_id, company_id, context)"
+							context="{'search_default_customer':1, 'show_address': 1}"
+							options='{"always_reload": True}'
+							domain="[('customer', '=', True),('x_is_not_active', '!=', True)]"/>
+				</field>
+			</field>
+		</record>
+		<record id="view_dincelaccount_refund_invoice" model="ir.ui.view">
+            <field name="name">view.dincelaccount.refund.invoice.form</field>
+            <field name="model">dincelaccount.refund_invoice</field>
+            <field name="arch" type="xml">
+                <form string="Refund/Cancel Invoice" version="7.0">
+                   
+                    <group>
+                        <field name="account_id"   invisible="1"/>
+						<field name="journal_id" />
+						<field name="date_invoice" />
+						<field name="invoice_id"  invisible="1"/>
+						<field name="reason_refund" string="Reason" required="1" />
+						<field name="cancel" invisible="1"/>
+						<field name="ok2cancel"  invisible="1" />
+						<field name="qty" on_change="on_change_qty(qty, account_id, context)" invisible="1"/> 
+						<div colspan="2"  attrs="{'invisible': [('ok2cancel','=',True)]}" style="margin-top:10px;color:red;border:1px solid #f00;padding:5px;">
+							Cannot cancel this invoice, because the order has been partially/fully produced. Please contact manager or account admin to authorise and continue.
+							</div>
+							
+		            </group>
+					
+                    <footer>
+						<button name="refundInvoice" string="Refund Invoice"  attrs="{'invisible': [('cancel','=',True)]}" type="object"  class="oe_highlight"/>
+						<button name="cancelInvoice" string="Cancel Invoice"  attrs="{'invisible': [('cancel','=',False)]}" type="object"  class="oe_highlight"/>
+                        or
+                        <button string="Close" class="oe_link" special="cancel"/>
+                    </footer>
+ 
+                </form>
+            </field>
+        </record>
+		
+		<record id="action_dincelaccount_refund_invoice2" model="ir.actions.act_window">
+            <field name="name">Refund Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelaccount.refund_invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+        </record>
+		
+		 <record id="action_dincelaccount_cancel_invoice2" model="ir.actions.act_window">
+            <field name="name">Cancel Invoice</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">dincelaccount.refund_invoice</field>
+			<field name="view_type">form</field>
+			<field name="view_mode">form</field>
+			<field name="target">new</field>
+			<field name="context">{'default_cancel': True}</field> 
+        </record>
+		
+		<record id="dincelaccount_invoice_form" model="ir.ui.view">
+            <field name="name">dincelaccount.invoice.form</field>
+            <field name="model">account.invoice</field>
+            <field name="arch" type="xml">
+                <form string="Invoice">
+                <header>
+                    <button name="action_invoice_sent" type="object" string="Send by Email"  invisible="1" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}" class="oe_highlight" groups="base.group_user"/>
+                    <button name="invoice_print" string="Print" type="object" invisible="1" attrs="{'invisible':['|',('sent','=',True), ('state', '!=', 'open')]}" class="oe_highlight" groups="base.group_user"/>
+                    <button name="action_invoice_sent" type="object" string="Send by Email" invisible="1" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" groups="base.group_user"/>
+                    <button name="invoice_print" string="Print Invoice" type="object"  invisible="1" attrs="{'invisible':['|',('sent','=',False), ('state', '!=', 'open')]}" groups="base.group_user"/>
+				 
+                   <!--   <button name="invoice_sales_validate_final" string="Validate TEST" invisible="1" type="object" attrs="{'invisible':[('state', '!=', 'draft')]}" />
+                   <button name="invoice_sales_validate2" string="Validate TEST"  type="object" attrs="{'invisible':[('state', '!=', 'draft')]}" />-->
+					 <button name="invoice_sales_validate_btn" string="Validate Invoice (create journals)"  type="object" attrs="{'invisible':[('state', '!=', 'draft')]}" />
+					<button name="%(action_dincelaccount_refund_invoice2)d" invisible="1" string="Refund Invoice" type="action"  attrs="{'invisible':['|',('state', '!=', 'paid'),('type', '=', 'out_refund')]}" />
+					<button name="%(action_dincelaccount_cancel_invoice2)d" invisible="1" string="Cancel Invoice" type="action"  attrs="{'invisible':['|',('state', '!=', 'open'),('type', '=', 'out_refund')]}" />
+					
+					<button name="button_refund_invoice" string="Refund Invoice" type="object"  attrs="{'invisible':['|',('state', '!=', 'paid'),('type', '=', 'out_refund')]}" />
+					
+					<button name="button_cancel_invoice" type="object" string="Cancel Invoice"  attrs="{'invisible':['|',('state', '!=', 'open'),('type', '=', 'out_refund')]}"/>
+					<button name="invoice_update_dcs"  string="Update DCS" attrs="{'invisible':[('type','in',('in_invoice','in_refund'))]}" type="object" />
+                    <button name="invoice_proforma2" states="draft" string="PRO-FORMA" groups="account.group_proforma_invoices"/>
+                    <button  string='Refund Invoice' invisible="1" states='open,proforma2,paid' groups="base.group_user"/>
+					
+					
+					
+                    <button name="invoice_cancel" invisible="1" states="draft,proforma2,open" string="Cancel Invoice" groups="base.group_no_one"/>
+                    <button name="action_cancel_draft" invisible="1" states="cancel" string="Reset to Draft" type="object" groups="base.group_user"/>
+                    <button string='Re-Open' groups="account.group_account_invoice" invisible="1" attrs="{'invisible':['|', ('state','&lt;&gt;','paid'), ('reconciled', '=', True)]}" help="This button only appears when the state of the invoice is 'paid' (showing that it has been fully reconciled) and auto-computed boolean 'reconciled' is False (depicting that it's not the case anymore). In other words, the invoice has been dereconciled and it does not fit anymore the 'paid' state. You should press this button to re-open it and let it continue its normal process after having resolved the eventual exceptions it may have created."/>
+					
+                    <button name="invoice_print_dcs" type="object" string="Print Preview" invisible="1"  />
+					
+					  <button name="invoice_print_pdf_dcs" type="object" string="Generate Pdf"  /> 
+					   <button name="invoice_download_pdf_dcs" type="object" string="Download"  /> 
+					
+					<button string="Sales Orders" name="button_sales_orders" type="object" attrs="{'invisible':[('type','in',('in_invoice','in_refund'))]}"/> 
+					
+					<button name="invoice_refund_bank_dcs"  attrs="{'invisible':[('state', '!=', 'open')]}" string="Refund Balance to Customer (Bank)"  type="object" />
+					
+                    <field name="state" widget="statusbar" nolabel="1" statusbar_visible="draft,open,close,paid,offset" statusbar_colors='{"proforma":"blue","offset":"blue"}'/>
+                </header>
+                <sheet string="Invoice">
+                    <h1>
+                        <label string="Draft Invoice" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','&lt;&gt;','out_invoice')]}"/>
+                        <label string="Draft Refund" attrs="{'invisible': ['|',('state','not in',('draft',)), ('type','&lt;&gt;','out_refund')]}"/>
+                        <!-- <label string="Pro Forma Invoice" attrs="{'invisible': [('state','not in',('proforma','proforma2'))]}"/> -->
+                        <label string="Tax Invoice" attrs="{'invisible': ['|',('state','in',('draft','proforma','proforma2')), ('type','&lt;&gt;','out_invoice')]}"/>
+                        <label string="Refund Invoice" attrs="{'invisible': ['|',('state','in',('draft','proforma','proforma2')), ('type','&lt;&gt;','out_refund')]}"/>
+                       
+                    </h1>
+					<label string=" " /><br />
+					<label string="Credit Limit Exceeded" style="color:red; border:2px solid red; padding:10px; size:30px;" attrs="{'invisible': [('x_cr_limit_over','=',False)]}"/>
+                    <field name="type" invisible="1"/>
+                    <group>
+                        <group>
+						   <field name="sent" readonly="1" string="Invoice Sent" />
+							<field name="number" readonly="1" string="Invoice No."/>
+							<field name="x_invoice_attach"   readonly="1"/>
+                            <field string="Customer" name="partner_id"
+                                on_change="onchange_partner_id_new2(type, partner_id, date_invoice, payment_term, partner_bank_id, company_id)"
+                                context="{'search_default_customer':1, 'show_address': 1}"
+                                options='{"always_reload": True}'
+                                domain="[('x_is_client', '=', True),('x_is_project', '=', False),('x_is_not_active', '!=', True)]" />
+							<field name="x_project_id"   on_change="onchange_projectsite(partner_id, x_project_id)" domain="[('x_is_project', '=', True),('x_is_not_active', '!=', True)]" attrs="{'readonly': [('state','not in',('draft',))],'invisible':[('type','in',('in_invoice','in_refund'))]}"/>
+                            <field name="fiscal_position" invisible="1" />
+							<field name="company_id" on_change="onchange_company_id(company_id,partner_id,type,invoice_line,currency_id)" widget="selection" groups="base.group_multi_company" invisible="1" />
+							<field name="user_id" groups="base.admin_super_users" context="{'default_groups_ref': ['base.group_user', 'base.group_partner_manager', 'account.group_account_invoice']}"/>
+							<field domain="[('partner_id.ref_companies', 'in', [company_id])]" name="partner_bank_id" invisible="1" />
+							<field name="period_id" domain="[('state', '=', 'draft'), ('company_id', '=', company_id)]"
+                                        groups="account.group_account_manager"
+                                        string="Accounting Period"
+                                        placeholder="force period" invisible="1"/>
+                             <field name="x_full_delivered"  invisible="1"/>    <!-- attrs="{'invisible': [('x_inv_type','=','deposit')]}" -->
+							 <field name="payment_term" class="oe_inline" on_change="onchange_pay_terms_dcs(payment_term, date_invoice)" />
+							 <field name="x_inv_type" attrs="{'readonly': [('state','not in',('draft',))],'invisible':[('type','in',('in_invoice','in_refund'))]}"/>    
+							 <field name="x_credit_limit" readonly="1"  attrs="{'invisible':[('type','in',('in_invoice','in_refund'))]}"/>  
+							 <field name="x_cr_limit_over" string="Over Credit Limit" readonly="1"  attrs="{'invisible':[('type','in',('in_invoice','in_refund'))]}"/>  
+                        </group>
+                        <group>
+						<group colspan="2">
+                            <field name="date_invoice" on_change="onchange_pay_terms_dcs(payment_term, date_invoice)" attrs="{'required':True}" />
+							  <field name="date_due"/>
+							  <field name="x_sale_order_id" attrs="{'readonly': [('x_edit_so','=',False)]}"    />
+							  <field name="x_edit_so" invisible="1"/>
+							  <field name="x_order_code" readonly="1"/>
+								<field name="origin" groups="base.group_user" invisible="1"/>
+								<field name="name" invisible="1"/>
+								<field name="move_id" groups="account.group_account_user" invisible="1"/>
+                            <field name="journal_id" groups="account.group_account_user"
+                                on_change="onchange_journal_id(journal_id)" options="{'no_create': True}"/>
+                            <field domain="[('company_id', '=', company_id),('type','=', 'receivable')]"
+                                name="account_id" groups="account.group_account_user"/>
+
+								 <field name="x_refund_journal_id" attrs="{'invisible':[('state', '!=', 'open')]}"
+                                domain="[('type','in',['bank', 'cash'])]"
+                                widget="selection"
+                                on_change="onchange_journal_refund(x_refund_journal_id, context)"
+                                string="Payment Method"/>
+								
+								 <field name="x_refund_account_id" attrs="{'invisible':[('state', '!=', 'open')]}" widget="selection" />
+								 <field name="x_dt_refund" attrs="{'invisible':[('state', '!=', 'open')]}" />
+							<field name="x_cancel_offset" attrs="{'invisible':[('x_inv_type', '!=', 'refund')]}"/>
+							</group>
+							
+							<group>	 
+                           
+							</group>
+                        </group>
+                    </group>
+                  
+                    <notebook colspan="4">
+                        <page string="Invoice Lines">
+                            <field name="invoice_line" nolabel="1" widget="one2many_list" context="{'type': type}">
+                                <tree string="Invoice Lines" editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+									<field name="x_region_id" invisible="1" string="A/c Region" widget="selection"/>
+									<field name="x_coststate_id" string="Cost Centre"  />
+									
+                                    <field name="product_id"
+                                        on_change="product_id_change_v2(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.currency_id, parent.company_id, context)"/>
+                                    <field name="name"/>
+									<field name="x_order_qty" string="Qty (each)" readonly="1"  />
+									<field name="x_order_length" string="Length" readonly="1"  />
+                                    <field name="company_id" invisible="1"/>
+                                    <field name="account_id"  invisible="1" groups="account.group_account_user"
+                                        domain="[('company_id', '=', parent.company_id), ('journal_id', '=', parent.journal_id), ('type', '=', 'other')]"
+                                        on_change="onchange_account_id(product_id, parent.partner_id, parent.type, parent.fiscal_position,account_id)"/>
+                                    <field name="account_analytic_id"  invisible="1" groups="analytic.group_analytic_accounting"
+                                        domain="[('type','!=','view'), ('company_id', '=', parent.company_id), ('state','not in',('close','cancelled'))]"/>
+                                    <field name="quantity" />
+                                    <field name="uos_id" string="UoM"  />
+									
+									
+									<!--  
+                                        on_change="uos_id_change(product_id, uos_id, quantity, name, parent.type, parent.partner_id, parent.fiscal_position, price_unit, parent.currency_id, parent.company_id, context)" -->
+                                    <field name="price_unit"/>
+                                    <field name="discount" groups="sale.group_discount_per_so_line"/>
+                                    <field name="invoice_line_tax_id" widget="many2many_tags" context="{'type':parent.type}"
+                                        domain="[('parent_id','=',False),('company_id', '=', parent.company_id)]"/>
+                                    <field name="price_subtotal"/>
+                                </tree>
+                            </field>
+							 
+						<group>
+						<group>
+							<div >
+                                <field name="tax_line" >
+                                    <tree editable="bottom" string="Taxes">
+                                        <field name="name"/>
+                                        <field name="account_id" groups="account.group_account_invoice"/>
+                                        <field name="account_analytic_id" domain="[('type','&lt;&gt;','view'), ('company_id', '=', parent.company_id)]" groups="analytic.group_analytic_accounting"/>
+                                        <field name="base" on_change="base_change(base,parent.currency_id,parent.company_id,parent.date_invoice)" readonly="1"/>
+                                        <field name="amount" on_change="amount_change(amount,parent.currency_id,parent.company_id,parent.date_invoice)"/>
+
+                                        <field invisible="True" name="base_amount"/>
+                                        <field invisible="True" name="tax_amount"/>
+                                        <field name="factor_base" invisible="True"/>
+                                        <field name="factor_tax" invisible="True"/>
+                                    </tree>
+                                </field>
+                            </div></group>
+							<group class="oe_subtotal_footer oe_right">
+                                <field name="amount_untaxed" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <div>
+                                    <label for="amount_tax"/>
+                                    <button name="button_reset_taxes" states="draft,proforma2"
+                                        string="(update)" class="oe_link oe_edit_only"
+                                        type="object" help="Recompute taxes and total"/>
+                                </div>
+                                <field name="amount_tax" nolabel="1" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="amount_total" class="oe_subtotal_footer_separator" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+								<field name="x_balance_amt" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="residual" invisible="1" groups="account.group_account_user" widget="monetary" options="{'currency_field': 'currency_id'}"/>
+                                <field name="reconciled" invisible="1"/>
+								 
+                            </group>
+                            
+                             </group>
+                         
+							
+							 
+                        </page>
+						 <page string="Payments" groups="base.group_user">
+                            <field name="x_pay_line_ids" readonly="1"  domain="[('state','not in',('cancel'))]">
+							<tree string="Payments" create="false" edit="false">
+                                    <field name="date_paid"/>
+									<field name="voucher_id" string="Paid Ref"/>
+                                    
+                                    <field name="amount" sum="Subtotal"/>
+									<field name="amount_fee" sum="Fee Total"/>
+									<field name="amount_subtotal" sum="Total"/>
+                                    
+                                </tree>
+							  </field>
+							</page>
+                        <!--
+                        <page string="Payments" groups="base.group_user">
+                            <field name="payment_ids">
+                                <tree string="Payments">
+                                    <field name="date"/>
+                                    <field name="move_id"/>
+                                    <field name="ref"/>
+                                    <field name="name"/>
+                                    <field name="journal_id" groups="base.group_user"/>
+                                    <field name="debit"/>
+                                    <field name="credit"/>
+                                    <field name="amount_currency" groups="base.group_multi_currency"/>
+                                    <field name="currency_id" groups="base.group_multi_currency"/>
+                                </tree>
+                            </field>
+							
+							  <field name="tax_line">
+                                <tree editable="bottom" string="Taxes">
+                                    <field name="name"/>
+                                    <field name="account_id" groups="account.group_account_user"/>
+                                    <field name="base" on_change="base_change(base,parent.currency_id,parent.company_id,parent.date_invoice)" readonly="1"/>
+                                    <field name="amount" on_change="amount_change(amount,parent.currency_id,parent.company_id,parent.date_invoice)"/>
+                                    <field invisible="True" name="base_amount"/>
+                                    <field invisible="True" name="tax_amount"/>
+                                    <field name="factor_base" invisible="True"/>
+                                    <field name="factor_tax" invisible="True"/>
+                                </tree>
+                            </field>
+                        </page> -->
+                    </notebook>
+					 
+					<group>
+					      <field name="comment" string="Notes" class="oe_inline" placeholder="notes..."/>
+						   <label for="currency_id" groups="base.group_multi_currency"/>
+                            <div groups="base.group_multi_currency">
+                                <field name="currency_id" class="oe_inline"/>
+                                <button  
+                                  class="oe_inline oe_link oe_edit_only"
+                                  string="(change)"
+                                  attrs="{'invisible':[('state','!=','draft')]}"
+                                  groups="account.group_account_user"/>
+                            </div>
+						  </group>
+					  </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                    <field name="message_ids" widget="mail_thread"/>
+                </div>
+                </form>
+            </field>
+        </record>
+		
+		<record id="action_dincel_invoices_refund" model="ir.actions.act_window">
+            <field name="name">Refund Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_refund')]</field>
+            <field name="context">{'default_type':'out_refund', 'type':'out_refund', 'journal_type': 'sale','default_x_edit_so':True}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            
+        </record>
+
+        <record id="action_dincelinvoice_refund_tree_view" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_dincel_invoices_refund"/>
+        </record>
+
+        <record id="action_dincelinvoice_refund_form_view" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount_invoice_form"/>
+            <field name="act_window_id" ref="action_dincel_invoices_refund"/>
+        </record>
+
+        <record id="action_dincel_invoices" model="ir.actions.act_window">
+            <field name="name">Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice')]</field>
+            <field name="context">{'default_type':'out_invoice', 'type':'out_invoice', 'journal_type': 'sale','default_x_edit_so':True}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help" type="html">
+              <p class="oe_view_nocontent_create">
+                Click to create a customer invoice.
+              </p>
+			  <p>
+                Odoo's electronic invoicing allows to ease and fasten the
+                collection of customer payments. Your customer receives the
+                invoice by email and he can pay online and/or import it
+                in his own system.
+              </p>
+			  <p>
+                The discussions with your customer are automatically displayed at
+                the bottom of each invoice.
+              </p>
+            </field>
+        </record>
+
+        <record id="action_dincelinvoice_tree1_view1" model="ir.actions.act_window.view">
+            <field eval="1" name="sequence"/>
+            <field name="view_mode">tree</field>
+            <field name="act_window_id" ref="action_dincel_invoices"/>
+        </record>
+
+        <record id="action_dincelinvoice_tree1_view2" model="ir.actions.act_window.view">
+            <field eval="2" name="sequence"/>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="dincelaccount_invoice_form"/>
+            <field name="act_window_id" ref="action_dincel_invoices"/>
+        </record>
+
+        <menuitem action="action_dincel_invoices" id="menu_action_dincelinvoice" parent="account.menu_finance_receivables"/>
+		<menuitem string="Refund Invoices" action="action_dincel_invoices_refund" id="menu_action_dincelinvoice_refund" parent="account.menu_finance_receivables"/>
+	</data>
+	
+</openerp>

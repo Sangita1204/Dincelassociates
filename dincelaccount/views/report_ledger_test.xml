@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<openerp>
+<data>
+
+<template id="report_ledger_test" inherit_id="account.report_generalledger">
+	<!--<xpath expr="//div[@class='page']/div[@class='row mt32']" position="replace">
+		 
+			<div>Chart of Accounts:</div>
+			 
+		 
+	</xpath> -->
+	<xpath expr="//div[@class='page']/table[@class='table table-condensed']/tbody" position="replace">
+		  <tbody>
+			<t t-foreach="get_children_accounts(o)" t-as="childrenaccount">
+				<tr style="font-weight: bold;">
+					<td colspan="7">
+						<span style="color: white;" t-esc="'..'* (childrenaccount['level'] - 1)"/>
+						<span t-esc="childrenaccount['code']"/>
+						<span t-esc="childrenaccount['name']"/>
+					</td>
+					<td class="text-right">
+							<t t-if="sum_debit_account(childrenaccount)==0"> - </t>
+							<t t-if="sum_debit_account(childrenaccount)>0">$<span t-esc="'{0:,.2f}'.format(sum_debit_account(childrenaccount))"/></t> <!--
+						<span t-esc="formatLang(sum_debit_account(childrenaccount), digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/> -->
+					</td>
+					<td class="text-right"><t t-if="sum_credit_account(childrenaccount)==0"> - </t>
+							<t t-if="sum_credit_account(childrenaccount)>0">$<span t-esc="'{0:,.2f}'.format(sum_credit_account(childrenaccount))"/></t> <!--
+						<span t-esc="formatLang(sum_credit_account(childrenaccount), digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/>-->
+					</td>
+					<td class="text-right"><t t-if="sum_balance_account(childrenaccount)==0"> - </t>
+							<t t-if="sum_balance_account(childrenaccount)>0">$<span t-esc="'{0:,.2f}'.format(sum_balance_account(childrenaccount))"/></t> <!--
+						<span t-esc="formatLang(sum_balance_account(childrenaccount), digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/>-->
+					</td>
+					<td class="text-right" t-if="data['form']['amount_currency']">
+							<t t-if="sum_currency_amount_account(childrenaccount)>0">$<span t-esc="'{0:,.2f}'.format(sum_currency_amount_account(childrenaccount))"/></t> <!--
+						<span t-esc="formatLang(sum_currency_amount_account(childrenaccount), digits=get_digits(dp='Account'), currency_obj=res_company.currency_id) if sum_currency_amount_account(childrenaccount) > 0.00 else ''"/>-->
+					</td>
+				</tr>
+				<tr t-foreach="lines(childrenaccount)" t-as="line">
+					<td><span t-esc="formatLang(line['ldate'], date=True)"/></td>
+					<td><span t-esc="line['lcode']"/></td>
+					<td><span t-esc="line['partner_name']"/></td>
+					<td><span t-if="line['lref']" t-esc="line['lref']"/></td>
+					<td><span t-esc="line['move']"/></td>
+					<td><span t-esc="line['lname']"/></td>
+					<td><span t-esc="line['line_corresp'].replace(',',', ')"/></td>
+					<td class="text-right"><t t-if="line['debit']==0"> - </t>
+							<t t-if="line['debit']>0">$<span t-esc="'{0:,.2f}'.format(line['debit'])"/></t> <!--
+						<span t-esc="formatLang(line['debit'], digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/>-->
+					</td>
+					<td class="text-right"><t t-if="line['credit']==0"> - </t>
+							<t t-if="line['credit']>0">$<span t-esc="'{0:,.2f}'.format(line['credit'])"/></t> <!--
+						<span t-esc="formatLang(line['credit'], digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/>-->
+					</td>
+					<td class="text-right"><t t-if="line['progress']==0"> - </t>
+							<t t-if="line['progress']>0">$<span t-esc="'{0:,.2f}'.format(line['progress'])"/></t> <!--
+						<span t-esc="formatLang(line['progress'], digits=get_digits(dp='Account'), currency_obj=res_company.currency_id)"/>-->
+					</td>
+					<td class="text-right" t-if="data['form']['amount_currency']">
+							<t t-if="line['amount_currency']>0">$<span t-esc="'{0:,.2f}'.format(line['amount_currency'])"/></t> <!--
+						<span t-esc="formatLang(line['amount_currency'], currency_obj=res_company.currency_id) if line['amount_currency'] > 0.00 else ''"/>
+						<span t-esc="line['currency_code'] if line['amount_currency'] > 0.00 else ''"/>-->
+					</td>
+				</tr>
+			</t>
+			 
+		  </tbody>
+	</xpath> 
+	
+</template>
+</data>
+</openerp>
